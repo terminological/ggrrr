@@ -13,7 +13,15 @@
   readr::write_lines(x,file)
 }
 
-fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes")), description = here::here("DESCRIPTION") ) {
+#' Fix errors introduced in package creation by forgetting to qualify namespaces.
+#'
+#' @param rDirectories the locations of the R code to fix
+#' @param description the location of the description files
+#' @param dry_run by default this function will not actually do anything unless this is set to FALSE.
+#'
+#' @return
+#' @export
+fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes")), description = here::here("DESCRIPTION"), dry_run = TRUE ) {
 
   devtools::load_all(here::here())
 
@@ -47,10 +55,43 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
   }
 
   files = files %>% mutate(changed = purrr::map2_lgl(content.old, content, ~ any(.x!=.y)))
+  tmp = files %>% select(path,matches) %>% unnest(matches)
 
-  files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) .write_safe(content.old,paste0(path,".old")))
-  files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,path))
+  if(any(files$changed)) {
+    message(sum(tmp$value)," function calls missing namespaces found: ", paste0(unique(tmp$pkg), collapse = "; "))
+    files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) message(path))
 
-  files %>% select(path,matches) %>% unnest(matches)
+    if(dry_run) {
+      fixme = 3
+    } else {
+      fixme = utils::menu(c("Yes","No","Dry-run"), "Would you like me to fix these?")
+    }
+    dry_run = fixme==3
 
+    if(fixme %in% c(1,3)) {
+
+      if (dry_run) message("dry run: this is what would have been done")
+      message("backing originals up to:")
+      files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) message("\t",path,".old"))
+      if (!dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) .write_safe(content.old,paste0(path,".old")))
+
+      message("writing modified files to: ")
+      files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) message("\t",path))
+      if (!dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,path))
+    }
+
+  }
+
+
+  nsMissing = tmp %>% filter(!(pkg %in% imports)) %>% pull(pkg) %>% unique()
+  if(length(nsMissing) > 0) {
+    message("Your DESCRIPTION file is missing packages that are currently loaded and used in your code. These are: ",paste(nsMissing,collapse = "; "))
+    fixns = utils::menu(c("Yes","No"), "Would you like me to fix these?")
+    if (fixns==1) {
+      x = lapply(nsMissing, function(p) usethis::use_package(p))
+    }
+  }
+
+  message("Done. You may want to run some tests before deleting the backup files.")
+  return(files)
 }

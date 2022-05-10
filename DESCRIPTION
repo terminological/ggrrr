@@ -27,7 +27,8 @@ Imports:
     tidyr,
     digest,
     rappdirs,
-    fs
+    fs,
+    ggplot2
 Suggests: 
     rmarkdown,
     knitr
