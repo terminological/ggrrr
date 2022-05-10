@@ -1,0 +1,34 @@
+Package: ggrrr
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    devtools,
+    dplyr,
+    glue,
+    grid,
+    gridExtra,
+    gtable,
+    here,
+    huxtable,
+    openxlsx,
+    rlang,
+    extrafont,
+    tibble,
+    tidyr,
+    digest,
+    rappdirs,
+    fs
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr

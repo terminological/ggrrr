@@ -1,0 +1,68 @@
+---
+title: "Basic examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+# library(tidyverse)
+# library(ggrrr)
+devtools::load_all("~/Git/ggrrr")
+ggrrr::loadfonts()
+
+```
+
+# ggplot utilities
+
+```{r}
+ggrrr::gg_pedantic(font = "Times New Roman")
+plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")
+plot
+```
+```{r}
+plot+gg_hide_X_axis()+gg_hide_Y_axis()+gg_hide_legend()
+```
+
+
+```{r}
+plot+gg_narrow()+gg_resize_legend(spaceLegend = 1,pointSize = 4,textSize = 12)+gg_watermark("PRELIM")
+
+```
+
+
+
+```{r}
+tableExample = diamonds %>% 
+  mutate(size = cut(carat, breaks=c(-Inf,quantile(carat, probs = c(0.25,0.75)),Inf), labels=c("small","medium","large")) %>% as.factor()) %>%
+  group_by(size,cut) %>%
+  summarise(
+    N = n(),
+    depth = sprintf_list("%1.2f (IQR %1.2f \u2014 %1.2f)", quantile(depth,c(0.5,0.25,0.75))),
+    price = sprintf_list("%1.0f (IQR %1.0f \u2014 %1.0f)", quantile(price,c(0.5,0.25,0.75)))
+  )
+  
+
+tableExample %>% gg_simple_table()
+```
+```{r}
+# devtools::load_all("~/Git/ggrrr")
+# tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
+tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,fontName = "Courier",fontSize = 8) 
+tablePlot %>% gg_save_as("~/tmp/table")
+```
+
+
+```{r}
+#devtools::load_all("~/Git/ggrrr")
+tableExample %>% hux_default_layout(defaultFont = "Roboto") %>% hux_save_as("~/tmp/table2")
+```
