@@ -34,8 +34,10 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
       # transparent background
       # plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
       plot.background = ggplot2::element_rect(fill = "white", color = NA), # bg of the plot
-      plot.tag = ggplot2::element_text(size = baseSize, hjust = 1, vjust=0, face="bold"), # position plot annotation closer to plot
-      plot.tag.position = c(0, 1)
+      plot.tag = ggplot2::element_text(size = baseSize*1.2)
+      # position plot annotation closer to plot
+      # plot.tag = ggplot2::element_text(size = baseSize*1.2, hjust = 0, vjust=1),
+      # plot.tag.position = c(0, 1)
     )
 }
 
@@ -77,16 +79,9 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #'
 #' @examples
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
+  if (!font %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
   ggplot2::theme_set(gg_tiny_theme(fontSize,font))
   gg_set_size_defaults(lineSize,fontSize*0.75,font)
-  cran("Cairo")
-  # Cairo::CairoFonts(
-  #   regular=paste0(font,":style=Regular"),
-  #   bold=paste0(font,":style=Bold"),
-  #   italic=paste0(font,":style=Italic"),
-  #   bolditalic=paste0(font,":style=Bold Italic,BoldItalic"),
-  #   symbol="Symbol", usePUA=TRUE
-  # )
 }
 
 

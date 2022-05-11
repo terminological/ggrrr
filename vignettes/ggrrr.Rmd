@@ -26,7 +26,7 @@ ggrrr::loadfonts()
 
 ```{r}
 ggrrr::gg_pedantic(font = "Times New Roman")
-plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")
+plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
 plot
 ```
 ```{r}

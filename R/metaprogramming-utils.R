@@ -32,7 +32,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
   packages = unique(c(loaded,imports))
   packages = packages[!packages %in% c(dMap$Package,"base")]
   files = files %>% mutate(content.old = purrr::map(path, ~ readr::read_lines(.x)))
-  theseFunctions = ls(asNamespace(dMap$Package))
+  theseFunctions = c(ls(asNamespace(dMap$Package)),ls(asNamespace("base")))
 
   files = files %>% mutate(content = content.old, matches=list(tibble()))
 
@@ -40,18 +40,21 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
     # pkg = "dplyr"
     functions = ls(asNamespace(pkg))
     functions = functions[!functions %in% theseFunctions]
+    functions = functions[stringr::str_length(functions) > 1]
 
-    functionRegex = paste0(lapply(functions, rex::escape),collapse = "|")
-    functionRegex = paste0("([^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
-    replacement = paste0("\\1",pkg,"::\\2(")
-    # c = files$content.old[[1]]
+    if (length(functions) > 0) {
+      functionRegex = paste0(lapply(functions, rex::escape),collapse = "|")
+      functionRegex = paste0("([^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
+      replacement = paste0("\\1",pkg,"::\\2(")
+      # c = files$content.old[[1]]
 
-    getm = function(c) enframe(table(unlist(lapply(stringr::str_match_all(c,functionRegex), function(l) l[,3])))) %>% mutate(pkg = pkg, name = as.character(name), value=as.integer(value))
+      getm = function(c) enframe(table(unlist(lapply(stringr::str_match_all(c,functionRegex), function(l) l[,3])))) %>% mutate(pkg = pkg, name = as.character(name), value=as.integer(value))
 
-    files = files %>% mutate(
-      content = purrr::map(content, ~ .x %>% stringr::str_replace_all(functionRegex, replacement)),
-      matches = purrr::map2(content, matches, ~ bind_rows(.y,getm(.x) ))
-    )
+      files = files %>% mutate(
+        content = purrr::map(content, ~ .x %>% stringr::str_replace_all(functionRegex, replacement)),
+        matches = purrr::map2(content, matches, ~ bind_rows(.y,getm(.x) ))
+      )
+    }
   }
 
   files = files %>% mutate(changed = purrr::map2_lgl(content.old, content, ~ any(.x!=.y)))
@@ -78,6 +81,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
       message("writing modified files to: ")
       files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) message("\t",path))
       if (!dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,path))
+      if (dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,paste0(path,".dry_run")))
     }
 
   }
