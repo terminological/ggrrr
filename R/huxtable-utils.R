@@ -20,8 +20,8 @@
 #' @examples
 #' hux = huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
 hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
-  # cran("sysfonts")
-  # sysfonts::font_add_google(defaultFont)
+  if (!defaultFont %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
+  # TODO: load it from google if not.
   if(!huxtable::is_hux(hux)) hux = huxtable::as_hux(hux)
   return( hux %>%
             huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
@@ -38,52 +38,39 @@ hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", he
 
 #' Set the font in a huxtable globally
 #'
-#' @param hux
-#' @param defaultFontSize
-#' @param defaultFont
+#' @param hux a huxtable table
+#' @param defaultFontSize the desired font size
+#' @param defaultFont the desired font
 #'
-#' @return
+#' @return the altered huxtable
 #' @export
-#'
-#' @examples
 hux_set_font = function(hux, defaultFontSize=8, defaultFont = "Roboto") {
-  cran("sysfonts")
-  sysfonts::font_add_google(defaultFont)
+  if (!defaultFont %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
+  # TODO: load it from google if not.
   hux %>%
     huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
     huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont)
 }
 
-# test = function(data, selectVars) {
-#   selectVars
-# }
-# test(iris, as_vars(starts_with("Petal")))
-
-# convert a long format dataframe to a printed table with nested columns and row groups
-# longFormatDf = diamonds %>% select(cut,color,clarity,carat,price) %>% group_by(cut,color,clarity) %>% summarise(av.carat = sprintf("%1.2g \u00B1 %1.2g",mean(carat),sd(carat)),av.price = sprintf("%1.2g",mean(price)))
-# rowGroupVars = vars(color,clarity)
-# colGroupVars = vars(cut)
 
 #' Convert a dataframe to a huxtable with nested rows and columns
 #'
-#' @param longFormatDf A dataframe with row groupings (as a set of columns) and column groupings (as a set of columns) and data.
+#' @param tidyDf A dataframe with row groupings (as a set of columns) and column groupings (as a set of columns) and data, where the data is in a tidy format with a row per "cell" or cell group.
 #' @param rowGroupVars A vars(...) column specification which will define how rows are grouped
 #' @param colGroupVars A vars(...) column specification with defines how columns will be grouped
 #' @param missing If there is no content for a given rowGroup / colGroup combination then this character will be used as a placeholder
 #' @param na If there are NA contents then this character will be used.
 #'
-#' @return
+#' @return a huxtable table
 #' @export
-#'
-#' @examples
-hux_tidy = function(longFormatDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014") {
+hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014") {
 
-  if(longFormatDf %>% group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
+  if(tidyDf %>% group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
 
-  cols = lapply(colnames(longFormatDf),as.symbol)
-  data = colnames(longFormatDf)[!colnames(longFormatDf) %in% sapply(c(rowGroupVars, colGroupVars),as_label)]
+  cols = lapply(colnames(tidyDf),as.symbol)
+  data = colnames(tidyDf)[!colnames(tidyDf) %in% sapply(c(rowGroupVars, colGroupVars),as_label)]
 
-  tmp = longFormatDf %>%
+  tmp = tidyDf %>%
     ungroup() %>%
     mutate(across(.cols = all_of(data), as.character)) %>%
     pivot_longer(cols = data) %>%
@@ -474,3 +461,22 @@ hux_to_ggplot = function(hux, width=5.9) {
   gg_formatted_table(longFormatTable, width)
 }
 
+
+
+#' Bind rows for huxtables
+#'
+#' Sometimes vanilla bind_rows gets confused.
+#'
+#' @param ... a list of huxtables
+#'
+#' @return a single huxtable
+#' @export
+hux_bind_rows = function(...) {
+  dots = rlang::list2(...)
+  if (is.list(dots[[1]]) & length(dots)==1) dots = dots[[1]]
+  out = dots[[1]]
+  for (i in 2:length(dots)) {
+    out = out %>% huxtable::add_rows(dots[[i]], after = nrow(out))
+  }
+  return(out)
+}

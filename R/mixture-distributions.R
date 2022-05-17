@@ -59,7 +59,8 @@ qmixnorm = function(p, means, sds, weights=rep(1,length(means))) {
 #' @examples
 #' # generate a mixture confidence interval from a set of distributions
 #' sprintf_list("%1.2f [%1.2f\u2013%1.2f]",qmixnorm(p=c(0.5,0.025,0.975), means=c(10,13,14), sds=c(1,1,2)))
-sprintf_list = function(format, params) {
+sprintf_list = function(format, params, na.replace="\u2015") {
+  if(any(is.na(params))) return(na.replace)
   do.call(sprintf, c(as.list(format), as.list(params)))
 }
 

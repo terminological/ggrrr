@@ -49,6 +49,9 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
       # c = files$content.old[[1]]
 
       getm = function(c) enframe(table(unlist(lapply(stringr::str_match_all(c,functionRegex), function(l) l[,3])))) %>% mutate(pkg = pkg, name = as.character(name), value=as.integer(value))
+      #TODO
+      # map the files$content using getm to get a per file list of matches for each package
+      # present a option to the user describing what we are about to do for this package.
 
       files = files %>% mutate(
         content = purrr::map(content, ~ .x %>% stringr::str_replace_all(functionRegex, replacement)),

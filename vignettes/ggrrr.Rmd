@@ -29,6 +29,7 @@ ggrrr::gg_pedantic(font = "Times New Roman")
 plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
 plot
 ```
+
 ```{r}
 plot+gg_hide_X_axis()+gg_hide_Y_axis()+gg_hide_legend()
 ```

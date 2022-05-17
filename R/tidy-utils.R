@@ -26,6 +26,57 @@ as_vars = function(tidyselect, data=NULL) {
   lapply(names(res), as.symbol)
 }
 
+## Dataset description helpers ----
+
+
+#' This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors
+#'
+#' @param df a dataframe to examine
+#'
+#' @return a list of lists with the column name and the factor levels as list
+#' @export
+get_value_sets = function(df) {
+  v = lapply(colnames(df), function(x) {
+    if (is.factor(df[[x]])) {
+      node = as.list(levels(df[[x]]))
+      names(node) = node
+    } else if (is.character(df[[x]])) {
+      tmp = unique(df[[x]])
+      # TODO: sort by frequency
+      node = as.list(tmp)
+      names(node) = node
+    } else if (is.numeric(df[[x]])) {
+      node = list(
+        min = min(df[[x]],na.rm = TRUE),
+        max = max(df[[x]],na.rm = TRUE),
+        mean = mean(df[[x]],na.rm = TRUE)
+      )
+    } else {
+      node = list()
+    }
+    class(node) = c("checked_list",class(node))
+    return(node)
+  })
+  names(v) = colnames(df)
+  class(v) = c("checked_list",class(v))
+  return(v)
+}
+
+# This is a sub class of list that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
+# the point of this is to throw errors early if the data changes.
+`$.checked_list` <- function(x, y) {
+  if (is.character(y)) {
+    ylab = y
+  } else {
+    ylab <- deparse(substitute(y))
+  }
+  if(!ylab %in% names(x)) {
+    stop("The value ",ylab," is not a valid entry") # for ",xlab)
+  }
+  NextMethod()
+}
+
+
 ## Summarisation helpers ----
 
 #' Bind_rows works until there are factors with a set of different levels.
@@ -100,7 +151,7 @@ summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .to
 
 #' Create a new data frame including duplicate rows where the rows fulfil a potentially overlapping set of conditions
 #'
-#' @param .data
+#' @param .data a data frame
 #' @param ... a set of predicates specified like case_whens syntax, such as mpg < 5 ~ "gas guzzlers"
 #' @param .colname the name of the new group
 #'

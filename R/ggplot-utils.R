@@ -76,10 +76,9 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #'
 #' @return nothing
 #' @export
-#'
-#' @examples
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
   if (!font %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
+  ggrrr::loadfonts()
   ggplot2::theme_set(gg_tiny_theme(fontSize,font))
   gg_set_size_defaults(lineSize,fontSize*0.75,font)
 }
@@ -190,8 +189,9 @@ gg_resize_legend <- function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
   ))
 }
 
-
-drawDetails.watermark <<- function(x, rot = 45, ...){
+# drawDetails.watermark <<- function(x, rot = 45, ...){
+# does this need to be global to work or is package scope ok?
+drawDetails.watermark = function(x, rot = 45, ...){
   cex <- min(
     grid::convertX(unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(unit(1,"grobwidth", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE),
     grid::convertY(unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(unit(1,"grobheight", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE)
@@ -204,10 +204,8 @@ drawDetails.watermark <<- function(x, rot = 45, ...){
 #' @param disable - global option to disable all watermarks options("ggrrr.disable.watermark"=TRUE)
 #' @param lab the watermark label (DRAFT)
 #'
-#' @return a
+#' @return a watermark layer
 #' @export
-#'
-#' @examples
 gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.watermark",default=FALSE)) {
   if (!disable) {
     grb = grid::grob(lab=lab, cl="watermark")
@@ -328,7 +326,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
     )
 
   table_width = tidy2 %>% mutate(
-    textwidth = .get_text_cms(label, font = fontName,font_size = fontSize)/2.54*72+6,
+    textwidth = .get_text_cms(label, font = fontName,font_size = fontSize)/2.54*72+2,
   ) %>% group_by(row) %>% summarise(
     width = max(textwidth*1/(x1-x0)) #* (.is_header_col == FALSE))
   ) %>% pull(width) %>% max()
@@ -340,9 +338,9 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
   }
 
   table_height = tidy2 %>% mutate(
-    textheight = fontSize,
+    textheight = fontSize+2,
   ) %>% group_by(col) %>% summarise(
-    height = sum(textheight+6)
+    height = sum(textheight)
   ) %>% ungroup() %>% pull(height) %>% max()
 
 
@@ -438,7 +436,7 @@ gg_save_as = function(plot,filename = tempfile(),
                       aspectRatio=maxWidth/maxHeight,
                       formats = c("png","pdf","Rdata")) {
 
-  if ("formatted.table" %in% class(plot)) {
+  if ("formatted.table"==class(plot)[[1]]) {
     maxWidth = attr(plot,"target.width")
     # plot comes with an aspect ratio which is expressed as height/width
     # this is geenrally true if the coords_fixed has been used.
@@ -496,11 +494,11 @@ gg_save_as = function(plot,filename = tempfile(),
     if (!capabilities()["cairo"] ) {
       ggplot2::ggsave(
         withExt("png"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent");
+        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent", device = grDevices::png, res=300);
     } else {
       ggplot2::ggsave(
         withExt("png"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent", dev=grDevices::png, type="cairo");
+        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent", device = grDevices::png, type="cairo", res=300);
       # Cairo::CairoPNG(
       #   file = withExt("png"),
       #   width = min(maxWidth,maxHeight*aspectRatio)*300, height = min(maxHeight,maxWidth/aspectRatio)*300, dpi=300, bg = "transparent")
