@@ -37,7 +37,9 @@ as_vars = function(tidyselect, data=NULL) {
 #' @export
 get_value_sets = function(df) {
   v = lapply(colnames(df), function(x) {
-    if (is.factor(df[[x]])) {
+    if (all(is.na(df[[x]]))) {
+      node = list(empty = TRUE)
+    } else if (is.factor(df[[x]])) {
       node = as.list(levels(df[[x]]))
       names(node) = node
     } else if (is.character(df[[x]])) {
@@ -71,7 +73,7 @@ get_value_sets = function(df) {
     ylab <- deparse(substitute(y))
   }
   if(!ylab %in% names(x)) {
-    stop("The value ",ylab," is not a valid entry") # for ",xlab)
+    stop("The value `",ylab,"` is not a valid entry") # for ",xlab)
   }
   NextMethod()
 }
