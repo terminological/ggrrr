@@ -1,9 +1,12 @@
 ## Fonts ----
 
-# TODO:
-# Google font download, cache on local persistent cache -
-# Unzip and ?extrafont::ttf_import
-# loadfonts
+#' Downloads caches and installs a font family from google
+#'
+#' @param family the google font family (e.g. Roboto) as found here: https://fonts.google.com/ (case sensitive)
+#' @param ... not used
+#'
+#' @return nothing
+#' @export
 google_font = function(family, ...) {
   if (!(family %in% extrafont::fonts())) {
     google_url = paste0("https://fonts.google.com/download?family=",family)
@@ -11,9 +14,10 @@ google_font = function(family, ...) {
     unzippath = fs::path_ext_remove(zippath)
     fs::dir_create(unzippath)
     zip::unzip(zippath,exdir=unzippath)
-    ttfs = fs::dir_ls(path = unzippath, glob = "*.ttf")
+    # ttfs = fs::dir_ls(path = unzippath, glob = "*.ttf")
     extrafont::ttf_import(unzippath)
   }
+  invisible(NULL)
 }
 
 
