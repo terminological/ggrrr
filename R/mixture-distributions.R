@@ -11,9 +11,27 @@
 #' @export
 #' @examples
 #' pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
-pmixnorm = function(q, means, sds, weights=rep(1,length(means))) {
+pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
+
+  if(length(sds) != length(means)) stop("means and sds vectors must be the same length")
+
+  if (na.rm == TRUE) {
+    filt = is.na(means) | is.na(sds)
+    means = means[filt]
+    sds = sds[filt]
+  }
+
+  if (any(is.na(means)) | length(means)==0 | any(is.na(sds)) | length(sds)==0 ) {
+    return(rep(NA_real_, length(r)))
+  }
+
+  if (.allEqual(means) & .allEqual(sds)) {
+    return(pnorm(p,means[1],sds[1]))
+  }
+
   m = weights/sum(weights) * sapply(q, function(x) pnorm(x, means, sds))
   apply(m,MARGIN=2,sum)
+
 }
 
 .allEqual = function(means, tol = 10^{-10}) all(sapply(means, function(x) abs(means - x) < tol))
@@ -26,13 +44,29 @@ pmixnorm = function(q, means, sds, weights=rep(1,length(means))) {
 #' @param means a vector of normal distribution means
 #' @param sds  a vector of normal distribution sds
 #' @param weights  a vector of weights
+#' @param na.rm remove distributions with NA values for mean or sd
 #'
 #' @return the value of the yth quantile
 #' @export
 #'
 #' @examples
 #' qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
-qmixnorm = function(p, means, sds, weights=rep(1,length(means))) {
+qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
+
+  if(length(sds) != length(means)) stop("means and sds vectors must be the same length")
+
+  if (na.rm == TRUE) {
+    filt = is.na(means) | is.na(sds)
+    means = means[filt]
+    sds = sds[filt]
+  }
+
+  if (any(is.na(means)) | length(means)==0 | any(is.na(sds)) | length(sds)==0 ) {
+    solve = rep(NA_real_, length(p))
+    names(solve) = paste0("Q.",p)
+    return(solve)
+  }
+
   if (.allEqual(means) & .allEqual(sds)) {
     return(qnorm(p,means[1],sds[1]))
   }

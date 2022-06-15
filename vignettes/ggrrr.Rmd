@@ -1,5 +1,5 @@
 ---
-title: "Basic examples"
+title: "Getting Started"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Basic examples}
@@ -40,7 +40,9 @@ plot+gg_narrow()+gg_resize_legend(spaceLegend = 1,pointSize = 4,textSize = 12)+g
 
 ```
 
+# Tabular data in ggplots
 
+A simple table
 
 ```{r}
 tableExample = diamonds %>% 
@@ -55,6 +57,9 @@ tableExample = diamonds %>%
 
 tableExample %>% gg_simple_table()
 ```
+
+A more complex example
+
 ```{r}
 # devtools::load_all("~/Git/ggrrr")
 # tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
@@ -62,6 +67,7 @@ tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,fontName = 
 tablePlot %>% gg_save_as("~/tmp/table")
 ```
 
+# Tabular data exported to multiple output formats
 
 ```{r}
 #devtools::load_all("~/Git/ggrrr")

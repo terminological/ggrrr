@@ -4,6 +4,17 @@
 # Google font download, cache on local persistent cache -
 # Unzip and ?extrafont::ttf_import
 # loadfonts
+google_font = function(family, ...) {
+  if (!(family %in% extrafont::fonts())) {
+    google_url = paste0("https://fonts.google.com/download?family=",family)
+    zippath = cache_download(url=google_url, .cache=rappsdir::user_cache_dir("google-fonts"))
+    unzippath = fs::path_ext_remove(zippath)
+    fs::dir_create(unzippath)
+    zip::unzip(zippath,exdir=unzippath)
+    ttfs = fs::dir_ls(path = unzippath, glob = "*.ttf")
+    extrafont::ttf_import(unzippath)
+  }
+}
 
 
 #' Version of loadfonts from extrafonts that uses first font file it finds rather than failing if multiple are found

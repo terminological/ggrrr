@@ -1,14 +1,5 @@
 ## Huxtable utils ----
 
-# html to pdf library
-# J = html2pdfr::JavaApi$new()
-# h2p = J$HtmlConverter$new()
-# h2p$urlToPdf("https://www.w3.org/People/mimasa/test/xhtml/imagemap/",out("test.pdf"))
-# h2p$urlToPdf("https://www.google.com",out("google.pdf")) #The entity name must immediately follow the '&' in the entity reference.
-# set up workbook
-
-
-
 #' A tidy article theme for huxtables that works with google docs
 #'
 #' @param hux a huxtable object
@@ -333,7 +324,14 @@ hux_save_as = function(hux,filename,
     formats = unique(c(formats,"pdf"))
   }
 
-  supported = c("html","png","pdf","docx","xlsx")
+
+  if(is_installed("html2pdfr")) {
+    supported = c("html","png","pdf","docx","xlsx")
+  } else {
+    supported = c("html","docx","xlsx")
+  }
+  formats = formats[formats %in% supported]
+
   dir = fs::path_dir(filename)
   if(dir==".") stop("directory not given. filename must be a full path (use here::here function).")
   if(fs::path_ext(filename) %in% supported) formats = fs::path_ext(filename)
@@ -393,21 +391,25 @@ hux_save_as = function(hux,filename,
     if ("html" %in% formats) write(html, withExt("html"))
 
     if (any(c("pdf","png") %in% formats)) {
-      J = html2pdfr::JavaApi$get()
-      conv = J$HtmlConverter$new()
-      outputFiles = conv$fitIntoPage(
-        htmlFragment = html,
-        outFile = filename,
-        formats = c("pdf","png")[c("pdf","png") %in% formats],
-        maxWidthInches = maxWidth,
-        maxHeightInches = maxHeight,
-        pngDpi = 300
-      )
-      conv$finalize()
-      try(
-        embedFonts(withExt("pdf")),
-        silent=TRUE
-      );
+
+      if(requireNamespace("html2pdfr", quietly=TRUE)) {
+        J = html2pdfr::JavaApi$get()
+        conv = J$HtmlConverter$new()
+        outputFiles = conv$fitIntoPage(
+          htmlFragment = html,
+          outFile = filename,
+          formats = c("pdf","png")[c("pdf","png") %in% formats],
+          maxWidthInches = maxWidth,
+          maxHeightInches = maxHeight,
+          pngDpi = 300
+        )
+        conv$finalize()
+        try(
+          embedFonts(withExt("pdf")),
+          silent=TRUE
+        );
+      }
+
     }
   }
 

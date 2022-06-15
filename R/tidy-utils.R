@@ -185,3 +185,10 @@ intersecting_group_by = function(.data, ..., .colname = "group") {
 #     NA}
 #   )
 # }
+
+# TODO:
+# fct_set_na = function(x, predicateExpr) {
+#   predicateExpr = enexpr(predicateExpr)
+#   tmp = ifelse(!!predicateExpr, NA, as.character(x))
+#   factor(tmp, levels=levels(x), ordered = is.ordered(x))
+# }

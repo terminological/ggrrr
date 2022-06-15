@@ -4,7 +4,7 @@
 \alias{pmixnorm}
 \title{The cumulative density function of a mixture of normal distributions}
 \usage{
-pmixnorm(q, means, sds, weights = rep(1, length(means)))
+pmixnorm(q, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}

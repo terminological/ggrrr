@@ -18,6 +18,18 @@ unstable = function(pkg = "ggrrr") {
   library(ggrrr)
 }
 
+#' check if a package is installed
+#'
+#' @param packageName the name of the package
+#'
+#' @return boolean value
+#' @export
+is_installed = function(packageName) {
+  if (length(packageName)>1) stop("is_installed() can only check for one package at a time")
+  t=requireNamespace("packageName", quietly=TRUE)
+  return(t)
+  #return(nzchar(find.package(package = packageName)))
+}
 
 #' Make sure cran packages are installed
 #'
@@ -30,7 +42,7 @@ unstable = function(pkg = "ggrrr") {
 #' cran("tidyverse")
 cran = function(cran_deps) {
   for (package in cran_deps) {
-    if (!package %in% rownames(installed.packages())) {
+    if (!is_installed(package)) {
       install.packages(package)
     }
   }

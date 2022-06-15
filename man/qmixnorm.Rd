@@ -4,7 +4,7 @@
 \alias{qmixnorm}
 \title{A quantile function for a mixture of normal distributions}
 \usage{
-qmixnorm(p, means, sds, weights = rep(1, length(means)))
+qmixnorm(p, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
 }
 \arguments{
 \item{p}{vector of probabilities.}
@@ -14,6 +14,8 @@ qmixnorm(p, means, sds, weights = rep(1, length(means)))
 \item{sds}{a vector of normal distribution sds}
 
 \item{weights}{a vector of weights}
+
+\item{na.rm}{remove distributions with NA values for mean or sd}
 }
 \value{
 the value of the yth quantile

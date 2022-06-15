@@ -133,13 +133,47 @@ cache_clear = function (
   invisible(NULL)
 }
 
+#' Download a file into a local cache.
+#'
+#' @param url the url to download
+#' @param ... ignored
+#' @param .nocache if set to TRUE all caching is disabled
+#' @param .cache the location of the downloaded files
+#' @param .stale how long to leave this file before replacing it.
+#'
+#' @return the path to the downloaded file
+#' @export
 cache_download = function(
   url,
   ...,
   .nocache = getOption("ggrrr.disable.cache", default=FALSE),
   .cache = getOption("ggrrr.download.dir", default=rappdirs::user_cache_dir("ggrrr-download")),
-  .prefix = getOption("ggrrr.item.prefix", default="cached"),
   .stale = getOption("ggrrr.cache.stale", default=Inf)
 ) {
+
+  qualifier = basename(url) %>% stringr::str_extract("^[^?]*")
+  md5 = .md5obj(url)
+  fname = paste0(md5,"-",qualifier)
+
+  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
+  dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
+  path = paste0(.cache,fname)
+
+  if (.nocache) unlink(path)
+  # if (file.exists(path)) {
+  #   mtime = as.Date(file.info(path)$mtime)
+  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
+  # }
+  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
+  cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
+
+  if (file.exists(path)) {
+    message("using cached item: ",path)
+    return(path)
+    #assign(path, obj, envir=.arear.cache)
+  } else {
+    message("downloading item: ",qualifier)
+    download.file(url,path)
+  }
 
 }

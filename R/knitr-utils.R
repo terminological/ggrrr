@@ -21,7 +21,7 @@
 }
 
 # TRUE if the whole document is being knitted.
-# FALSE if running in chunk in RStudio, or not interactive, or 
+# FALSE if running in chunk in RStudio, or not interactive, or
 .is_knitting = function() {
   isTRUE(getOption("knitr.in.progress"))
 }
@@ -29,12 +29,19 @@
 # TRUE is being knitted OR running in chunk in RStudio
 # FALSE if not interactive or interactive but in console in RStudio
 .is_running_in_chunk = function() {
-  isTRUE(try(rstudioapi::getActiveDocumentContext()$id != "#console"))
+  .is_knitting() |
+  isTRUE(try(
+    rstudioapi::getActiveDocumentContext()$id != "#console" &
+    rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
+  ))
 }
 
-# TRUE if in rstudio console
+# TRUE if in rstudio console or triggered from a normal R file in RStudio
 .is_running_in_console = function() {
-  isTRUE(try(rstudioapi::getActiveDocumentContext()$id == "#console"))
+  isTRUE(try(
+    rstudioapi::getActiveDocumentContext()$id == "#console" |
+    !rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
+  ))
 }
 
 
