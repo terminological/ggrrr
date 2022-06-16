@@ -191,8 +191,7 @@ gg_resize_legend <- function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 
 # drawDetails.watermark <<- function(x, rot = 45, ...){
 # does this need to be global to work or is package scope ok?
-#' @method drawDetails watermark
-#' @export
+#' @export drawDetails.watermark
 drawDetails.watermark = function(x, rot = 45, ...){
   cex <- min(
     grid::convertX(unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(unit(1,"grobwidth", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE),
