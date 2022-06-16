@@ -26,7 +26,7 @@ unstable = function(pkg = "ggrrr") {
 #' @export
 is_installed = function(packageName) {
   if (length(packageName)>1) stop("is_installed() can only check for one package at a time")
-  t=requireNamespace("packageName", quietly=TRUE)
+  t=requireNamespace(packageName, quietly=TRUE)
   return(t)
   #return(nzchar(find.package(package = packageName)))
 }
