@@ -34,8 +34,13 @@ as.long_format_table = function(table, ...) {
   UseMethod("as.long_format_table", table)
 }
 
+
+#' @method as.long_format_table long_format_table
+#' @export
 as.long_format_table.long_format_table = function(table,...) {return(table)}
 
+#' @method as.long_format_table data.frame
+#' @export
 as.long_format_table.data.frame = function(table, fontName = "Roboto", fontSize = 8, alignment = "START", valignment = "TOP", colWidths = NULL, ...) {
 
   tidy = table %>%
@@ -83,6 +88,8 @@ as.long_format_table.data.frame = function(table, fontName = "Roboto", fontSize 
   return(tidy)
 }
 
+#' @method as.long_format_table huxtable
+#' @export
 as.long_format_table.huxtable = function(table, ...) {
   # a huxtable is fully described including merged cells:
   tidy = table %>%
