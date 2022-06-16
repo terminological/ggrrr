@@ -34,7 +34,6 @@ as.long_format_table = function(table, ...) {
   UseMethod("as.long_format_table", table)
 }
 
-
 #' @method as.long_format_table long_format_table
 #' @export
 as.long_format_table.long_format_table = function(table,...) {return(table)}

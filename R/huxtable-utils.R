@@ -324,7 +324,6 @@ hux_save_as = function(hux,filename,
     formats = unique(c(formats,"pdf"))
   }
 
-
   if(is_installed("html2pdfr")) {
     supported = c("html","png","pdf","docx","xlsx")
   } else {
@@ -451,6 +450,14 @@ hux_save_as = function(hux,filename,
 
 
 
+#' A sprintf alternative that handles NA values gracefully (ish)
+#'
+#' @param fmt sprintf format string
+#' @param ... sprintf inputs
+#' @param na.text an string to replave NA values with.
+#'
+#' @return a strgin
+#' @export
 hux_sprintf = function(fmt, ..., na.text = "\u2014") {
   sprintf(fmt,...) %>% stringr::str_replace_all("NA",na.text)
 }
@@ -458,6 +465,13 @@ hux_sprintf = function(fmt, ..., na.text = "\u2014") {
 
 ## outputting as a ggplot object ----
 
+#' Convert a huxtable to a ggplot object
+#'
+#' @param hux the huxtable
+#' @param width the desired ggplot width
+#'
+#' @return a ggplot object of the right width
+#' @export
 hux_to_ggplot = function(hux, width=5.9) {
   longFormatTable = hux %>% as.long_format_table(hux)
   gg_formatted_table(longFormatTable, width)
