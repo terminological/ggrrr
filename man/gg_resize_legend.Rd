@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_resize_legend}
 \alias{gg_resize_legend}
-\title{Theme to hide the legend smaller}
+\title{Make the legend smaller}
 \usage{
 gg_resize_legend(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 }
@@ -17,5 +17,5 @@ gg_resize_legend(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 a theme
 }
 \description{
-Theme to hide the legend smaller
+Make the legend smaller
 }

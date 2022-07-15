@@ -1,0 +1,50 @@
+---
+title: 'ggrrr: Caching functions'
+output: html_document
+---
+
+# Caching
+
+`ggrrr` supports a super simple passthrough caching layer. This assumes calculations are deterministic, and with a stated set of inputs can 
+compute and cache the result.
+
+Setting the caching location should be transparent. The default directory is the user cache directory, but in an analysis project a specific
+cache directory may be preferred
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+# Setting a cache in an analysis project might be in a subdirectory of the project
+# options("cache.dir"=here::here("cache"))
+
+# If in a package you might be using a package specific cache
+# options("cache.dir"=rappdirs::user_cache_dir("my-package"))
+
+# for our purposes a temporary directory is OK.
+options("cache.dir"= tempdir())
+```
+
+## Caching an item
+
+```{r}
+seed = 101
+set.seed(seed)
+data = tibble(x = abs(rnorm(100,mean = 10, sd=5))) %>% 
+  mutate(y = abs(as.integer(x^2*rnorm(100,2,0.5) + x*rnorm(100,5,5) + x*rnorm(100,3,1))))
+fit = glm(y ~ x, family = poisson(),data = data)
+plot(fit)
+ggplot(data, aes(x=x,y=y))+geom_point()
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

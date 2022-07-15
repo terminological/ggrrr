@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_hide_legend}
 \alias{gg_hide_legend}
-\title{Themeing to hide the legend of a plot}
+\title{Hide the legend of a plot}
 \usage{
 gg_hide_legend()
 }
@@ -10,5 +10,5 @@ gg_hide_legend()
 a theme
 }
 \description{
-Themeing to hide the legend of a plot
+Hide the legend of a plot
 }

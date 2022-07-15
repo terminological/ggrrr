@@ -16,7 +16,7 @@ data_supplement(
 
 \item{filename}{the xlsx filename}
 
-\item{out}{an outputter (defaults to outputter)}
+\item{out}{an outputter (defaults to a default outputter )}
 
 \item{nameGlue}{What will the tables be named}
 }
@@ -26,5 +26,8 @@ $add_table(hux, caption, footnote, index), which takes a huxtable, caption, and 
 $write() which writes the collection of tables to the excel file.
 }
 \description{
-getOption("hide.supplementary.tables",default=TRUE)
+This function encapsulates a excel output file as a destination for data tables. With the output of this
+function you can add extra data to the supplement as a new sheet, or you can write the spreadsheet to disk.
+When each data table is written either the table can be written silently or returned so that it is included
+in a knitr document. This is controlled by `option("hide.supplementary.tables"=TRUE)`.
 }

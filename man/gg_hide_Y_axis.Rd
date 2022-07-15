@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_hide_Y_axis}
 \alias{gg_hide_Y_axis}
-\title{Themeing to hide the y axis of a plot}
+\title{Hide the y axis of a plot}
 \usage{
 gg_hide_Y_axis()
 }
@@ -10,5 +10,5 @@ gg_hide_Y_axis()
 a theme
 }
 \description{
-Themeing to hide the y axis of a plot
+Hide the y axis of a plot
 }

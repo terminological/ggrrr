@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy-utils.R
 \name{get_value_sets}
 \alias{get_value_sets}
-\title{This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors}
+\title{Get a value set list of a dataframe}
 \usage{
 get_value_sets(df)
 }
@@ -10,8 +10,10 @@ get_value_sets(df)
 \item{df}{a dataframe to examine}
 }
 \value{
-a list of lists with the column name and the factor levels as list
+a list of lists with the column name and the factor levels as list, as a `checked list`.
 }
 \description{
-This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors
+This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors.
+This provides programmatic access (and automcomplete) to the values available in a dataframe, and throws and early
+error if we try and access data by a variable that does not exist.
 }

@@ -8,12 +8,14 @@ gg_tiny_theme(baseSize = 8, font = "Roboto")
 }
 \arguments{
 \item{baseSize}{the sie of the base font.}
+
+\item{font}{the font family name}
 }
 \value{
 a ggplot theme
 }
 \description{
-A space saving ggplot theme
+A ggplot theme with minimal fluff and with the defaults set small.
 }
 \examples{
 ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()

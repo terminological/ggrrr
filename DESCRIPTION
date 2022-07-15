@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Version: 0.0.0.9006
 Authors@R: 
     person(given = "First",
            family = "Last",
@@ -8,7 +8,7 @@ Authors@R:
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
-License: What license it uses
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
@@ -22,15 +22,36 @@ Imports:
     huxtable,
     openxlsx,
     rlang,
-    extrafont,
     tibble,
     tidyr,
     digest,
     rappdirs,
     fs,
-    ggplot2
+    ggplot2,
+    magrittr,
+    flextable,
+    htmltools,
+    officer,
+    patchwork,
+    purrr,
+    readr,
+    rex,
+    rstudioapi,
+    stringr,
+    tidyselect,
+    usethis,
+    yaml,
+    zip,
+    sysfonts,
+    systemfonts,
+    showtext
 Suggests: 
+    tidyverse,
     rmarkdown,
-    knitr
+    knitr,
+    webshot,
+    html2pdfr
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
+Remotes:
+    terminological/html2pdfr@0.4.1

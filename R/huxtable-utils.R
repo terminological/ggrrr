@@ -1,25 +1,29 @@
 ## Huxtable utils ----
 
-#' A tidy article theme for huxtables that works with google docs
+#' A tidy article theme for huxtables
+#'
+#' The main aim is to get something that works with google docs when you copy and paste.
 #'
 #' @param hux a huxtable object
 #' @param defaultFontSize default size of font in points (8)
-#' @param defaultFont the font name
+#' @param defaultFont the font family name
+#' @param headerRows the number of rows that are headers
 #' @keywords huxtable
 #' @import huxtable
+#' @return the formatted huxtable.
 #' @export
 #' @examples
-#' hux = huxtable(dataframe %>% select("col 1 title"=col1)) %>% defaultTableLayout()
+#' hux = iris %>% hux_default_layout()
 hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
-  if (!defaultFont %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
+  defaultFont = check_font(defaultFont)
   # TODO: load it from google if not.
   if(!huxtable::is_hux(hux)) hux = huxtable::as_hux(hux)
   return( hux %>%
             huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
             huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont) %>%
-            huxtable::set_top_border(1, huxtable::everywhere, 0.5) %>%
-            huxtable::set_bottom_border(headerRows, huxtable::everywhere, 0.5) %>%
-            huxtable::set_bottom_border(nrow(hux), huxtable::everywhere, 0.5) %>%
+            huxtable::set_top_border(1, huxtable::everywhere, 1) %>%
+            huxtable::set_bottom_border(headerRows, huxtable::everywhere, 1) %>%
+            huxtable::set_bottom_border(nrow(hux), huxtable::everywhere, 1) %>%
             huxtable::set_wrap(huxtable::everywhere, huxtable::everywhere, TRUE) %>%
             huxtable::set_top_padding(huxtable::everywhere,huxtable::everywhere,1) %>%
             huxtable::set_bottom_padding(huxtable::everywhere,huxtable::everywhere,0) %>%
@@ -27,7 +31,7 @@ hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", he
             )
 }
 
-#' Set the font in a huxtable globally
+#' Set the font family and size in a huxtable globally
 #'
 #' @param hux a huxtable table
 #' @param defaultFontSize the desired font size
@@ -36,25 +40,32 @@ hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", he
 #' @return the altered huxtable
 #' @export
 hux_set_font = function(hux, defaultFontSize=8, defaultFont = "Roboto") {
-  if (!defaultFont %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
-  # TODO: load it from google if not.
+  defaultFont = check_font(defaultFont)
   hux %>%
     huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
     huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont)
 }
 
 
-#' Convert a dataframe to a huxtable with nested rows and columns
+#' Convert a dataframe to a huxtable with nested rows and columns.
+#'
+#' The assumption here is that the input data is a long format tidy dataframe with both
+#' rows and columns specified by values of the `rowGroupVars` and `colGroupVars` columns.
+#' The long format (sparse) table is translated into a nested tree of rows (using `rowGroupVars`)
+#' and a nested tree of columns (from `colGroupVars`). Individual data items are placed in the cell
+#' intersecting these two trees. If there are multiple matches an additional layer of grouing is
+#' added to the columns.
 #'
 #' @param tidyDf A dataframe with row groupings (as a set of columns) and column groupings (as a set of columns) and data, where the data is in a tidy format with a row per "cell" or cell group.
 #' @param rowGroupVars A vars(...) column specification which will define how rows are grouped
 #' @param colGroupVars A vars(...) column specification with defines how columns will be grouped
 #' @param missing If there is no content for a given rowGroup / colGroup combination then this character will be used as a placeholder
 #' @param na If there are NA contents then this character will be used.
+#' @param ... passed onto hux_default_layout
 #'
 #' @return a huxtable table
 #' @export
-hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014") {
+hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014", ...) {
 
   if(tidyDf %>% group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
 
@@ -101,7 +112,7 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
   fullHux = fullHux %>% huxtable::hux(add_colnames = FALSE) %>%
     huxtable::set_header_rows(1:yOffset, TRUE) %>%
     huxtable::set_header_cols(1:xOffset, TRUE) %>%
-    hux_default_layout(headerRows = yOffset)
+    hux_default_layout(headerRows = yOffset, ...)
 
   # do column merges
   tmpVars = colGroupVars
@@ -149,7 +160,42 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
 }
 
 
+#' Make a huxtable narrower
+#'
+#' @param t the huxtable
+#' @param col the column index you want to nest into the row above
+#'
+#' @return a narrower huxtable
+#' @export
+hux_nest_group = function(t, col=1) {
+  # examine content rows
+  rows = (1:nrow(t))[!t %>% huxtable::header_rows()]
+  # the row spans for this column
+  spans = attributes(t)$rowspan[rows,col]
+  # to adjust the rows where the row+span is greater than the maximum row+span so far
+  toadj = (rows+spans)[rows+spans > cummax(lag(rows+spans,default = 0))]
+  # reverse them so inserting the rows does not mess up the indices
+  toadj = rev(as.integer(names(toadj)))
+  t2 = t
+  for (row in toadj) {
+    # insert the row and copy the content
+    t2 = huxtable::insert_row(ht = t2, t[row,1:col],fill = t[row,col], after=row-1)
+    # spand all the way accross from col to end
+    t2 = t2 %>% set_colspan(row = row, col = col, value = ncol(t)-col+1)
+    # clear lower border of just spanned columns
+    t2 = t2 %>% set_bottom_border(row = row, col = col:ncol(t), value = 0)
+    # clear the unnested cell
+    t2[row+1,col]=""
+  }
+  # clear the headers for this row (so we can make it small)
+  headers = (1:nrow(t))[t %>% huxtable::header_rows()]
+  t2[headers,col] = ""
+  return(t2)
+}
+
+
 # get the aspect ratio of a bit of text - this gives the width/height of a bit of text
+# TODO I think sysfonts or systemfonts might have something to help here
 .get_text_ar = function(txt, font, face="plain", linespacing=1+1/8) {
   tmp = tibble(label = txt, font=font, face=face)
   tmp = tmp %>% mutate(
@@ -186,18 +232,21 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
 
 
 
-#' Estimate column content widths based on dataframe or huxtable ignoring rowspans and potential for wrapping.
+#' Estimate column content widths
+#'
+#' Widths are based on dataframe or huxtable content ignoring rowspans and
+#' potential for wrapping.
 #'
 #' @param table a table to get column content widths for.
 #'
-#' @return a vector od column widths
+#' @return a vector of column widths
 #' @export
 #'
 #' @examples
 #' iris %>% fit_col_widths()
 fit_col_widths = function(table) {
   table %>% as.long_format_table() %>%
-    mutate(ar = ggrrr::.get_text_ar(label,font = fontName,face = fontFace) %>% pull(ar)) %>%
+    mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% pull(ar)) %>%
     filter(colSpan == 1) %>%
     group_by(col) %>%
     summarise(ar = max(ar)) %>%
@@ -297,8 +346,9 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 ## Saving to pdf ----
 
 
-#' Save a table to a variety of formats and depending on the context return the correct format for a document
+#' Save a table to a variety of formats
 #'
+#' depending on the context return the correct format for a document.
 #' The basic output here is to use HTML as an output if possible and convert it to an image or a PDF that can then
 #' be included into a latex document for example.
 #'
@@ -308,8 +358,9 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 #' @param maxWidth or the maximum width in inches
 #' @param maxHeight and either the maximum height in inches
 #' @param aspectRatio or the minimum allowed aspect ratio
-#' @param formats if the extension is omitted all the extensions described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"
-#' @param sheetname if saving as an xlsx then the sheetname
+#' @param formats if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"
+#' @param defaultFontSize the default font size
+#' @param sheetname if saving as an xlsx file.
 #'
 #' @return the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.
 #' @export
@@ -317,9 +368,10 @@ hux_save_as = function(hux,filename,
                       size = std_size$full, maxWidth = size$width, maxHeight = size$height,
                       aspectRatio=maxWidth/maxHeight,
                       formats = c("html","png","pdf"),
+                      defaultFontSize = 8,
                       sheetname = fs::path_ext_remove(fs::path_file(filename))
                       ) {
-  if (!huxtable::is_hux(hux)) hux = hux %>% hux_default_layout()
+  if (!huxtable::is_hux(hux)) hux = hux %>% hux_default_layout(defaultFontSize = defaultFontSize)
   if (.is_knitting() & .is_latex_output()) {
     formats = unique(c(formats,"pdf"))
   }
@@ -387,26 +439,67 @@ hux_save_as = function(hux,filename,
       hux %>% huxtable::to_html(),
       stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
 
-    if ("html" %in% formats) write(html, withExt("html"))
+    write(sprintf("<html><head><meta charset='UTF-8'></head><body>%s</body></html>",html), withExt("html"))
 
     if (any(c("pdf","png") %in% formats)) {
 
-      if(requireNamespace("html2pdfr", quietly=TRUE)) {
-        J = html2pdfr::JavaApi$get()
-        conv = J$HtmlConverter$new()
-        outputFiles = conv$fitIntoPage(
+      if(requireNamespace("html2pdfr", quietly=TRUE) & packageVersion("html2pdfr") >= "0.4.0") {
+
+        conv = html2pdfr::html_converter(.font_paths())
+
+        html2pdfr::html_fragment_to_pdf(
           htmlFragment = html,
           outFile = filename,
           formats = c("pdf","png")[c("pdf","png") %in% formats],
           maxWidthInches = maxWidth,
           maxHeightInches = maxHeight,
-          pngDpi = 300
+          xMarginInches = 0,
+          yMarginInches = 0,
+          pngDpi = 300,
+          converter = conv
         )
-        conv$finalize()
+
         try(
           embedFonts(withExt("pdf")),
           silent=TRUE
         );
+      } else if (requireNamespace("webshot", quietly=TRUE)) {
+        warning("html2pdfr (version >0.4.0) is not installed but webshot is. We'll use that but it will not respect page length constraints, there will only be 1 PNG for multiple pages, and output will be fixed width.")
+        if (webshot::is_phantomjs_installed()) {
+          # webshot alternative
+          if("png" %in% formats) {
+            webshot::webshot(
+              url = sprintf("file://%s",withExt("html")),
+              file = withExt("png"),
+              # webshots page width dimensions are messed up
+              vwidth=maxWidth*96,
+              vheight=10,
+              zoom=300/96
+            )
+          }
+
+          if("pdf" %in% formats) {
+            tmp2 = hux
+            attr(tmp2,"font_size") = ifelse(is.na(attr(tmp2,"font_size")),defaultFontSize,attr(tmp2,"font_size"))*2/3
+            html2 = stringr::str_remove(
+              tmp2 %>% huxtable::to_html(),
+              stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
+            tmpHtml = tempfile(fileext = ".html")
+            write(sprintf("<html><head><meta charset='UTF-8'></head><body>%s</body></html>",html2), tmpHtml)
+            webshot::webshot(
+              url = sprintf("file://%s",tmpHtml),
+              file = withExt("pdf"),
+              # webshots page width dimensions are messed up
+              vwidth=maxWidth*72,
+              vheight=10
+            )
+          }
+        } else {
+          # webshot is not set up.
+          warning("skipping PNG and PDF generation as webshot is not properly set up. try `webshot::install_phantomjs()`")
+        }
+      } else {
+        warning("skipping PNG and PDF generation as neither webshot nor html2pdfr is installed.")
       }
 
     }
@@ -448,15 +541,13 @@ hux_save_as = function(hux,filename,
 
 }
 
-
-
 #' A sprintf alternative that handles NA values gracefully (ish)
 #'
 #' @param fmt sprintf format string
 #' @param ... sprintf inputs
-#' @param na.text an string to replave NA values with.
+#' @param na.text an string to replace NA values with.
 #'
-#' @return a strgin
+#' @return a string value
 #' @export
 hux_sprintf = function(fmt, ..., na.text = "\u2014") {
   sprintf(fmt,...) %>% stringr::str_replace_all("NA",na.text)
@@ -466,6 +557,8 @@ hux_sprintf = function(fmt, ..., na.text = "\u2014") {
 ## outputting as a ggplot object ----
 
 #' Convert a huxtable to a ggplot object
+#'
+#' Useful if you need to include a formatted table in a figure with a plot
 #'
 #' @param hux the huxtable
 #' @param width the desired ggplot width

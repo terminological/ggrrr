@@ -2,7 +2,7 @@
 % Please edit documentation in R/huxtable-utils.R
 \name{fit_col_widths}
 \alias{fit_col_widths}
-\title{Estimate column content widths based on dataframe or huxtable ignoring rowspans and potential for wrapping.}
+\title{Estimate column content widths}
 \usage{
 fit_col_widths(table)
 }
@@ -10,10 +10,11 @@ fit_col_widths(table)
 \item{table}{a table to get column content widths for.}
 }
 \value{
-a vector od column widths
+a vector of column widths
 }
 \description{
-Estimate column content widths based on dataframe or huxtable ignoring rowspans and potential for wrapping.
+Widths are based on dataframe or huxtable content ignoring rowspans and
+potential for wrapping.
 }
 \examples{
 iris \%>\% fit_col_widths()

@@ -2,12 +2,13 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_formatted_table}
 \alias{gg_formatted_table}
-\title{Display a long format table as a ggplot object. This is useful if you want to combine a formatted table with a plot in a}
+\title{Display a long format table as a ggplot object.}
 \usage{
 gg_formatted_table(
   longFormatTable,
   colWidths = NULL,
   tableWidthInches = 5.9,
+  font = "Roboto",
   ...
 )
 }
@@ -21,8 +22,8 @@ gg_formatted_table(
 \item{...}{passed to as.long_format_table if and only if the input is not already in that format.}
 }
 \value{
-a ggplot object
+a ggplot object containing the table as a ggplot.
 }
 \description{
-Display a long format table as a ggplot object. This is useful if you want to combine a formatted table with a plot in a
+This is useful if you want to combine a formatted table with a plot in a multi-panel patchwork.
 }

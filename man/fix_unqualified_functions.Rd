@@ -18,8 +18,8 @@ fix_unqualified_functions(
 \item{dry_run}{by default this function will not actually do anything unless this is set to FALSE.}
 }
 \value{
-
+nothing. called for side effects.
 }
 \description{
-Fix errors introduced in package creation by forgetting to qualify namespaces.
+This is a code linting function and not for general use.
 }

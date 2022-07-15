@@ -2,7 +2,7 @@
 % Please edit documentation in R/huxtable-utils.R
 \name{hux_set_font}
 \alias{hux_set_font}
-\title{Set the font in a huxtable globally}
+\title{Set the font family and size in a huxtable globally}
 \usage{
 hux_set_font(hux, defaultFontSize = 8, defaultFont = "Roboto")
 }
@@ -17,5 +17,5 @@ hux_set_font(hux, defaultFontSize = 8, defaultFont = "Roboto")
 the altered huxtable
 }
 \description{
-Set the font in a huxtable globally
+Set the font family and size in a huxtable globally
 }

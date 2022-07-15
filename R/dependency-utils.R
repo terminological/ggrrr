@@ -1,19 +1,24 @@
 ## manage dependencies ----
 
-#' reboot this library reloading from dev.
+#' Get unstable version of package
 #'
+#' reboot a library reloading from a local development copy if it exists locally alternatively get
+#' the most up to date github package.
+#'
+#' @param pkg the package to load the unstable version of
+#' @param org the github organisation
 #' @return nothing
 #' @export
 #'
 #' @examples
 #' ggrrr::unstable()
-unstable = function(pkg = "ggrrr") {
-  if ("ggrrr" %in% rownames(installed.packages())) devtools::unload("ggrrr")
-  if (file.exists("~/Git/ggrrr")) {
-    devtools::document("~/Git/ggrrr",quiet = TRUE)
-    devtools::install_local("~/Git/ggrrr", force=TRUE,upgrade = FALSE)
+unstable = function(pkg = "ggrrr", org="terminological") {
+  if (pkg %in% rownames(installed.packages())) devtools::unload(pkg)
+  if (file.exists(sprintf("~/Git/%s",pkg))) {
+    devtools::document(sprintf("~/Git/%s",pkg),quiet = TRUE)
+    devtools::install_local(sprintf("~/Git/%s",pkg), force=TRUE,upgrade = FALSE)
   } else {
-    devtools::install_github("terminological/ggrrr",upgrade = FALSE)
+    devtools::install_github(sprintf("%s/%s",org, pkg),upgrade = FALSE)
   }
   library(ggrrr)
 }
@@ -31,7 +36,7 @@ is_installed = function(packageName) {
   #return(nzchar(find.package(package = packageName)))
 }
 
-#' Make sure cran packages are installed
+#' Make sure packages available on CRAN are installed
 #'
 #' @param cran_deps a vector of package names
 #'
@@ -49,7 +54,9 @@ cran = function(cran_deps) {
   invisible(NULL)
 }
 
-#' Make sure github packages are installed. Use a locally checked out version if available.
+#' Make sure github packages are installed.
+#'
+#' Use a locally checked out version if available.
 #'
 #' @param name the name of the package
 #' @param github something like "github-repo/project-name"

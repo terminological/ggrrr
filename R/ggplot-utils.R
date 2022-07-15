@@ -2,7 +2,10 @@
 
 #' A space saving ggplot theme
 #'
+#' A ggplot theme with minimal fluff and with the defaults set small.
+#'
 #' @param baseSize the sie of the base font.
+#' @param font the font family name
 #'
 #' @return a ggplot theme
 #' @export
@@ -10,7 +13,7 @@
 #' @examples
 #' ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()
 gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
-  # sysfonts::font_add_google(font)
+  font = check_font(font)
   ggplot2::theme_bw(base_size=baseSize)+
     ggplot2::theme(
       text = ggplot2::element_text(family = font),
@@ -41,19 +44,24 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
     )
 }
 
-#' Set the default sizes of lines and fonts in ggplot geoms
+#' Set sizes in ggplot uniformly
+#'
+#' Set the default sizes of lines, points and fonts in ggplot geoms, and text labels in ggplot axes
+#' to get a single consistent look and feel.
 #'
 #' @param lineSize the width of lines and size of points (the default size aesthetic)
 #' @param fontSizePts the size of labels and other on plot text in pts.
+#' @param font the font family name
 #'
 #' @return nothing
 #' @export
 #'
 #' @examples
+#' library(ggplot2)
 #' gg_set_size_defaults(lineSize = 0.25)
 gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font="Roboto") {
+  font = check_font(font)
   # get all ggplot2 geoms
-  # sysfonts::font_add_google(font)
   geoms = ls(pattern = '^geom_', env = as.environment('package:ggplot2')) %>% stringr::str_remove("geom_")
   for(geom in geoms) {
     try({
@@ -68,7 +76,9 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 }
 
 
-#' An opinionated set of defaults for plot styles with a focus on making plots compact, and minimally fussy, and ensuring fonts are consistent between axes and labels.
+#' An opinionated set of defaults for plots
+#'
+#' This is a set of styles with a focus on making plots compact, and minimally fussy, and ensuring fonts are consistent between axes and labels.
 #'
 #' @param lineSize the default line and shape size in ggplot units
 #' @param fontSize the base font size
@@ -77,25 +87,25 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @return nothing
 #' @export
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
-  if (!font %in% extrafont::fonts()) stop("Font not installed (choose something from extrafonts::fonts())")
-  ggrrr::loadfonts()
-  ggplot2::theme_set(gg_tiny_theme(fontSize,font))
+  font = check_font(font)
+  showtext::showtext_auto()
+  ggplot2::theme_set(gg_tiny_theme(fontSize, font))
   gg_set_size_defaults(lineSize,fontSize*0.75,font)
 }
 
-
-
 #' Convert a label size from points to ggplot units
+#'
+#' Labels like geom_text are in a random unit size which is only mysteriously connected to the size of text on axes
 #'
 #' @param pts label size in points
 #'
 #' @return the label size in ggplot units
 #' @export
 gg_label_size = function(pts) {
-  return (pts/ggplot2:::.pt) #/(96/72))
+  return (pts/ggplot2::.pt) #/(96/72))
 }
 
-#' Theme to hide the x axis of a plot
+#' Hide the x axis of a plot
 #'
 #' @return a theme
 #' @export
@@ -108,7 +118,7 @@ gg_hide_X_axis = function() {
   );
 }
 
-#' Themeing to hide the y axis of a plot
+#' Hide the y axis of a plot
 #'
 #' @return a theme
 #' @export
@@ -121,7 +131,7 @@ gg_hide_Y_axis = function() {
   );
 }
 
-#' Themeing to hide the legend of a plot
+#' Hide the legend of a plot
 #'
 #' @return a theme
 #' @export
@@ -129,14 +139,13 @@ gg_hide_legend = function() {
   ggplot2::theme(legend.position = "none")
 }
 
-#' Themeing to set the angle of the x axis labels of a plot
+#' Set the angle of the x axis labels of a plot
 #'
 #' @param ang the angle for the x labels
 #'
 #' @return a theme
 #' @export
 gg_set_X_angle = function(ang = 60) {
-  #TODO: vjusts when angle >= 90
   hj = case_when(
     ang == 0 ~ 0.5,
     TRUE ~ 1
@@ -152,7 +161,7 @@ gg_set_X_angle = function(ang = 60) {
   )
 }
 
-#' Theme to make a plot narrower
+#' Make a plot narrower
 #'
 #' @param ang the angle for the x labels
 #'
@@ -170,7 +179,7 @@ gg_narrow = function(ang = 90) {
   )
 }
 
-#' Theme to hide the legend smaller
+#' Make the legend smaller
 #'
 #' @param pointSize - the ggplot size of lines or points
 #' @param textSize - the size in pts of the text
@@ -191,6 +200,13 @@ gg_resize_legend <- function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 
 # drawDetails.watermark <<- function(x, rot = 45, ...){
 # does this need to be global to work or is package scope ok?
+
+#' Internal function for drawing watermark on ggplots
+#' @param x the grob
+#' @param rot degrees of rotation
+#' @param ... ignored
+#'
+#' @return a grid object
 #' @export drawDetails.watermark
 drawDetails.watermark = function(x, rot = 45, ...){
   cex <- min(
@@ -200,7 +216,7 @@ drawDetails.watermark = function(x, rot = 45, ...){
   return(grid::grid.text(x$lab,  rot=rot, gp=grid::gpar(cex = cex, col="black", fontface = "bold", alpha = 0.05)))
 }
 
-#' Add in a watermark to graphs
+#' Add in a watermark to plots
 #'
 #' @param disable - global option to disable all watermarks options("ggrrr.disable.watermark"=TRUE)
 #' @param lab the watermark label (DRAFT)
@@ -216,24 +232,46 @@ gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.waterm
   }
 }
 
+## Custom scales ----
+
+#' A scales breaks generator for log1p scales
+#'
+#' @param n the number of breaks
+#' @param base the base for the breaks
+#'
+#' @return a function for ggplot scale breaks
+#' @export
+#'
+#' @examples
+#' ggplot(diamonds, aes(x=price))+geom_density()+scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p)
+breaks_log1p = function(n=5,base=10) {
+  #scales::force_all(n, base)
+  n_default = n
+  function(x, n = n_default) {
+    tmp = scales::breaks_log(n_default,base)(x+1,n)
+    return(c(0,tmp[-1]))
+  }
+}
+
 ## GGplot tables ----
-
-
 
 #' A simple table as a ggplot patchwork object, no customisation allowed
 #'
 #' @keywords graph layout
 #' @import ggplot2
 #' @export
-#' @param df the dataframe with the table data
-#' @param pts text size
+#' @param df the dataframe with the table data. Column names will become headings
+#' @param pts text size in points
+#' @param font the font family
 #' @param unwrapped - set this to TRUE if you want to add to a patchwork and use wrap_plots(p,list(table))
+#' @return A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
 #' @examples
-#' ...+simpleFigureTable(tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
-gg_simple_table = function(df, pts=8, unwrapped = FALSE) {
+#' gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
+gg_simple_table = function(df, pts=8, font = "Roboto", unwrapped = FALSE) {
+  font = check_font(font)
   p = suppressWarnings(suppressMessages({
     ttheme = gridExtra::ttheme_minimal(
-      base_size = pts, base_colour = "black", base_family = "Roboto",
+      base_size = pts, base_colour = "black", base_family = font,
       parse = FALSE, padding = unit(c(4, 1.5), "mm"),
       core=list(fg_params=list(hjust=0, x=0.1), bg_params = list(fill = "#FFFFFF", alpha=1, col=NA)),
       colhead=list(fg_params=list(hjust=0, x=0.1), bg_params = list(fill = "#FFFFFF", alpha=1, col=NA))
@@ -270,18 +308,20 @@ gg_simple_table = function(df, pts=8, unwrapped = FALSE) {
   return(p)
 }
 
-#' Display a long format table as a ggplot object. This is useful if you want to combine a formatted table with a plot in a
+#' Display a long format table as a ggplot object.
+#'
+#' This is useful if you want to combine a formatted table with a plot in a multi-panel patchwork.
 #'
 #' @param longFormatTable a table - usually converted using as.long_format_table()
 #' @param colWidths (optional) the relative widths of the columns.
 #' @param tableWidthInches the maximum desired width of the plot. Text will be scaled to fit this width.
 #' @param ... passed to as.long_format_table if and only if the input is not already in that format.
 #'
-#' @return a ggplot object
+#' @return a ggplot object containing the table as a ggplot.
 #' @export
-gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInches=5.9, ...) {
-
-  if (!("long_format_table" %in%  class(longFormatTable))) longFormatTable = as.long_format_table(longFormatTable, colWidths = colWidths, ...)
+gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInches=5.9, font="Roboto", ...) {
+  font = check_font(font)
+  if (!("long_format_table" %in%  class(longFormatTable))) longFormatTable = as.long_format_table(longFormatTable, colWidths = colWidths, fontName=font, ...)
   if(is.null(colWidths)) colWidths = attr(longFormatTable,"colWidths")
   colWidths = colWidths/sum(colWidths)
   if (any(is.na(colWidths))) colWidths = rep(1/ncol(hux), ncol(hux))
@@ -394,12 +434,12 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
 
 #' Standard image and paper sizes
 #'
-#' The width and height of images to fit scientific publication standards
+#' The width and height of images to fit scientific publication standards.
 #'
 #' @docType data
-#' @name presidential
-#' @usage data(presidential)
-#' @format A list
+#' @name std_size
+#' @usage data(std_size)
+#' @format A list with width and height in inches
 #' @export
 std_size = list(
   A4 = list(width=8.25,height=11.75,rot=0),
@@ -415,27 +455,37 @@ std_size = list(
   slide = list(width=12,height=6,rot=0)
 )
 
-#' Allows specific maximum dimensions with an optional target aspect ratio.
-#' If no aspect ratio supplied then plot will be shaped to occupy whole area
+#' Save a plot to multiple formats
+#'
+#' Saves a ggplot object to disk at a set physical size. Allows specific maximum dimensions
+#' with an optional target aspect ratio to fit into specific configurations for publication.
+#' e.g. a half page plot or a third of a 2 column page. Allows output in pdf for journal
+#' publication or png for inclusion in documents, and makes sure that the outputs are
+#' near identical.
 #'
 #' @param filename base of target filename (excuding extension).
 #' @param plot a GGplot object or none
+#' @param size a standard size see `std_size`
 #' @param maxWidth maximum width in inches
 #' @param maxHeight maximum height in inches
 #' @param aspectRatio defaults to maxWidth/maxHeight
+#' @param formats some of png, pdf, Rdata
+#'
 #' @keywords plot
 #' @import ggplot2
+#' @return the output is an sensible default object that can be displayed given the context it is called in,
+#' for example if knitting an RMarkdown document a link to the png file for embedding, if latex
+#' a link to the pdf file.
 #' @export
 #' @examples
-#' setwd(tempdir())
 #' library(ggplot2)
-#' library(standardPrintOutput)
-#' ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-#' saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
+#' p = ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' p %>% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
 gg_save_as = function(plot,filename = tempfile(),
                       size = std_size$half, maxWidth = size$width, maxHeight = size$height,
                       aspectRatio=maxWidth/maxHeight,
                       formats = c("png","pdf","Rdata")) {
+
 
   if ("formatted.table"==class(plot)[[1]]) {
     maxWidth = attr(plot,"target.width")
@@ -492,6 +542,7 @@ gg_save_as = function(plot,filename = tempfile(),
   }
 
   if ("png" %in% formats) {
+    op = showtext::showtext_opts(dpi=300)
     if (!capabilities()["cairo"] ) {
       ggplot2::ggsave(
         withExt("png"),
@@ -506,6 +557,7 @@ gg_save_as = function(plot,filename = tempfile(),
       # print(plot)
       # dev.off()
     }
+    showtext::showtext_opts(op)
   }
 
   if (.is_knitting()) {
@@ -513,11 +565,19 @@ gg_save_as = function(plot,filename = tempfile(),
     if (hidefigs) {
       return(knitr::asis_output(paste0("INSERT FIGURE HERE: ",fs::path_file(filename),"\n\n")))
     } else {
-      return(knitr::include_graphics(path = fs::path_ext_set(filename,formats[1]),auto_pdf = TRUE))
+      if (.is_html_output() & "png" %in% formats) {
+        return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = fs::path_ext_set(filename,"png"), mime = "image/png"))))
+      } else {
+        return(knitr::include_graphics(path = fs::path_ext_set(filename,formats[1]),auto_pdf = TRUE))
+      }
     }
   } else {
     if ("png" %in% formats) {
-      return(knitr::include_graphics(path = fs::path_ext_set(filename,"png"),auto_pdf = TRUE))
+      if (.is_html_output()) {
+        return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = fs::path_ext_set(filename,"png"), mime = "image/png"))))
+      } else {
+        return(knitr::include_graphics(path = fs::path_ext_set(filename,"png"),auto_pdf = TRUE, dpi=300))
+      }
     } else {
       return(plot)
     }

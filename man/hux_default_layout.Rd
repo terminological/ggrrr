@@ -2,7 +2,7 @@
 % Please edit documentation in R/huxtable-utils.R
 \name{hux_default_layout}
 \alias{hux_default_layout}
-\title{A tidy article theme for huxtables that works with google docs}
+\title{A tidy article theme for huxtables}
 \usage{
 hux_default_layout(
   hux,
@@ -16,12 +16,17 @@ hux_default_layout(
 
 \item{defaultFontSize}{default size of font in points (8)}
 
-\item{defaultFont}{the font name}
+\item{defaultFont}{the font family name}
+
+\item{headerRows}{the number of rows that are headers}
+}
+\value{
+the formatted huxtable.
 }
 \description{
-A tidy article theme for huxtables that works with google docs
+The main aim is to get something that works with google docs when you copy and paste.
 }
 \examples{
-hux = huxtable(dataframe \%>\% select("col 1 title"=col1)) \%>\% defaultTableLayout()
+hux = iris \%>\% hux_default_layout()
 }
 \keyword{huxtable}

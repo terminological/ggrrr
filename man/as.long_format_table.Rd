@@ -2,20 +2,25 @@
 % Please edit documentation in R/table-conversions.R
 \name{as.long_format_table}
 \alias{as.long_format_table}
-\title{Converts a square display table format to a long format suitable for applying as a sequence of formatting operations
-in a google doc or as a ggplot. Currently only plain dataframes and huxtables are supported but flextables look very doable.
-Only a limited subset of formatting features is implemented at present as supported by roogledocs. The output format
-is a simple dataframe with the following columns:}
+\title{Convert a table to long format}
 \usage{
 as.long_format_table(table, ...)
 }
 \arguments{
 \item{table}{the input table (e.g. a huxtable)}
+
+\item{...}{passed onto subclass methods}
 }
 \value{
 a format that is considered valid for roogledocs::RoogleDocs$updateTable()
 }
 \description{
+Converts a square display table format to a long format suitable for applying as a sequence of formatting operations
+in a google doc or as a ggplot. Currently only plain dataframes and huxtables are supported but flextables look very doable.
+Only a limited subset of formatting features is implemented at present as supported by roogledocs. The output format
+is a simple dataframe with the following columns:
+}
+\details{
 - Character: label - non blank text (a single space is OK but not an empty string)
 - Integer: row - must be an integer, 1-based from top left
 - Integer: col - must be an integer, 1-based from top left
@@ -31,8 +36,7 @@ a format that is considered valid for roogledocs::RoogleDocs$updateTable()
 - Numeric: bottomBorderWeight
 - Character: alignment - one of "START","CENTER","END"
 - Character: valignment - one of "TOP","MIDDLE","BOTTOM"
-}
-\details{
+
 It also has an attribute `colWidths` which is a vector the same length as the width of the
 table containing the relative widths of the columns. The overall table width is
 decided on rendering.

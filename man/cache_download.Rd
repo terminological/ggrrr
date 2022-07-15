@@ -7,10 +7,10 @@
 cache_download(
   url,
   ...,
-  .nocache = getOption("ggrrr.disable.cache", default = FALSE),
-  .cache = getOption("ggrrr.download.dir", default =
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = getOption("cache.download.dir", default =
     rappdirs::user_cache_dir("ggrrr-download")),
-  .stale = getOption("ggrrr.cache.stale", default = Inf)
+  .stale = getOption("cache.stale", default = Inf)
 )
 }
 \arguments{
@@ -28,5 +28,6 @@ cache_download(
 the path to the downloaded file
 }
 \description{
-Download a file into a local cache.
+This function copies a remote file to a local cache once and
+makes sure it is reused.
 }

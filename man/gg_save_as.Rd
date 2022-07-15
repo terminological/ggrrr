@@ -2,8 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_save_as}
 \alias{gg_save_as}
-\title{Allows specific maximum dimensions with an optional target aspect ratio.
-If no aspect ratio supplied then plot will be shaped to occupy whole area}
+\title{Save a plot to multiple formats}
 \usage{
 gg_save_as(
   plot,
@@ -20,21 +19,31 @@ gg_save_as(
 
 \item{filename}{base of target filename (excuding extension).}
 
+\item{size}{a standard size see `std_size`}
+
 \item{maxWidth}{maximum width in inches}
 
 \item{maxHeight}{maximum height in inches}
 
 \item{aspectRatio}{defaults to maxWidth/maxHeight}
+
+\item{formats}{some of png, pdf, Rdata}
+}
+\value{
+the output is an sensible default object that can be displayed given the context it is called in,
+for example if knitting an RMarkdown document a link to the png file for embedding, if latex
+a link to the pdf file.
 }
 \description{
-Allows specific maximum dimensions with an optional target aspect ratio.
-If no aspect ratio supplied then plot will be shaped to occupy whole area
+Saves a ggplot object to disk at a set physical size. Allows specific maximum dimensions
+with an optional target aspect ratio to fit into specific configurations for publication.
+e.g. a half page plot or a third of a 2 column page. Allows output in pdf for journal
+publication or png for inclusion in documents, and makes sure that the outputs are
+near identical.
 }
 \examples{
-setwd(tempdir())
 library(ggplot2)
-library(standardPrintOutput)
-ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
-saveFigure(filename="the_filename",maxWidth=4,maxHeight=4)
+p = ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+p \%>\% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
 }
 \keyword{plot}

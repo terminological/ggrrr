@@ -2,7 +2,7 @@
 % Please edit documentation in R/file-output-utils.R
 \name{outputter}
 \alias{outputter}
-\title{Create a function to generate versioned file name in a subdirectory.}
+\title{Generate a versioned file name in a subdirectory.}
 \usage{
 outputter(
   directory = here::here("output"),
@@ -13,15 +13,22 @@ outputter(
 \arguments{
 \item{directory}{the root of the output}
 
-\item{datedFile}{do you want the filename to have the date appended}
+\item{datedFile}{do you want the filename to have the date appended?}
 
-\item{datedSubdirectory}{do you want the files to be placed in a dated subdirectory}
+\item{datedSubdirectory}{do you want the files to be placed in a dated subdirectory?}
 }
 \value{
-a function that takes a filename and boolean delete parameter. The filename will be the relative path within the configured directory. If the file exists and delete=TRUE it is deleted (for libraries that refuse to overwrite existing files)
+a function that takes a filename and boolean delete parameter.
+When called with a filename component this function will return the absolute path of a file which is
+versioned with date. If the file exists and delete=TRUE it is deleted
+(allowing for libraries that refuse to overwrite existing files)
 }
 \description{
-Create a function to generate versioned file name in a subdirectory.
+This function generates a function that resolves a file path fragment to a
+specific file location, accounting for a versioning strategy involving
+the current date. The defaults create a naming strategy that places an
+file in the "output" sub-directory of the current project with a filename suffix including
+the date.
 }
 \examples{
 out = outputter("~/output",datedSubdirectory=TRUE)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy-utils.R
 \name{intersecting_group_by}
 \alias{intersecting_group_by}
-\title{Create a new data frame including duplicate rows where the rows fulfil a potentially overlapping set of conditions}
+\title{Create a dataframe with groups mathing a range of predicates}
 \usage{
 intersecting_group_by(.data, ..., .colname = "group")
 }
@@ -14,13 +14,14 @@ intersecting_group_by(.data, ..., .colname = "group")
 \item{.colname}{the name of the new group}
 }
 \value{
-a new dataframe containing the overlapping groups.
+a new dataframe containing the overlapping groups which may create duplicates of individual rows.
 }
 \description{
 Create a new data frame including duplicate rows where the rows fulfil a potentially overlapping set of conditions
+specified as named predicates (as formulae)
 }
 \examples{
-iris \%>\% group_by(Species) \%>\% intersecting_group_by(
+iris \%>\% dplyr::group_by(Species) \%>\% intersecting_group_by(
   Sepal.Length > mean(Sepal.Length) ~ "Long",
   Sepal.Width > mean(Sepal.Width) ~ "Wide"
 )

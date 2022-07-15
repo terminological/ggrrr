@@ -29,11 +29,15 @@ as_vars = function(tidyselect, data=NULL) {
 ## Dataset description helpers ----
 
 
-#' This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors
+#' Get a value set list of a dataframe
+#'
+#' This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors.
+#' This provides programmatic access (and automcomplete) to the values available in a dataframe, and throws and early
+#' error if we try and access data by a variable that does not exist.
 #'
 #' @param df a dataframe to examine
 #'
-#' @return a list of lists with the column name and the factor levels as list
+#' @return a list of lists with the column name and the factor levels as list, as a `checked list`.
 #' @export
 get_value_sets = function(df) {
   v = lapply(colnames(df), function(x) {
@@ -64,7 +68,7 @@ get_value_sets = function(df) {
   return(v)
 }
 
-# This is a sub class of list that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
+# This is a sub class of list access operator that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
 # the point of this is to throw errors early if the data changes.
 `$.checked_list` <- function(x, y) {
   if (is.character(y)) {
@@ -81,20 +85,23 @@ get_value_sets = function(df) {
 
 ## Summarisation helpers ----
 
-#' Bind_rows works until there are factors with a set of different levels.
+#' Bind rows for colums with factors
+#'
+#' Bind_rows works until there are factors with a set of different levels then it throws a
+#' wobbly. This handles that paricular situation by combining factor levels.
 #'
 #' @param ... a list of dataframes
 #'
-#' @return the union of those dataframes. Factor levels are combined with levels
+#' @return the union of those dataframes. Factor levels are combined with a superset of all levels
 #' @export
 #'
 #' @examples
-#' bind_rows_with_factors(iris,diamonds)
+#' bind_rows_with_factors(iris, ggplot2::diamonds %>% rename(Species = cut)) %>% pull(Species) %>% levels()
 bind_rows_with_factors <- function(...) {
   # Identify all factors, and all their levels and
   dots = rlang::list2(...)
   factors = unique(unlist(purrr::map(dots, ~ .x %>% ungroup() %>% select(where(is.factor)) %>% colnames())))
-  factorLevels = bind_rows(purrr::map(dots, ~ purrr::map(.x %>% ungroup() %>% select(where(is.factor)), ~ .x %>% levels()) %>% enframe() %>% unnest(c(value))))
+  factorLevels = bind_rows(purrr::map(dots, ~ purrr::map(.x %>% ungroup() %>% select(where(is.factor)), ~ .x %>% levels()) %>% enframe() %>% tidyr::unnest(c(value))))
   # convert factors to character, bind dataframes, convert characters back to factors
   dots2 = purrr::map(dots, ~ .x %>% mutate(across(where(is.factor),as.character)))
   out = bind_rows(dots2)
@@ -107,7 +114,12 @@ bind_rows_with_factors <- function(...) {
 }
 
 
+#' Summarise a subgroup and create a summary row
+#'
 #' Summarise and include a total row, or a row including the summary for the whole group, into a factor list.
+#' This looks and feels like a natural summarisation step, but applies the summarisation both to the
+#' subgroups and to the data ungrouped by one level. The additional group result is included as a new row.
+#' allows for a natural grouped and ungrouped summarisation
 #'
 #' @param .data a dataframe
 #' @param ... the summarisation specification
@@ -115,11 +127,11 @@ bind_rows_with_factors <- function(...) {
 #' @param .total name of the total row which will be added into a factor list.
 #' @param .total_first should the total be before or after the groups
 #'
-#' @return a dataframe with the additional
+#' @return a summarised dataframe with the additional totals or group row
 #' @export
 #'
 #' @examples
-#' diamonds %>% group_by(color,cut) %>%
+#' diamonds %>% dplyr::group_by(color,cut) %>%
 #'    summarise_with_totals(mpg = sprintf("%1.1f \u00B1 %1.1f", mean(price), sd(price)), .total = "Overall")
 summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .total_first = FALSE) {
   grps = .data %>% groups()
@@ -151,17 +163,20 @@ summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .to
   return(out %>% group_by(!!!grps_out))
 }
 
+#' Create a dataframe with groups mathing a range of predicates
+#'
 #' Create a new data frame including duplicate rows where the rows fulfil a potentially overlapping set of conditions
+#' specified as named predicates (as formulae)
 #'
 #' @param .data a data frame
 #' @param ... a set of predicates specified like case_whens syntax, such as mpg < 5 ~ "gas guzzlers"
 #' @param .colname the name of the new group
 #'
-#' @return a new dataframe containing the overlapping groups.
+#' @return a new dataframe containing the overlapping groups which may create duplicates of individual rows.
 #' @export
 #'
 #' @examples
-#' iris %>% group_by(Species) %>% intersecting_group_by(
+#' iris %>% dplyr::group_by(Species) %>% intersecting_group_by(
 #'   Sepal.Length > mean(Sepal.Length) ~ "Long",
 #'   Sepal.Width > mean(Sepal.Width) ~ "Wide"
 #' )

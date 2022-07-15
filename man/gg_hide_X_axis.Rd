@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_hide_X_axis}
 \alias{gg_hide_X_axis}
-\title{Theme to hide the x axis of a plot}
+\title{Hide the x axis of a plot}
 \usage{
 gg_hide_X_axis()
 }
@@ -10,5 +10,5 @@ gg_hide_X_axis()
 a theme
 }
 \description{
-Theme to hide the x axis of a plot
+Hide the x axis of a plot
 }

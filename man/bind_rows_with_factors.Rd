@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy-utils.R
 \name{bind_rows_with_factors}
 \alias{bind_rows_with_factors}
-\title{Bind_rows works until there are factors with a set of different levels.}
+\title{Bind rows for colums with factors}
 \usage{
 bind_rows_with_factors(...)
 }
@@ -10,11 +10,12 @@ bind_rows_with_factors(...)
 \item{...}{a list of dataframes}
 }
 \value{
-the union of those dataframes. Factor levels are combined with levels
+the union of those dataframes. Factor levels are combined with a superset of all levels
 }
 \description{
-Bind_rows works until there are factors with a set of different levels.
+Bind_rows works until there are factors with a set of different levels then it throws a
+wobbly. This handles that paricular situation by combining factor levels.
 }
 \examples{
-bind_rows_with_factors(iris,diamonds)
+bind_rows_with_factors(iris, ggplot2::diamonds \%>\% rename(Species = cut)) \%>\% pull(Species) \%>\% levels()
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/huxtable-utils.R
 \name{hux_save_as}
 \alias{hux_save_as}
-\title{Save a table to a variety of formats and depending on the context return the correct format for a document}
+\title{Save a table to a variety of formats}
 \usage{
 hux_save_as(
   hux,
@@ -12,6 +12,7 @@ hux_save_as(
   maxHeight = size$height,
   aspectRatio = maxWidth/maxHeight,
   formats = c("html", "png", "pdf"),
+  defaultFontSize = 8,
   sheetname = fs::path_ext_remove(fs::path_file(filename))
 )
 }
@@ -28,14 +29,17 @@ hux_save_as(
 
 \item{aspectRatio}{or the minimum allowed aspect ratio}
 
-\item{formats}{if the extension is omitted all the extensions described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"}
+\item{formats}{if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"}
 
-\item{sheetname}{if saving as an xlsx then the sheetname}
+\item{defaultFontSize}{the default font size}
+
+\item{sheetname}{if saving as an xlsx file.}
 }
 \value{
 the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.
 }
 \description{
+depending on the context return the correct format for a document.
 The basic output here is to use HTML as an output if possible and convert it to an image or a PDF that can then
 be included into a latex document for example.
 }

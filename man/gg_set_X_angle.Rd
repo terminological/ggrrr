@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_set_X_angle}
 \alias{gg_set_X_angle}
-\title{Themeing to set the angle of the x axis labels of a plot}
+\title{Set the angle of the x axis labels of a plot}
 \usage{
 gg_set_X_angle(ang = 60)
 }
@@ -13,5 +13,5 @@ gg_set_X_angle(ang = 60)
 a theme
 }
 \description{
-Themeing to set the angle of the x axis labels of a plot
+Set the angle of the x axis labels of a plot
 }

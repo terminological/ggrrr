@@ -2,7 +2,7 @@
 % Please edit documentation in R/dependency-utils.R
 \name{cran}
 \alias{cran}
-\title{Make sure cran packages are installed}
+\title{Make sure packages available on CRAN are installed}
 \usage{
 cran(cran_deps)
 }
@@ -13,7 +13,7 @@ cran(cran_deps)
 nothing
 }
 \description{
-Make sure cran packages are installed
+Make sure packages available on CRAN are installed
 }
 \examples{
 cran("tidyverse")

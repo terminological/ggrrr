@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_set_size_defaults}
 \alias{gg_set_size_defaults}
-\title{Set the default sizes of lines and fonts in ggplot geoms}
+\title{Set sizes in ggplot uniformly}
 \usage{
 gg_set_size_defaults(
   lineSize = 0.5,
@@ -14,13 +14,17 @@ gg_set_size_defaults(
 \item{lineSize}{the width of lines and size of points (the default size aesthetic)}
 
 \item{fontSizePts}{the size of labels and other on plot text in pts.}
+
+\item{font}{the font family name}
 }
 \value{
 nothing
 }
 \description{
-Set the default sizes of lines and fonts in ggplot geoms
+Set the default sizes of lines, points and fonts in ggplot geoms, and text labels in ggplot axes
+to get a single consistent look and feel.
 }
 \examples{
+library(ggplot2)
 gg_set_size_defaults(lineSize = 0.25)
 }

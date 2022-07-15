@@ -11,10 +11,10 @@ hux_sprintf(fmt, ..., na.text = "—")
 
 \item{...}{sprintf inputs}
 
-\item{na.text}{an string to replave NA values with.}
+\item{na.text}{an string to replace NA values with.}
 }
 \value{
-a strgin
+a string value
 }
 \description{
 A sprintf alternative that handles NA values gracefully (ish)

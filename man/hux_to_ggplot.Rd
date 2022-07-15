@@ -15,5 +15,5 @@ hux_to_ggplot(hux, width = 5.9)
 a ggplot object of the right width
 }
 \description{
-Convert a huxtable to a ggplot object
+Useful if you need to include a formatted table in a figure with a plot
 }

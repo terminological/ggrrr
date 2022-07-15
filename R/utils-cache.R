@@ -1,20 +1,20 @@
-#
 .md5obj = function(obj) {
   as.character(digest::digest(obj, algo="md5"))
 }
 
 #.arear.cache <- new.env(parent=emptyenv())
 
-#' A simple passthrough cache for complex or long running operations
+#' A simple pass-through cache for complex or long running operations
 #'
-#' executes expr and saves the output as an RDS file indexed by code in expr and the hash variable (which should contain any varying inputs)
+#' executes expr and saves the output as an RDS file indexed by has of code in expr
+#' and the hash of input variables (which should contain any variable inputs)
 #'
 #' @param .expr the code the output of which requires caching. Other than a return value this should not create side effects or change global variables.
 #' @param ... inputs that the code in expr depends on and changes in which require the code re-running, Could be Sys.Date()
 #' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
-#' @param .nocache an option to defeat the caching which can be set globally as options("ggrrr.disable.cache"=TRUE)
-#' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
-#' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("ggrrr.cache.stale")
+#' @param .nocache an option to defeat the caching which can be set globally as options("cache.disable"=TRUE)
+#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
+#' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("cache.stale")
 #'
 #' @return the output of .expr which will usually be a value
 #' @export
@@ -25,14 +25,15 @@
 #'   iris[[colName]]
 #' } %>% ggrrr::cached(iris, colName, .prefix="example", .cache=tempdir())
 cached = function (
-  .expr = {},
+  .expr,
   ...,
-  .nocache = getOption("ggrrr.disable.cache", default=FALSE),
-  .cache = getOption("ggrrr.cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
-  .prefix = getOption("ggrrr.item.prefix", default="cached"),
-  .stale = getOption("ggrrr.cache.stale", default=Inf))
+  .nocache = getOption("cache.disable", default=FALSE),
+  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
+  .prefix = getOption("cache.item.prefix", default="cached"),
+  .stale = getOption("cache.stale", default=Inf))
 {
 
+  # .expr2 = enquo(.expr)
   hash = rlang::list2(...)
   code = deparse(substitute(.expr))
   md5code = .md5obj(code)
@@ -57,16 +58,17 @@ cached = function (
 
   if (file.exists(path)) {
     message("using cached item: ",path)
-    readRDS(path)
+    obj = readRDS(path)
     #assign(path, obj, envir=.arear.cache)
   } else {
     message("caching item: ",path)
-    obj = .expr
+    obj = .expr #eval(.expr2)
     attr(obj,"cache-path")=path
     attr(obj,"cache-date")=Sys.time()
     saveRDS(obj, path)
     #assign(path, obj, envir=.arear.cache)
   }
+  return(obj)
 }
 
 #' Delete stale files in a cache
@@ -75,12 +77,12 @@ cached = function (
 #' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale.
 #'
-#' @return
+#' @return nothing. called for side effects.
 #' @export
 cache_delete_stale = function(
-  .cache = getOption("ggrrr.cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
+  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
-  .stale = getOption("ggrrr.cache.stale", default=Inf)
+  .stale = getOption("cache.stale", default=Inf)
 ) {
   if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
   fs::file_info(fs::dir_ls(.cache)) %>%
@@ -103,14 +105,15 @@ cache_delete_stale = function(
 #'
 #' @param .prefix a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.
 #' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
+#' @param interactive suppress `are you sure?` warning with a FALSE value (defaults to TRUE)
 #'
-#' @return the output of .expr which will usually be a value
+#' @return nothing. called for side effects
 #' @export
 #'
 #' @examples
-#' ggrrr::cache_clear(.prefix="example", .cache=tempdir())
+#' ggrrr::cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
 cache_clear = function (
-  .cache = getOption("ggrrr.cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
+  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
   interactive = TRUE
 ) {
@@ -135,6 +138,9 @@ cache_clear = function (
 
 #' Download a file into a local cache.
 #'
+#' This function copies a remote file to a local cache once and
+#' makes sure it is reused.
+#'
 #' @param url the url to download
 #' @param ... ignored
 #' @param .nocache if set to TRUE all caching is disabled
@@ -146,9 +152,9 @@ cache_clear = function (
 cache_download = function(
   url,
   ...,
-  .nocache = getOption("ggrrr.disable.cache", default=FALSE),
-  .cache = getOption("ggrrr.download.dir", default=rappdirs::user_cache_dir("ggrrr-download")),
-  .stale = getOption("ggrrr.cache.stale", default=Inf)
+  .nocache = getOption("cache.disable", default=FALSE),
+  .cache = getOption("cache.download.dir", default=rappdirs::user_cache_dir("ggrrr-download")),
+  .stale = getOption("cache.stale", default=Inf)
 ) {
 
   qualifier = basename(url) %>% stringr::str_extract("^[^?]*")

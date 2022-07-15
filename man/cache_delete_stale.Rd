@@ -5,9 +5,9 @@
 \title{Delete stale files in a cache}
 \usage{
 cache_delete_stale(
-  .cache = getOption("ggrrr.cache.dir", default = rappdirs::user_cache_dir("ggrrr")),
+  .cache = getOption("cache.dir", default = rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
-  .stale = getOption("ggrrr.cache.stale", default = Inf)
+  .stale = getOption("cache.stale", default = Inf)
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ cache_delete_stale(
 \item{.stale}{the length of time in days to keep cached data before considering it as stale.}
 }
 \value{
-
+nothing. called for side effects.
 }
 \description{
 Delete stale files in a cache

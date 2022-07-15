@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_narrow}
 \alias{gg_narrow}
-\title{Theme to make a plot narrower}
+\title{Make a plot narrower}
 \usage{
 gg_narrow(ang = 90)
 }
@@ -13,5 +13,5 @@ gg_narrow(ang = 90)
 a theme
 }
 \description{
-Theme to make a plot narrower
+Make a plot narrower
 }

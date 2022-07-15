@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_pedantic}
 \alias{gg_pedantic}
-\title{An opinionated set of defaults for plot styles with a focus on making plots compact, and minimally fussy, and ensuring fonts are consistent between axes and labels.}
+\title{An opinionated set of defaults for plots}
 \usage{
 gg_pedantic(lineSize = 0.25, fontSize = 8, font = "Roboto")
 }
@@ -17,5 +17,5 @@ gg_pedantic(lineSize = 0.25, fontSize = 8, font = "Roboto")
 nothing
 }
 \description{
-An opinionated set of defaults for plot styles with a focus on making plots compact, and minimally fussy, and ensuring fonts are consistent between axes and labels.
+This is a set of styles with a focus on making plots compact, and minimally fussy, and ensuring fonts are consistent between axes and labels.
 }

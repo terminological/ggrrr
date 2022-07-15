@@ -10,12 +10,15 @@ sprintf_list(format, params, na.replace = "―")
 \item{format}{the format string}
 
 \item{params}{the inputs as a list (rather than as a set of individual numbers)}
+
+\item{na.replace}{a value to replace NA values with.}
 }
 \value{
 the formatted string
 }
 \description{
-Sprintf with a list input
+A variant of sprintf that work well with inputs that are in the format of a list.
+Good examples of which are the quantile functions
 }
 \examples{
 # generate a mixture confidence interval from a set of distributions

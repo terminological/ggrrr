@@ -13,5 +13,5 @@ gg_label_size(pts)
 the label size in ggplot units
 }
 \description{
-Convert a label size from points to ggplot units
+Labels like geom_text are in a random unit size which is only mysteriously connected to the size of text on axes
 }

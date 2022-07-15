@@ -2,7 +2,7 @@
 % Please edit documentation in R/dependency-utils.R
 \name{non_cran}
 \alias{non_cran}
-\title{Make sure github packages are installed. Use a locally checked out version if available.}
+\title{Make sure github packages are installed.}
 \usage{
 non_cran(name, github, force = FALSE, subdir = "", ...)
 }
@@ -21,7 +21,7 @@ non_cran(name, github, force = FALSE, subdir = "", ...)
 nothing
 }
 \description{
-Make sure github packages are installed. Use a locally checked out version if available.
+Use a locally checked out version if available.
 }
 \examples{
 non_cran("patchwork", "thomasp85/patchwork")

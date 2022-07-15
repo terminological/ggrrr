@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggplot-utils.R
 \name{gg_watermark}
 \alias{gg_watermark}
-\title{Add in a watermark to graphs}
+\title{Add in a watermark to plots}
 \usage{
 gg_watermark(
   lab = "DRAFT",
@@ -18,5 +18,5 @@ gg_watermark(
 a watermark layer
 }
 \description{
-Add in a watermark to graphs
+Add in a watermark to plots
 }

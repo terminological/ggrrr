@@ -2,15 +2,21 @@
 % Please edit documentation in R/dependency-utils.R
 \name{unstable}
 \alias{unstable}
-\title{reboot this library reloading from dev.}
+\title{Get unstable version of package}
 \usage{
-unstable(pkg = "ggrrr")
+unstable(pkg = "ggrrr", org = "terminological")
+}
+\arguments{
+\item{pkg}{the package to load the unstable version of}
+
+\item{org}{the github organisation}
 }
 \value{
 nothing
 }
 \description{
-reboot this library reloading from dev.
+reboot a library reloading from a local development copy if it exists locally alternatively get
+the most up to date github package.
 }
 \examples{
 ggrrr::unstable()

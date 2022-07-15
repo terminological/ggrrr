@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy-utils.R
 \name{summarise_with_totals}
 \alias{summarise_with_totals}
-\title{Summarise and include a total row, or a row including the summary for the whole group, into a factor list.}
+\title{Summarise a subgroup and create a summary row}
 \usage{
 summarise_with_totals(
   .data,
@@ -24,12 +24,15 @@ summarise_with_totals(
 \item{.total_first}{should the total be before or after the groups}
 }
 \value{
-a dataframe with the additional
+a summarised dataframe with the additional totals or group row
 }
 \description{
 Summarise and include a total row, or a row including the summary for the whole group, into a factor list.
+This looks and feels like a natural summarisation step, but applies the summarisation both to the
+subgroups and to the data ungrouped by one level. The additional group result is included as a new row.
+allows for a natural grouped and ungrouped summarisation
 }
 \examples{
-diamonds \%>\% group_by(color,cut) \%>\%
+diamonds \%>\% dplyr::group_by(color,cut) \%>\%
    summarise_with_totals(mpg = sprintf("\%1.1f \u00B1 \%1.1f", mean(price), sd(price)), .total = "Overall")
 }

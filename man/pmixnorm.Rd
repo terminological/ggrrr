@@ -14,6 +14,8 @@ pmixnorm(q, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
 \item{sds}{a vector of normal distribution sds}
 
 \item{weights}{a vector of weights}
+
+\item{na.rm}{remove distributions which have NA for mean or sd}
 }
 \value{
 the pdf of the mixture distribution.

@@ -6,6 +6,7 @@
 #' @param means a vector of normal distribution means
 #' @param sds  a vector of normal distribution sds
 #' @param weights  a vector of weights
+#' @param na.rm remove distributions which have NA for mean or sd
 #'
 #' @return the pdf of the mixture distribution.
 #' @export
@@ -84,8 +85,12 @@ qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 
 #' Sprintf with a list input
 #'
+#' A variant of sprintf that work well with inputs that are in the format of a list.
+#' Good examples of which are the quantile functions
+#'
 #' @param format the format string
 #' @param params the inputs as a list (rather than as a set of individual numbers)
+#' @param na.replace a value to replace NA values with.
 #'
 #' @return the formatted string
 #' @export

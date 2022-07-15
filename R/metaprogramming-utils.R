@@ -15,11 +15,13 @@
 
 #' Fix errors introduced in package creation by forgetting to qualify namespaces.
 #'
+#' This is a code linting function and not for general use.
+#'
 #' @param rDirectories the locations of the R code to fix
 #' @param description the location of the description files
 #' @param dry_run by default this function will not actually do anything unless this is set to FALSE.
 #'
-#' @return
+#' @return nothing. called for side effects.
 #' @export
 fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes")), description = here::here("DESCRIPTION"), dry_run = TRUE ) {
 

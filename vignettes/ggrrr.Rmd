@@ -2,7 +2,7 @@
 title: "Getting Started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Basic examples}
+  %\VignetteIndexEntry{Getting Started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,22 +12,26 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(tidyverse)
 ```
 
 ```{r setup}
 # library(tidyverse)
 # library(ggrrr)
 devtools::load_all("~/Git/ggrrr")
-ggrrr::loadfonts()
+
 
 ```
 
 # ggplot utilities
 
 ```{r}
-ggrrr::gg_pedantic(font = "Times New Roman")
+
+ggrrr::gg_pedantic(font = "Roboto")
+
 plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
-plot
+plot %>% gg_save_as("~/tmp/test")
 ```
 
 ```{r}
@@ -55,7 +59,7 @@ tableExample = diamonds %>%
   )
   
 
-tableExample %>% gg_simple_table()
+tableExample %>% gg_simple_table(font = "Roboto")
 ```
 
 A more complex example
@@ -63,7 +67,7 @@ A more complex example
 ```{r}
 # devtools::load_all("~/Git/ggrrr")
 # tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
-tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,fontName = "Courier",fontSize = 8) 
+tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Courier New",fontSize = 8) 
 tablePlot %>% gg_save_as("~/tmp/table")
 ```
 
@@ -71,5 +75,5 @@ tablePlot %>% gg_save_as("~/tmp/table")
 
 ```{r}
 #devtools::load_all("~/Git/ggrrr")
-tableExample %>% hux_default_layout(defaultFont = "Roboto") %>% hux_save_as("~/tmp/table2")
+tableExample %>% hux_default_layout(defaultFont = "Gulzar") %>% hux_save_as("~/tmp/table2")
 ```

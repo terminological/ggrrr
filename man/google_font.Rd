@@ -15,5 +15,7 @@ google_font(family, ...)
 nothing
 }
 \description{
-Downloads caches and installs a font family from google
+This checks if the file is already downloaded and if not pull the font file from google fonts.
+If it does not exist it will throw an error. Once downloaded a font will be made available through
+`showtext` and through `systemfonts` font packages.
 }
