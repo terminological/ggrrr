@@ -32,7 +32,7 @@ devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-
 ggrrr::gg_pedantic(font = "Roboto")
 
 plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
-plot %>% gg_save_as("~/tmp/test")
+plot %>% gg_save_as(tempfile())
 ```
 
 ```{r}
@@ -69,7 +69,7 @@ A more complex example
 # devtools::load_all("~/Git/ggrrr")
 # tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
 tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Space Mono",fontSize = 8) 
-tablePlot %>% gg_save_as("~/tmp/table")
+tablePlot %>% gg_save_as(tempfile())
 ```
 
 # Tabular data exported to multiple output formats
