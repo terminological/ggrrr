@@ -89,7 +89,6 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @export
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
   font = check_font(font)
-  showtext::showtext_auto()
   ggplot2::theme_set(gg_tiny_theme(fontSize, font))
   gg_set_size_defaults(lineSize,fontSize*0.75,font)
 }

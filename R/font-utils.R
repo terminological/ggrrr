@@ -133,6 +133,7 @@ check_font = function(family) {
     }
   }
   showtextdb::load_showtext_fonts()
+  showtext::showtext_auto()
   return(family)
 }
 
