@@ -25,6 +25,6 @@ Set the default sizes of lines, points and fonts in ggplot geoms, and text label
 to get a single consistent look and feel.
 }
 \examples{
-library(ggplot2)
+library(tidyverse)
 gg_set_size_defaults(lineSize = 0.25)
 }

@@ -2,6 +2,8 @@
 
 Data presentation and visualisation hacks.
 
+see the [package documentation](https://terminological.github.io/ggrrr/docs/)
+
 `ggrrr` fixes a few annoying problems in generating publication ready figures and tables.
 It pays particular attention to output file size and image resolution, with opinionated formatting of defaults, with consistent sizing
 between screen, html and pdf outputs.

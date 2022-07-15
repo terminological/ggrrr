@@ -20,6 +20,7 @@
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' out = outputter("~/output",datedSubdirectory=TRUE)
 #' out("file.png")
 outputter = function(directory = here::here("output"), datedFile=!datedSubdirectory, datedSubdirectory=FALSE) {

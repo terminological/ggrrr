@@ -27,6 +27,7 @@ the formatted huxtable.
 The main aim is to get something that works with google docs when you copy and paste.
 }
 \examples{
+library(tidyverse)
 hux = iris \%>\% hux_default_layout()
 }
 \keyword{huxtable}

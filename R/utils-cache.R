@@ -20,6 +20,7 @@
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' colName = "Petal.Width"
 #' {
 #'   iris[[colName]]
@@ -111,6 +112,7 @@ cache_delete_stale = function(
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' ggrrr::cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
 cache_clear = function (
   .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),

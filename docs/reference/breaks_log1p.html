@@ -150,8 +150,9 @@
     <p>a function for ggplot scale breaks</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>diamonds</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>price</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span><span class='fu'>geom_density</span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span><span class='fu'>scale_x_continuous</span><span class='op'>(</span>trans<span class='op'>=</span><span class='st'>"log1p"</span>, breaks<span class='op'>=</span><span class='fu'>ggrrr</span><span class='fu'>::</span><span class='va'>breaks_log1p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in ggplot(diamonds, aes(x = price)): could not find function "ggplot"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='fu'>ggplot</span><span class='op'>(</span><span class='va'>diamonds</span>, <span class='fu'>aes</span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>price</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span><span class='fu'>geom_density</span><span class='op'>(</span><span class='op'>)</span><span class='op'>+</span><span class='fu'>scale_x_continuous</span><span class='op'>(</span>trans<span class='op'>=</span><span class='st'>"log1p"</span>, breaks<span class='op'>=</span><span class='fu'>ggrrr</span><span class='fu'>::</span><span class='fu'>breaks_log1p</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='breaks_log1p-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

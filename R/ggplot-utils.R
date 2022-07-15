@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()
 gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
   font = check_font(font)
@@ -57,7 +58,7 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
 #' @export
 #'
 #' @examples
-#' library(ggplot2)
+#' library(tidyverse)
 #' gg_set_size_defaults(lineSize = 0.25)
 gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font="Roboto") {
   font = check_font(font)
@@ -243,7 +244,8 @@ gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.waterm
 #' @export
 #'
 #' @examples
-#' ggplot(diamonds, aes(x=price))+geom_density()+scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p)
+#' library(tidyverse)
+#' ggplot(diamonds, aes(x=price))+geom_density()+scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
 breaks_log1p = function(n=5,base=10) {
   #scales::force_all(n, base)
   n_default = n
@@ -266,6 +268,7 @@ breaks_log1p = function(n=5,base=10) {
 #' @param unwrapped - set this to TRUE if you want to add to a patchwork and use wrap_plots(p,list(table))
 #' @return A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
 #' @examples
+#' library(tidyverse)
 #' gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
 gg_simple_table = function(df, pts=8, font = "Roboto", unwrapped = FALSE) {
   font = check_font(font)
@@ -478,7 +481,7 @@ std_size = list(
 #' a link to the pdf file.
 #' @export
 #' @examples
-#' library(ggplot2)
+#' library(tidyverse)
 #' p = ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 #' p %>% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
 gg_save_as = function(plot,filename = tempfile(),

@@ -18,5 +18,6 @@ a ggplot theme
 A ggplot theme with minimal fluff and with the defaults set small.
 }
 \examples{
+library(tidyverse)
 ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()
 }

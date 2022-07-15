@@ -17,5 +17,6 @@ Bind_rows works until there are factors with a set of different levels then it t
 wobbly. This handles that paricular situation by combining factor levels.
 }
 \examples{
+library(tidyverse)
 bind_rows_with_factors(iris, ggplot2::diamonds \%>\% rename(Species = cut)) \%>\% pull(Species) \%>\% levels()
 }

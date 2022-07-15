@@ -13,6 +13,7 @@
 #' @return the formatted huxtable.
 #' @export
 #' @examples
+#' library(tidyverse)
 #' hux = iris %>% hux_default_layout()
 hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
   defaultFont = check_font(defaultFont)
@@ -243,6 +244,7 @@ hux_nest_group = function(t, col=1) {
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' iris %>% fit_col_widths()
 fit_col_widths = function(table) {
   table %>% as.long_format_table() %>%

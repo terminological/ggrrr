@@ -21,6 +21,7 @@ Create a new data frame including duplicate rows where the rows fulfil a potenti
 specified as named predicates (as formulae)
 }
 \examples{
+library(tidyverse)
 iris \%>\% dplyr::group_by(Species) \%>\% intersecting_group_by(
   Sepal.Length > mean(Sepal.Length) ~ "Long",
   Sepal.Width > mean(Sepal.Width) ~ "Wide"

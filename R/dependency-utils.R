@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' ggrrr::unstable()
 unstable = function(pkg = "ggrrr", org="terminological") {
   if (pkg %in% rownames(installed.packages())) devtools::unload(pkg)

@@ -17,5 +17,6 @@ Widths are based on dataframe or huxtable content ignoring rowspans and
 potential for wrapping.
 }
 \examples{
+library(tidyverse)
 iris \%>\% fit_col_widths()
 }

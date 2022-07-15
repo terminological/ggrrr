@@ -44,7 +44,10 @@ Imports:
     zip,
     sysfonts,
     systemfonts,
-    showtext
+    showtext,
+    base64enc,
+    scales,
+    showtextdb
 Suggests: 
     tidyverse,
     rmarkdown,

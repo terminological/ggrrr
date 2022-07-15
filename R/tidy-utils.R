@@ -96,6 +96,7 @@ get_value_sets = function(df) {
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' bind_rows_with_factors(iris, ggplot2::diamonds %>% rename(Species = cut)) %>% pull(Species) %>% levels()
 bind_rows_with_factors <- function(...) {
   # Identify all factors, and all their levels and
@@ -131,6 +132,7 @@ bind_rows_with_factors <- function(...) {
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' diamonds %>% dplyr::group_by(color,cut) %>%
 #'    summarise_with_totals(mpg = sprintf("%1.1f \u00B1 %1.1f", mean(price), sd(price)), .total = "Overall")
 summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .total_first = FALSE) {
@@ -176,6 +178,7 @@ summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .to
 #' @export
 #'
 #' @examples
+#' library(tidyverse)
 #' iris %>% dplyr::group_by(Species) %>% intersecting_group_by(
 #'   Sepal.Length > mean(Sepal.Length) ~ "Long",
 #'   Sepal.Width > mean(Sepal.Width) ~ "Wide"

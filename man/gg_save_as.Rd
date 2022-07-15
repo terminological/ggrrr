@@ -42,7 +42,7 @@ publication or png for inclusion in documents, and makes sure that the outputs a
 near identical.
 }
 \examples{
-library(ggplot2)
+library(tidyverse)
 p = ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
 p \%>\% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
 }

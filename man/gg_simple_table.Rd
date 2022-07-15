@@ -22,6 +22,7 @@ A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
 A simple table as a ggplot patchwork object, no customisation allowed
 }
 \examples{
+library(tidyverse)
 gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
 }
 \keyword{graph}

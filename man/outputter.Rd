@@ -31,6 +31,7 @@ file in the "output" sub-directory of the current project with a filename suffix
 the date.
 }
 \examples{
+library(tidyverse)
 out = outputter("~/output",datedSubdirectory=TRUE)
 out("file.png")
 }
