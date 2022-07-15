@@ -52,9 +52,7 @@ Suggests:
     tidyverse,
     rmarkdown,
     knitr,
-    webshot,
-    html2pdfr
+    webshot
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0
-Remotes:
-    terminological/html2pdfr@0.4.1
+

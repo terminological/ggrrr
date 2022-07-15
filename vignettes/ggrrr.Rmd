@@ -21,7 +21,8 @@ library(tidyverse)
 library(ggrrr)
 # devtools::load_all("~/Git/ggrrr")
 
-
+devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-multiarch"))
+  
 ```
 
 # ggplot utilities
@@ -67,7 +68,7 @@ A more complex example
 ```{r}
 # devtools::load_all("~/Git/ggrrr")
 # tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
-tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Courier New",fontSize = 8) 
+tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Space Mono",fontSize = 8) 
 tablePlot %>% gg_save_as("~/tmp/table")
 ```
 
