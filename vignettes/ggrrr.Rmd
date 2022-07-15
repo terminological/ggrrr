@@ -18,8 +18,8 @@ library(tidyverse)
 
 ```{r setup}
 # library(tidyverse)
-# library(ggrrr)
-devtools::load_all("~/Git/ggrrr")
+library(ggrrr)
+# devtools::load_all("~/Git/ggrrr")
 
 
 ```
