@@ -21,5 +21,9 @@ cache_delete_stale(
 nothing. called for side effects.
 }
 \description{
-Delete stale files in a cache
+Staleness is determined by the number of days from 2am on the current day in the current time-zone.
+A item cached for only one day becomes stale at 2am the day after it is cached.
+The time is configurable and option(cache.time_day_starts = 0) would be midnight.
+Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
+it may end up using old data.
 }

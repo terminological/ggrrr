@@ -7,7 +7,7 @@
 gg_tiny_theme(baseSize = 8, font = "Roboto")
 }
 \arguments{
-\item{baseSize}{the sie of the base font.}
+\item{baseSize}{the size of the base font.}
 
 \item{font}{the font family name}
 }

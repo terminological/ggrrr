@@ -17,3 +17,4 @@
 NULL
 
 
+utils::globalVariables("where")

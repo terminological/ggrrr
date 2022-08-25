@@ -19,6 +19,8 @@ reboot a library reloading from a local development copy if it exists locally al
 the most up to date github package.
 }
 \examples{
+\donttest{
 library(tidyverse)
 ggrrr::unstable()
+}
 }

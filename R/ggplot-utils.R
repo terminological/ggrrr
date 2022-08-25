@@ -4,7 +4,7 @@
 #'
 #' A ggplot theme with minimal fluff and with the defaults set small.
 #'
-#' @param baseSize the sie of the base font.
+#' @param baseSize the size of the base font.
 #' @param font the font family name
 #'
 #' @return a ggplot theme
@@ -14,7 +14,7 @@
 #' library(tidyverse)
 #' ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()
 gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
-  font = check_font(font)
+  font = ggrrr::check_font(font)
   ggplot2::theme_bw(base_size=baseSize)+
     ggplot2::theme(
       text = ggplot2::element_text(family = font),
@@ -25,7 +25,7 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
       axis.text.x.bottom = ggplot2::element_text(angle = 30, hjust = 1, vjust=1),
       axis.text.x.top = ggplot2::element_text(angle = 30, hjust = 0, vjust = 0),
       # shrink facet titles
-      strip.text = ggplot2::element_text(margin = margin(.05, 0, .05, 0, "cm"), size=baseSize),
+      strip.text = ggplot2::element_text(margin = ggplot2::margin(.05, 0, .05, 0, "cm"), size=baseSize),
       strip.background = ggplot2::element_rect(fill = "#F8F8F8"),
       # shrink legend
       legend.title = ggplot2::element_text(size=baseSize),
@@ -61,13 +61,13 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
 #' library(tidyverse)
 #' gg_set_size_defaults(lineSize = 0.25)
 gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font="Roboto") {
-  font = check_font(font)
+  font = ggrrr::check_font(font)
   # get all ggplot2 geoms
-  geoms = ls(pattern = '^geom_', env = as.environment('package:ggplot2')) %>% stringr::str_remove("geom_")
+  geoms = ls(pattern = '^geom_', envir = as.environment('package:ggplot2')) %>% stringr::str_remove("geom_")
   for(geom in geoms) {
     try({
       if (geom %in% c("label","text","sf_label","sf_text")) {
-        ggplot2::update_geom_defaults(geom, list(size = gg_label_size(fontSizePts), family=font))
+        ggplot2::update_geom_defaults(geom, list(size = ggrrr::gg_label_size(fontSizePts), family=font))
       } else {
         ggplot2::update_geom_defaults(geom, list(size = lineSize))
       }
@@ -88,9 +88,9 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @return nothing
 #' @export
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
-  font = check_font(font)
-  ggplot2::theme_set(gg_tiny_theme(fontSize, font))
-  gg_set_size_defaults(lineSize,fontSize*0.75,font)
+  font = ggrrr::check_font(font)
+  ggplot2::theme_set(ggrrr::gg_tiny_theme(fontSize, font))
+  ggrrr::gg_set_size_defaults(lineSize,fontSize*0.75,font)
 }
 
 #' Convert a label size from points to ggplot units
@@ -146,11 +146,11 @@ gg_hide_legend = function() {
 #' @return a theme
 #' @export
 gg_set_X_angle = function(ang = 60) {
-  hj = case_when(
+  hj = dplyr::case_when(
     ang == 0 ~ 0.5,
     TRUE ~ 1
   )
-  vj = case_when(
+  vj = dplyr::case_when(
     ang > 90 ~ 0,
     ang == 90 ~ 0.5,
     TRUE ~ 1
@@ -175,7 +175,7 @@ gg_narrow = function(ang = 90) {
       legend.box="vertical",
       legend.justification = "center"
     ),
-    gg_set_X_angle(ang = ang)
+    ggrrr::gg_set_X_angle(ang = ang)
   )
 }
 
@@ -210,8 +210,8 @@ gg_resize_legend <- function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 #' @export drawDetails.watermark
 drawDetails.watermark = function(x, rot = 45, ...){
   cex <- min(
-    grid::convertX(unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(unit(1,"grobwidth", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE),
-    grid::convertY(unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(unit(1,"grobheight", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE)
+    grid::convertX(grid::unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(grid::unit(1,"grobwidth", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE),
+    grid::convertY(grid::unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(grid::unit(1,"grobheight", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE)
   )
   return(grid::grid.text(x$lab,  rot=rot, gp=grid::gpar(cex = cex, col="black", fontface = "bold", alpha = 0.05)))
 }
@@ -244,7 +244,9 @@ gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.waterm
 #'
 #' @examples
 #' library(tidyverse)
-#' ggplot(diamonds, aes(x=price))+geom_density()+scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
+#' ggplot(diamonds, aes(x=price))+
+#'   geom_density()+
+#'   scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
 breaks_log1p = function(n=5,base=10) {
   #scales::force_all(n, base)
   n_default = n
@@ -254,12 +256,41 @@ breaks_log1p = function(n=5,base=10) {
   }
 }
 
+#' logit scale
+#'
+#' @description it perform logit scaling with right axis formatting. To not be used directly but with ggplot (e.g. scale_y_continuous(trans = "logit") )
+#'
+#' @return A scales object
+#'
+#' @examples
+#'
+#' library(ggplot2)
+#' library(tibble)
+#'
+#' tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
+#'  ggplot(aes(fold_change , pvalue)) +
+#'  geom_point() +
+#'  scale_y_continuous(trans = "logit")
+#'
+#' @export
+logit_trans <- function() {
+
+  trans <- stats::qlogis
+  inv <- stats::plogis
+
+  scales::trans_new("logit",
+            transform = trans,
+            inverse = inv,
+            breaks = functional::Compose(trans, scales::extended_breaks(), inv),
+            format = scales::label_scientific(digits = 2)
+  )
+}
+
 ## GGplot tables ----
 
 #' A simple table as a ggplot patchwork object, no customisation allowed
 #'
 #' @keywords graph layout
-#' @import ggplot2
 #' @export
 #' @param df the dataframe with the table data. Column names will become headings
 #' @param pts text size in points
@@ -270,36 +301,36 @@ breaks_log1p = function(n=5,base=10) {
 #' library(tidyverse)
 #' gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
 gg_simple_table = function(df, pts=8, font = "Roboto", unwrapped = FALSE) {
-  font = check_font(font)
+  font = ggrrr::check_font(font)
   p = suppressWarnings(suppressMessages({
     ttheme = gridExtra::ttheme_minimal(
       base_size = pts, base_colour = "black", base_family = font,
-      parse = FALSE, padding = unit(c(4, 1.5), "mm"),
+      parse = FALSE, padding = grid::unit(c(4, 1.5), "mm"),
       core=list(fg_params=list(hjust=0, x=0.1), bg_params = list(fill = "#FFFFFF", alpha=1, col=NA)),
       colhead=list(fg_params=list(hjust=0, x=0.1), bg_params = list(fill = "#FFFFFF", alpha=1, col=NA))
     )
     g = gridExtra::tableGrob(d = df,rows = NULL,theme = ttheme)
     g <- gtable::gtable_add_grob(g,
                                  grobs = grid::segmentsGrob( # line across the bottom
-                                   x0 = unit(0,"npc"),
-                                   y0 = unit(0,"npc"),
-                                   x1 = unit(1,"npc"),
-                                   y1 = unit(0,"npc"),
+                                   x0 = grid::unit(0,"npc"),
+                                   y0 = grid::unit(0,"npc"),
+                                   x1 = grid::unit(1,"npc"),
+                                   y1 = grid::unit(0,"npc"),
                                    gp = grid::gpar(lwd = 2.0)),
                                  t = nrow(g), l = 1, r = ncol(g))
     g <- gtable::gtable_add_grob(g,
                                  grobs = grid::grobTree(
                                    grid::segmentsGrob( # line across the top
-                                     x0 = unit(0,"npc"),
-                                     y0 = unit(1,"npc"),
-                                     x1 = unit(1,"npc"),
-                                     y1 = unit(1,"npc"),
+                                     x0 = grid::unit(0,"npc"),
+                                     y0 = grid::unit(1,"npc"),
+                                     x1 = grid::unit(1,"npc"),
+                                     y1 = grid::unit(1,"npc"),
                                      gp = grid::gpar(lwd = 2.0)),
                                    grid::segmentsGrob( # line across the bottom
-                                     x0 = unit(0,"npc"),
-                                     y0 = unit(0,"npc"),
-                                     x1 = unit(1,"npc"),
-                                     y1 = unit(0,"npc"),
+                                     x0 = grid::unit(0,"npc"),
+                                     y0 = grid::unit(0,"npc"),
+                                     x1 = grid::unit(1,"npc"),
+                                     y1 = grid::unit(0,"npc"),
                                      gp = grid::gpar(lwd = 1.0))
                                  ),
                                  t = 1, l = 1, r = ncol(g))
@@ -317,13 +348,19 @@ gg_simple_table = function(df, pts=8, font = "Roboto", unwrapped = FALSE) {
 #' @param longFormatTable a table - usually converted using as.long_format_table()
 #' @param colWidths (optional) the relative widths of the columns.
 #' @param tableWidthInches the maximum desired width of the plot. Text will be scaled to fit this width.
+#' @param font the default font family
 #' @param ... passed to as.long_format_table if and only if the input is not already in that format.
 #'
 #' @return a ggplot object containing the table as a ggplot.
 #' @export
 gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInches=5.9, font="Roboto", ...) {
-  font = check_font(font)
-  if (!("long_format_table" %in%  class(longFormatTable))) longFormatTable = as.long_format_table(longFormatTable, colWidths = colWidths, fontName=font, ...)
+
+  hux = colSpan = rowSpan = y1 = y0 = x0 = x1 = ay0 = ay1 = label = fontName = fontSize = textwidth = width =
+    textheight = height = topBorderWeight = size = bottomBorderWeight = leftBorderWeight = rightBorderWeight =
+    xpos = ypos = vjust = hjust = fontFace = x = y = xend = yend = NULL  # remove global binding note
+
+  font = ggrrr::check_font(font)
+  if (!("long_format_table" %in%  class(longFormatTable))) longFormatTable = ggrrr::as.long_format_table(longFormatTable, colWidths = colWidths, fontName=font, ...)
   if(is.null(colWidths)) colWidths = attr(longFormatTable,"colWidths")
   colWidths = colWidths/sum(colWidths)
   if (any(is.na(colWidths))) colWidths = rep(1/ncol(hux), ncol(hux))
@@ -336,43 +373,43 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
   rowHeights = rep(1/nrow, nrow)
 
   tidy2 = longFormatTable %>%
-    mutate(
+    dplyr::mutate(
       colMax = col+colSpan-1,
       rowMax = row+rowSpan-1,
     ) %>%
-    inner_join(
-      tibble(col=1:(length(colWidths)+1), x0=c(0,cumsum(colWidths))),
+    dplyr::inner_join(
+      dplyr::tibble(col=1:(length(colWidths)+1), x0=c(0,cumsum(colWidths))),
       by="col"
     ) %>%
-    inner_join(
-      tibble(colMax=0:(length(colWidths)), x1=c(0,cumsum(colWidths))),
+    dplyr::inner_join(
+      dplyr::tibble(colMax=0:(length(colWidths)), x1=c(0,cumsum(colWidths))),
       by="colMax"
     ) %>%
-    inner_join(
-      tibble(row=1:(length(rowHeights)+1), y0=c(0,cumsum(rowHeights))),
+    dplyr::inner_join(
+      dplyr::tibble(row=1:(length(rowHeights)+1), y0=c(0,cumsum(rowHeights))),
       by="row"
     ) %>%
-    inner_join(
-      tibble(rowMax=0:(length(rowHeights)), y1=c(0,cumsum(rowHeights))),
+    dplyr::inner_join(
+      dplyr::tibble(rowMax=0:(length(rowHeights)), y1=c(0,cumsum(rowHeights))),
       by="rowMax"
-    ) %>% mutate(
+    ) %>% dplyr::mutate(
       # flip y axis
       ay0 = 1-y1,
       ay1 = 1-y0,
       cx = (x0+x1)/2,
       cy = (ay0+ay1)/2
-    ) %>% mutate(
-      xpos = case_when(alignment=="START"~x0,alignment=="CENTER"~cx,alignment=="RIGHT"~x1,TRUE~cx),
-      hjust = case_when(alignment=="START"~0,alignment=="CENTER"~0.5,alignment=="RIGHT"~1,TRUE~0.5),
-      ypos = case_when(valignment=="TOP"~ay1,valignment=="MIDDLE"~cy,valignment=="BOTTOM"~ay0,TRUE~cy),
-      vjust = case_when(valignment=="TOP"~1,valignment=="MIDDLE"~0.5,valignment=="BOTTOM"~0,TRUE~0.5),
+    ) %>% dplyr::mutate(
+      xpos = dplyr::case_when(alignment=="START"~x0,alignment=="CENTER"~cx,alignment=="RIGHT"~x1,TRUE~cx),
+      hjust = dplyr::case_when(alignment=="START"~0,alignment=="CENTER"~0.5,alignment=="RIGHT"~1,TRUE~0.5),
+      ypos = dplyr::case_when(valignment=="TOP"~ay1,valignment=="MIDDLE"~cy,valignment=="BOTTOM"~ay0,TRUE~cy),
+      vjust = dplyr::case_when(valignment=="TOP"~1,valignment=="MIDDLE"~0.5,valignment=="BOTTOM"~0,TRUE~0.5),
     )
 
-  table_width = tidy2 %>% mutate(
+  table_width = tidy2 %>% dplyr::mutate(
     textwidth = .get_text_cms(label, font = fontName,font_size = fontSize)/2.54*72+2,
-  ) %>% group_by(row) %>% summarise(
+  ) %>% dplyr::group_by(row) %>% dplyr::summarise(
     width = max(textwidth*1/(x1-x0)) #* (.is_header_col == FALSE))
-  ) %>% pull(width) %>% max()
+  ) %>% dplyr::pull(width) %>% max()
 
   if (table_width > tableWidthInches*72) {
     scale = tableWidthInches*72/table_width # for scaling text to fit desired width
@@ -380,53 +417,53 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
     scale = 1
   }
 
-  table_height = tidy2 %>% mutate(
+  table_height = tidy2 %>% dplyr::mutate(
     textheight = fontSize+2,
-  ) %>% group_by(col) %>% summarise(
+  ) %>% dplyr::group_by(col) %>% dplyr::summarise(
     height = sum(textheight)
-  ) %>% ungroup() %>% pull(height) %>% max()
+  ) %>% dplyr::ungroup() %>% dplyr::pull(height) %>% max()
 
 
-  borders = bind_rows(
-    tidy2 %>% mutate(size=gg_label_size(topBorderWeight)) %>% select(x=x0,y=ay1,xend=x1,yend=ay1,size),
-    tidy2 %>% mutate(size=gg_label_size(bottomBorderWeight)) %>% select(x=x0,y=ay0,xend=x1,yend=ay0,size),
-    tidy2 %>% mutate(size=gg_label_size(leftBorderWeight)) %>% select(x=x0,y=ay0,xend=x0,yend=ay1,size),
-    tidy2 %>% mutate(size=gg_label_size(rightBorderWeight)) %>% select(x=x1,y=ay0,xend=x1,yend=ay1,size)
-  ) %>% filter(size>0) %>% distinct()
+  borders = dplyr::bind_rows(
+    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(topBorderWeight)) %>% dplyr::select(x=x0,y=ay1,xend=x1,yend=ay1,size),
+    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(bottomBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x1,yend=ay0,size),
+    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(leftBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x0,yend=ay1,size),
+    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(rightBorderWeight)) %>% dplyr::select(x=x1,y=ay0,xend=x1,yend=ay1,size)
+  ) %>% dplyr::filter(size>0) %>% dplyr::distinct()
 
-  g = ggplot(tidy2)+
-    geom_label(mapping = aes(
+  g = ggplot2::ggplot(tidy2)+
+    ggplot2::geom_label(mapping = ggplot2::aes(
       x=xpos,y=ypos,vjust=vjust,hjust=hjust,label=label,
       # TODO: for some massivley obscure reason this does not work.
       # This is despite it ought to work and
       # ggplot(mtcars, aes(x=wt, y=mpg, label=rownames(mtcars))) + geom_label(aes(family=c("Times New Roman", "Roboto")[am+1],fontface=c("bold", "italic")[am+1]))
       # Does do what it is supposed to
       family=fontName,fontface=fontFace,
-      size=gg_label_size(fontSize)*scale), # Shrink the label to ensure the table fits the max table width
-      label.size=0, label.padding = unit(2*scale,"pt")
+      size=ggrrr::gg_label_size(fontSize)*scale), # Shrink the label to ensure the table fits the max table width
+      label.size=0, label.padding = grid::unit(2*scale,"pt")
     )+
-    theme(
-      line = element_blank(), rect = element_blank(),
-      axis.ticks.length = unit(0, "pt"), axis.ticks.length.x = NULL,
+    ggplot2::theme(
+      line = ggplot2::element_blank(), rect = ggplot2::element_blank(),
+      axis.ticks.length = grid::unit(0, "pt"), axis.ticks.length.x = NULL,
       axis.ticks.length.x.top = NULL, axis.ticks.length.x.bottom = NULL,
       axis.ticks.length.y = NULL, axis.ticks.length.y.left = NULL,
       axis.ticks.length.y.right = NULL, legend.box = NULL,
-      axis.text = element_blank(),
-      axis.text.x = element_blank(),
-      axis.text.x.bottom = element_blank(),
-      axis.text.x.top = element_blank(),
-      axis.text.y = element_blank(),
-      axis.text.y.left = element_blank(),
-      axis.text.y.right = element_blank(),
-      axis.title = element_blank(),
-      plot.margin = unit(c(0,0,0,0), units = "pt")
+      axis.text = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.text.x.bottom = ggplot2::element_blank(),
+      axis.text.x.top = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      axis.text.y.left = ggplot2::element_blank(),
+      axis.text.y.right = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank(),
+      plot.margin = grid::unit(c(0,0,0,0), units = "pt")
     )+
-    coord_fixed(ratio = table_height/table_width,xlim = c(0,1),ylim = c(0,1))+
-    geom_segment(data = borders, mapping=aes(x=x,y=y,xend=xend,yend=yend,size=size), inherit.aes = FALSE)+
-    scale_size_identity()+
+    ggplot2::coord_fixed(ratio = table_height/table_width,xlim = c(0,1),ylim = c(0,1))+
+    ggplot2::geom_segment(data = borders, mapping=ggplot2::aes(x=x,y=y,xend=xend,yend=yend,size=size), inherit.aes = FALSE)+
+    ggplot2::scale_size_identity()+
     # scale_discrete_identity(c("family","fontface"))+
-    scale_x_continuous(expand = c(0,0))+
-    scale_y_continuous(expand = c(0,0))
+    ggplot2::scale_x_continuous(expand = c(0,0))+
+    ggplot2::scale_y_continuous(expand = c(0,0))
 
   attr(g,"target.width")=table_width*scale/72
   class(g) = c("formatted.table",class(g))
@@ -440,7 +477,6 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
 #'
 #' @docType data
 #' @name std_size
-#' @usage data(std_size)
 #' @format A list with width and height in inches
 #' @export
 std_size = list(
@@ -457,6 +493,8 @@ std_size = list(
   slide = list(width=12,height=6,rot=0)
 )
 
+# Outputs ----
+
 #' Save a plot to multiple formats
 #'
 #' Saves a ggplot object to disk at a set physical size. Allows specific maximum dimensions
@@ -465,7 +503,7 @@ std_size = list(
 #' publication or png for inclusion in documents, and makes sure that the outputs are
 #' near identical.
 #'
-#' @param filename base of target filename (excuding extension).
+#' @param filename base of target filename (excluding extension).
 #' @param plot a GGplot object or none
 #' @param size a standard size see `std_size`
 #' @param maxWidth maximum width in inches
@@ -474,7 +512,6 @@ std_size = list(
 #' @param formats some of png, pdf, Rdata
 #'
 #' @keywords plot
-#' @import ggplot2
 #' @return the output is an sensible default object that can be displayed given the context it is called in,
 #' for example if knitting an RMarkdown document a link to the png file for embedding, if latex
 #' a link to the pdf file.
@@ -518,7 +555,7 @@ gg_save_as = function(plot,filename = tempfile(),
         withExt("pdf"),
         plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), bg = "transparent");
       try(
-        embedFonts(withExt("pdf")),
+        grDevices::embedFonts(withExt("pdf")),
         silent=TRUE
       );
 
@@ -528,7 +565,7 @@ gg_save_as = function(plot,filename = tempfile(),
         withExt("pdf"),
         plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), bg = "transparent",device = cairo_pdf);
       try(
-        embedFonts(withExt("pdf")),
+        grDevices::embedFonts(withExt("pdf")),
         silent=TRUE
       );
 

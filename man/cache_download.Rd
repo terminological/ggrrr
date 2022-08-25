@@ -10,7 +10,8 @@ cache_download(
   .nocache = getOption("cache.disable", default = FALSE),
   .cache = getOption("cache.download.dir", default =
     rappdirs::user_cache_dir("ggrrr-download")),
-  .stale = getOption("cache.stale", default = Inf)
+  .stale = getOption("cache.stale", default = Inf),
+  .extn = NULL
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ cache_download(
 \item{.cache}{the location of the downloaded files}
 
 \item{.stale}{how long to leave this file before replacing it.}
+
+\item{.extn}{the file name extension}
 }
 \value{
 the path to the downloaded file

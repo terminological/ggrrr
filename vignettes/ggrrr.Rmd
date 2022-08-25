@@ -20,28 +20,43 @@ library(tidyverse)
 # library(tidyverse)
 library(ggrrr)
 # devtools::load_all("~/Git/ggrrr")
-
-devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-multiarch"))
-  
+here::i_am("vignettes/ggrrr.Rmd")
 ```
 
-# ggplot utilities
+# File output
+
+determining where an output file when you may want date versioning.
 
 ```{r}
 
+# an output directory in the current project with date versioning in the filename itself
+out = outputter(here::here("output"))
+out("figure1.png")
+
+# an output directory in a temp directory which has versioned subdirectories
+out2 = outputter(tempdir(),datedSubdirectory = TRUE)
+out2("figure1.png")
+out2("supplementary1.xlsx",delete = TRUE)
+
+# unversioned files in temp directory
+out3 = outputter(tempdir(),datedSubdirectory = FALSE,datedFile = FALSE)
+out3("figure1.png")
+
+
+```
+
+# Ggplot utilities
+
+```{r}
+
+# set a range of defaults for graphs
 ggrrr::gg_pedantic(font = "Roboto")
 
+# Create a graph and save it to a png and pdf with near exact matches in output layout and to fit in a third A4 page
 plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
-plot %>% gg_save_as(tempfile())
-```
+plot %>% gg_save_as(out2("diamonds1"), size = std_size$third)
 
-```{r}
-plot+gg_hide_X_axis()+gg_hide_Y_axis()+gg_hide_legend()
-```
-
-
-```{r}
-plot+gg_narrow()+gg_resize_legend(spaceLegend = 1,pointSize = 4,textSize = 12)+gg_watermark("PRELIM")
+message("Files were saved as: \n",out2("diamonds1"),".png\n",out2("diamonds1"),".pdf")
 
 ```
 
@@ -63,18 +78,3 @@ tableExample = diamonds %>%
 tableExample %>% gg_simple_table(font = "Roboto")
 ```
 
-A more complex example
-
-```{r}
-# devtools::load_all("~/Git/ggrrr")
-# tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
-tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Space Mono",fontSize = 8) 
-tablePlot %>% gg_save_as(tempfile())
-```
-
-# Tabular data exported to multiple output formats
-
-```{r}
-#devtools::load_all("~/Git/ggrrr")
-tableExample %>% hux_default_layout(defaultFont = "Gulzar") %>% hux_save_as("~/tmp/table2")
-```

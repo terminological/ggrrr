@@ -15,6 +15,8 @@
 #' pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
 pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 
+  r = p = NULL  # remove global binding note
+
   if(length(sds) != length(means)) stop("means and sds vectors must be the same length")
 
   if (na.rm == TRUE) {
@@ -28,10 +30,10 @@ pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
   }
 
   if (.allEqual(means) & .allEqual(sds)) {
-    return(pnorm(p,means[1],sds[1]))
+    return(stats::pnorm(p,means[1],sds[1]))
   }
 
-  m = weights/sum(weights) * sapply(q, function(x) pnorm(x, means, sds))
+  m = weights/sum(weights) * sapply(q, function(x) stats::pnorm(x, means, sds))
   apply(m,MARGIN=2,sum)
 
 }
@@ -71,14 +73,14 @@ qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
   }
 
   if (.allEqual(means) & .allEqual(sds)) {
-    return(qnorm(p,means[1],sds[1]))
+    return(stats::qnorm(p,means[1],sds[1]))
   }
   # the min minmax below is computed to supply a range to the solver
   # the solution must be between the min and max
   # quantile of the mixed distributions
-  minmax <- range(sapply(p, function(x) qnorm(x,means,sds)))
+  minmax <- range(sapply(p, function(x) stats::qnorm(x,means,sds)))
   solve = tryCatch({
-    sapply(p, function(qPrime) uniroot(function(x) pmixnorm(x,means,sds,weights)-qPrime,interval = minmax,tol = 10^{-16})$root)
+    sapply(p, function(qPrime) stats::uniroot(function(x) ggrrr::pmixnorm(x,means,sds,weights)-qPrime,interval = minmax,tol = 10^{-16})$root)
   }, error = browser)
   names(solve) = paste0("Q.",p)
   return(solve)
@@ -100,7 +102,9 @@ qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 #' @examples
 #' library(tidyverse)
 #' # generate a mixture confidence interval from a set of distributions
-#' sprintf_list("%1.2f [%1.2f\u2013%1.2f]",qmixnorm(p=c(0.5,0.025,0.975), means=c(10,13,14), sds=c(1,1,2)))
+#' sprintf_list("%1.2f [%1.2f\u2013%1.2f]",
+#'  qmixnorm(p=c(0.5,0.025,0.975),
+#'  means=c(10,13,14), sds=c(1,1,2)))
 sprintf_list = function(format, params, na.replace="\u2015") {
   if(any(is.na(params))) return(na.replace)
   do.call(sprintf, c(as.list(format), as.list(params)))

@@ -19,6 +19,8 @@ gg_formatted_table(
 
 \item{tableWidthInches}{the maximum desired width of the plot. Text will be scaled to fit this width.}
 
+\item{font}{the default font family}
+
 \item{...}{passed to as.long_format_table if and only if the input is not already in that format.}
 }
 \value{

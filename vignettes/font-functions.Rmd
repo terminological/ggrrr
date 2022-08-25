@@ -1,0 +1,45 @@
+---
+title: 'Font functions'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Font functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+There are quite a few systems for font management in R. A key part of our work is trying to make graphs and tables cross platform reproducible, and consistent. This means
+dealing with fonts across different platforms.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggrrr)
+```
+
+## Transparently ensure a font is available
+
+Instead of specifying a font family as a character in a call to ggplot, we can use a `check_font()` call which tries to find the font on your system and if not available downloads it from google fonts and registers it with `sysfonts` and `systemfonts`, returning the family name. 
+
+This also sets ggplot to use showtext as the font provider.
+
+```{r cars}
+check_font("Roboto")
+```
+
+## Check what fonts are available
+
+Find out what fonts `ggrrr` can find on this system. 
+
+```{r}
+# list all available fonts
+fonts_available()
+
+# Check if specific fonts are available
+fonts_available(c("Roboto","Arial","Helvetica"))
+```
+
+# Download a font from google
+
+Downloads and installs the font into both `sysfonts` and `systemfonts` packages. This is generally used internally by `check_font`.
+
+```{r}
+google_font("Roboto")
+```

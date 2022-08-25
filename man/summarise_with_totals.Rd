@@ -34,6 +34,10 @@ allows for a natural grouped and ungrouped summarisation
 }
 \examples{
 library(tidyverse)
-diamonds \%>\% dplyr::group_by(color,cut) \%>\%
-   summarise_with_totals(mpg = sprintf("\%1.1f \u00B1 \%1.1f", mean(price), sd(price)), .total = "Overall")
+diamonds \%>\%
+ dplyr::group_by(color,cut) \%>\%
+ summarise_with_totals(
+    mpg = sprintf("\%1.1f \u00B1 \%1.1f", mean(price), sd(price)),
+    .total = "Overall"
+ )
 }

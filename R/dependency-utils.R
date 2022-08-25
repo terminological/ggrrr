@@ -11,10 +11,12 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' library(tidyverse)
 #' ggrrr::unstable()
+#' }
 unstable = function(pkg = "ggrrr", org="terminological") {
-  if (pkg %in% rownames(installed.packages())) devtools::unload(pkg)
+  if (pkg %in% rownames(utils::installed.packages())) devtools::unload(pkg)
   if (file.exists(sprintf("~/Git/%s",pkg))) {
     devtools::document(sprintf("~/Git/%s",pkg),quiet = TRUE)
     devtools::install_local(sprintf("~/Git/%s",pkg), force=TRUE,upgrade = FALSE)
@@ -48,8 +50,8 @@ is_installed = function(packageName) {
 #' cran("tidyverse")
 cran = function(cran_deps) {
   for (package in cran_deps) {
-    if (!is_installed(package)) {
-      install.packages(package)
+    if (!rlang::is_installed(package)) {
+      utils::install.packages(package)
     }
   }
   invisible(NULL)
@@ -71,7 +73,7 @@ cran = function(cran_deps) {
 #' @examples
 #' non_cran("patchwork", "thomasp85/patchwork")
 non_cran = function(name,github,force=FALSE,subdir="",...) {
-  if (force | !name %in% c(devtools::dev_packages(),rownames(installed.packages()))) {
+  if (force | !name %in% c(devtools::dev_packages(),rownames(utils::installed.packages()))) {
     local = paste0("~/Git/",name,"/",subdir)
     if (fs::dir_exists(local)) {
       devtools::load_all(local)

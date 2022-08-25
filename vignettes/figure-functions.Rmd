@@ -1,0 +1,113 @@
+---
+title: 'Figure functions'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Figure functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(patchwork)
+```
+
+```{r setup}
+library(ggrrr)
+out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
+```
+
+# Opinionated defaults for figures
+
+`ggrrr` sets a default theme and overrides default line sizes and text sizes to base figures around 8pt sans serif labels.
+
+```{r}
+
+ggrrr::gg_pedantic()
+
+plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
+plot
+```
+
+There are utility functions to switch off various bits of the plot
+
+```{r}
+plot+gg_hide_X_axis()+gg_hide_Y_axis()+gg_hide_legend()
+```
+
+to control the legend size, arrange the plot to fit a narrower space and put a watermark in the plot
+
+```{r}
+plot+gg_narrow()+gg_resize_legend(spaceLegend = 1,pointSize = 4,textSize = 12)+gg_watermark("PRELIM")
+
+```
+
+## Tabular data in ggplots
+
+A simple table as a ggplot grob makes it easier to combine plots and tables. This simple table has very little control on the output.
+
+```{r}
+tableExample = diamonds %>% 
+  mutate(size = cut(carat, breaks=c(-Inf,quantile(carat, probs = c(0.25,0.75)),Inf), labels=c("small","medium","large")) %>% as.factor()) %>%
+  group_by(size,cut) %>%
+  summarise(
+    N = n(),
+    depth = sprintf_list("%1.2f (IQR %1.2f \u2014 %1.2f)", quantile(depth,c(0.5,0.25,0.75))),
+    price = sprintf_list("%1.0f (IQR %1.0f \u2014 %1.0f)", quantile(price,c(0.5,0.25,0.75)))
+  )
+  
+
+tbl = tableExample %>% gg_simple_table(font = "Roboto")
+p2 = plot+tbl+labs(tag = "B")+patchwork::plot_layout(ncol=1)
+p2
+```
+
+## Fixed sizes for save
+
+Previewing ggplots in RStudion resizes the plot to fit the windows, scaling the labels independently of the plot. 
+This is annoying when you are designing a plot for publication and the label sizes change with the size of the overall image.
+`ggrrr` can force ggplot to render it at the size it will be printed at. In doing so it produces both a PNG and PDF output which will be
+(very nearly) identical. It also by default saves an .Rdata of the ggplot object allowing later adjustment.
+
+```{r}
+f = out("figure1")
+p2 %>% gg_save_as(out("figure1"),size = std_size$two_third)
+fs::dir_ls(fs::path_dir(f),glob = paste0(f,"*"))
+```
+
+In general journals don't like this mixture of figures and tables however simple tables are also good to add as annotations to a plot. 
+For this annotating an unwrapped grob is needed e.g.:
+
+```{r}
+tableExample2 = diamonds %>% 
+  mutate(size = cut(carat, breaks=c(-Inf,quantile(carat, probs = c(0.25,0.75)),Inf), labels=c("small","medium","large")) %>% as.factor()) %>%
+  group_by(size) %>%
+  summarise(
+    N = n(),
+    depth = sprintf_list("%1.2f (IQR %1.2f \u2014 %1.2f)", quantile(depth,c(0.5,0.25,0.75))),
+    price = sprintf_list("%1.0f (IQR %1.0f \u2014 %1.0f)", quantile(price,c(0.5,0.25,0.75)))
+  )
+
+tbl2 = tableExample2 %>% gg_simple_table(font = "Roboto",unwrapped = TRUE)
+plot+annotation_custom(tbl2)
+
+```
+laying these tables out is tricky, and is worth looking at the `ggpp` package for assistance.
+
+# Scaling tables to fit
+
+A more complex tabular layout can be achieved which auto scales text to fit the specific dimensions provided.
+
+```{r}
+# devtools::load_all("~/Git/ggrrr")
+# tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
+tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Roboto",fontSize = 8) 
+tablePlot %>% gg_save_as(tempfile(),maxWidth = 4)
+```
+
+

@@ -1,0 +1,48 @@
+---
+title: 'Table functions'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Table functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+devtools::load_all()
+out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
+if (interactive()) devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-multiarch"))
+```
+
+# Create a table from a tibble
+
+This is a wrapper 
+
+```{r}
+simpleTable = tibble(
+  Type = c("apples","pears","bananas"),
+  Quantity = c(21,34,15)
+)
+
+simpleTable %>% hux_default_layout() %>% hux_save_as(out("t1"), std_size$third)
+```
+
+
+```{r}
+summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,clarity) %>% summarise(
+  `average size (carat)` = sprintf("%1.2f [%1.2f \u2014 %1.2f]", mean(carat), mean(carat)-1.96*sd(carat), mean(carat)+1.96*sd(carat)),
+  `median price` = sprintf_list("%1.0f [%1.0f \u2014 %1.0f]", quantile(price, c(0.5,0.25,0.75)))
+)
+
+table = summary %>% hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
+
+table %>% hux_default_layout(defaultFontSize = 8) %>% hux_save_as(out("mulitpage_t2"), std_size$third)
+
+```
+
+
+
+

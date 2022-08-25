@@ -9,14 +9,13 @@
 #' @param defaultFont the font family name
 #' @param headerRows the number of rows that are headers
 #' @keywords huxtable
-#' @import huxtable
 #' @return the formatted huxtable.
 #' @export
 #' @examples
 #' library(tidyverse)
 #' hux = iris %>% hux_default_layout()
 hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
-  defaultFont = check_font(defaultFont)
+  defaultFont = ggrrr::check_font(defaultFont)
   # TODO: load it from google if not.
   if(!huxtable::is_hux(hux)) hux = huxtable::as_hux(hux)
   return( hux %>%
@@ -41,7 +40,7 @@ hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", he
 #' @return the altered huxtable
 #' @export
 hux_set_font = function(hux, defaultFontSize=8, defaultFont = "Roboto") {
-  defaultFont = check_font(defaultFont)
+  defaultFont = ggrrr::check_font(defaultFont)
   hux %>%
     huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
     huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont)
@@ -68,36 +67,38 @@ hux_set_font = function(hux, defaultFontSize=8, defaultFont = "Roboto") {
 #' @export
 hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014", ...) {
 
-  if(tidyDf %>% group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
+  name = .y = .x = value = rows = NULL  # remove global binding note
+
+  if(tidyDf %>% dplyr::group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% dplyr::pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
 
   cols = lapply(colnames(tidyDf),as.symbol)
   data = colnames(tidyDf)[!colnames(tidyDf) %in% sapply(c(rowGroupVars, colGroupVars),as_label)]
 
   tmp = tidyDf %>%
-    ungroup() %>%
-    mutate(across(.cols = all_of(data), as.character)) %>%
-    pivot_longer(cols = data) %>%
-    mutate(name = factor(name,levels=data)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(dplyr::across(.cols = tidyr::all_of(data), as.character)) %>%
+    tidyr::pivot_longer(cols = data) %>%
+    dplyr::mutate(name = factor(name,levels=data)) %>%
     #TODO formatters?
-    ungroup() %>%
-    group_by(!!!colGroupVars,name) %>%
-    arrange(!!!rowGroupVars) %>%
-    mutate(.x = cur_group_id()) %>%
-    group_by(!!!rowGroupVars) %>%
-    mutate(.y = cur_group_id())
+    dplyr::ungroup() %>%
+    dplyr::group_by(!!!colGroupVars,name) %>%
+    dplyr::arrange(!!!rowGroupVars) %>%
+    dplyr::mutate(.x = dplyr::cur_group_id()) %>%
+    dplyr::group_by(!!!rowGroupVars) %>%
+    dplyr::mutate(.y = dplyr::cur_group_id())
 
   # browser()
 
-  rowHeadings = tmp %>% ungroup() %>% select(!!!rowGroupVars,.y) %>% arrange(.y) %>% distinct()
-  colHeadings = tmp %>% ungroup() %>% select(!!!colGroupVars,name,.x) %>% arrange(.x) %>% distinct()
+  rowHeadings = tmp %>% dplyr::ungroup() %>% dplyr::select(!!!rowGroupVars,.y) %>% dplyr::arrange(.y) %>% dplyr::distinct()
+  colHeadings = tmp %>% dplyr::ungroup() %>% dplyr::select(!!!colGroupVars,name,.x) %>% dplyr::arrange(.x) %>% dplyr::distinct()
 
-  colHux = as.data.frame(unname(t(colHeadings %>% select(-.x))),stringsAsFactors = FALSE)
+  colHux = as.data.frame(unname(t(colHeadings %>% dplyr::select(-.x))),stringsAsFactors = FALSE)
   colnames(colHux) = 1:length(colHux)
 
-  hux = tmp %>% ungroup() %>% select(.y,.x,value) %>% mutate(value = ifelse(is.na(value), na, value)) %>%
-    pivot_wider(names_from = .x, values_from = value, values_fill=missing) %>% arrange(.y) %>% select(-.y)
+  hux = tmp %>% dplyr::ungroup() %>% dplyr::select(.y,.x,value) %>% dplyr::mutate(value = ifelse(is.na(value), na, value)) %>%
+    tidyr::pivot_wider(names_from = .x, values_from = value, values_fill=missing) %>% dplyr::arrange(.y) %>% dplyr::select(-.y)
 
-  rowHux = rowHeadings %>% select(-.y) %>% mutate(across(everything(), as.character))
+  rowHux = rowHeadings %>% dplyr::select(-.y) %>% dplyr::mutate(dplyr::across(tidyr::everything(), as.character))
 
   # browser()
   xOffset = length(colnames(rowHux))
@@ -105,20 +106,20 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
   topCornerHux = as.data.frame(t(matrix(c(rep("",(yOffset-1)*xOffset),colnames(rowHux)),nrow = xOffset,byrow = FALSE)),stringsAsFactors = FALSE)
   colnames(topCornerHux) = colnames(rowHux)
   #browser()
-  fullHux = bind_cols(
-    bind_rows(topCornerHux,rowHux),
-    bind_rows(colHux,hux)
+  fullHux = dplyr::bind_cols(
+    dplyr::bind_rows(topCornerHux,rowHux),
+    dplyr::bind_rows(colHux,hux)
   )
 
   fullHux = fullHux %>% huxtable::hux(add_colnames = FALSE) %>%
     huxtable::set_header_rows(1:yOffset, TRUE) %>%
     huxtable::set_header_cols(1:xOffset, TRUE) %>%
-    hux_default_layout(headerRows = yOffset, ...)
+    ggrrr::hux_default_layout(headerRows = yOffset, ...)
 
   # do column merges
   tmpVars = colGroupVars
   while(length(tmpVars)>0) {
-    for( mergeCols in colHeadings %>% group_by(!!!tmpVars) %>% summarise(cols = list(unique(.x))) %>% pull(cols)) {
+    for( mergeCols in colHeadings %>% dplyr::group_by(!!!tmpVars) %>% dplyr::summarise(cols = list(unique(.x))) %>% dplyr::pull(cols)) {
       # mergeCols = colHeadings %>% group_by(!!!tmpVars) %>% group_data() %>% pull(.rows) %>% `[[`(1)
       rowIndex = length(tmpVars)
       l = min(mergeCols)+xOffset
@@ -127,17 +128,17 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
       fullHux = fullHux %>% huxtable::merge_cells(col=lr, row=rowIndex)
       # column borders?
     }
-    tmpVars = tmpVars %>% head(-1)
+    tmpVars = tmpVars %>% utils::head(-1)
   }
 
 
   # do row merges
   tmpVars = rowGroupVars
   while(length(tmpVars)>0) {
-    rowGroups = rowHeadings %>% group_by(!!!tmpVars) %>% summarise(rows = list(unique(.y)), count=length(unique(.y)))
+    rowGroups = rowHeadings %>% dplyr::group_by(!!!tmpVars) %>% dplyr::summarise(rows = list(unique(.y)), count=length(unique(.y)))
     # do the merge if and only if there are multiple rows in at least one group.
     if(any(rowGroups$count > 1)) {
-      for( mergeRows in rowGroups %>% pull(rows)) {
+      for( mergeRows in rowGroups %>% dplyr::pull(rows)) {
         # mergeCols = colHeadings %>% group_by(!!!tmpVars) %>% group_data() %>% pull(.rows) %>% `[[`(1)
         colIndex = length(tmpVars)
         l = min(mergeRows)+yOffset
@@ -151,7 +152,7 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
         # column borders?
       }
     }
-    tmpVars = tmpVars %>% head(-1)
+    tmpVars = tmpVars %>% utils::head(-1)
   }
 
   # Fix merged borders.
@@ -174,7 +175,7 @@ hux_nest_group = function(t, col=1) {
   # the row spans for this column
   spans = attributes(t)$rowspan[rows,col]
   # to adjust the rows where the row+span is greater than the maximum row+span so far
-  toadj = (rows+spans)[rows+spans > cummax(lag(rows+spans,default = 0))]
+  toadj = (rows+spans)[rows+spans > cummax(dplyr::lag(rows+spans,default = 0))]
   # reverse them so inserting the rows does not mess up the indices
   toadj = rev(as.integer(names(toadj)))
   t2 = t
@@ -182,9 +183,9 @@ hux_nest_group = function(t, col=1) {
     # insert the row and copy the content
     t2 = huxtable::insert_row(ht = t2, t[row,1:col],fill = t[row,col], after=row-1)
     # spand all the way accross from col to end
-    t2 = t2 %>% set_colspan(row = row, col = col, value = ncol(t)-col+1)
+    t2 = t2 %>% huxtable::set_colspan(row = row, col = col, value = ncol(t)-col+1)
     # clear lower border of just spanned columns
-    t2 = t2 %>% set_bottom_border(row = row, col = col:ncol(t), value = 0)
+    t2 = t2 %>% huxtable::set_bottom_border(row = row, col = col:ncol(t), value = 0)
     # clear the unnested cell
     t2[row+1,col]=""
   }
@@ -198,8 +199,9 @@ hux_nest_group = function(t, col=1) {
 # get the aspect ratio of a bit of text - this gives the width/height of a bit of text
 # TODO I think sysfonts or systemfonts might have something to help here
 .get_text_ar = function(txt, font, face="plain", linespacing=1+1/8) {
-  tmp = tibble(label = txt, font=font, face=face)
-  tmp = tmp %>% mutate(
+  label = NULL # remove global binding note
+  tmp = tidyr::tibble(label = txt, font=font, face=face)
+  tmp = tmp %>% dplyr::mutate(
     lines = label %>% stringr::str_count("\n")+1,
     ar = purrr::pmap_dbl(list(l=label,f=font,ff=face, ll = lines),  function(l,f,ff,ll) {
       tryCatch({
@@ -218,12 +220,13 @@ hux_nest_group = function(t, col=1) {
 
 # get the width of a bit of text based on the font size
 .get_text_cms <- function(txt, font = "sans", font_size = 8, linespacing=1+1/8) {
+  heightCms = widthCms = NULL # remove global binding note
   ret = .get_text_ar(txt,font)
   ret = ret %>%
-    mutate(
+    dplyr::mutate(
       heightCms = (lines+(lines-1)*(linespacing-1))*font_size/72*2.54,
       widthCms = heightCms*ar) %>%
-    pull(widthCms)
+    dplyr::pull(widthCms)
 
   return(ret)
 }
@@ -247,12 +250,15 @@ hux_nest_group = function(t, col=1) {
 #' library(tidyverse)
 #' iris %>% fit_col_widths()
 fit_col_widths = function(table) {
-  table %>% as.long_format_table() %>%
-    mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% pull(ar)) %>%
-    filter(colSpan == 1) %>%
-    group_by(col) %>%
-    summarise(ar = max(ar)) %>%
-    arrange(col) %>% pull(ar)
+
+  label= fontName = fontFace = colSpan = NULL # remove global binding note
+
+  table %>% ggrrr::as.long_format_table() %>%
+    dplyr::mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% dplyr::pull(ar)) %>%
+    dplyr::filter(colSpan == 1) %>%
+    dplyr::group_by(col) %>%
+    dplyr::summarise(ar = max(ar)) %>%
+    dplyr::arrange(col) %>% dplyr::pull(ar)
 }
 
 #' Calculate a sensible column and table width for a huxtable based on its content.
@@ -264,12 +270,15 @@ fit_col_widths = function(table) {
 #' @return the huxtable with the width options set.
 #' @export
 hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
+
+  value = minStrwidth = newwidth = NULL  # remove global binding note
+
   # TODO: this needs a bit of a tidy up.
-  fontSize = median(huxtable::font_size(hux))
+  fontSize = stats::median(huxtable::font_size(hux))
   # par(family = "sans", ps = fontSize)
   merged_headers = sum(huxtable::header_rows(hux))-1
   # empirically determined for the default 8pt font size in excel:
-  yourDevice = strwidth("mmmm",units="in")/0.5416667 #my device
+  yourDevice = graphics::strwidth("mmmm",units="in")/0.5416667 #my device
   cmsPerChar = mean(c(5.01/7.461250,  4.22/6.297083, 0.68/0.714375, 3.45/5.000625,   0.68/0.714375, 3.49/5.000625, 2.1/2.963333,  0.95/1.031875))
 
   # Huxtable tries to guess appropriate widths and height for rows and columns; numeric width() and height() are treated as scaling factors:
@@ -287,41 +296,41 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
   if(including_headers) {
     tmp = hux
   } else {
-    tmp = hux %>% filter(row_number()>merged_headers)
+    tmp = hux %>% dplyr::filter(dplyr::row_number()>merged_headers)
   }
 
-  strwidths = tmp %>% ungroup() %>%
-    summarise(across(everything(), .fns = ~ max(.get_text_cms(.x, font_size = fontSize),na.rm = TRUE))) %>%
-    pivot_longer(cols=everything()) %>% rename(strwidth = value)
+  strwidths = tmp %>% dplyr::ungroup() %>%
+    dplyr::summarise(dplyr::across(tidyr::everything(), .fns = ~ max(.get_text_cms(.x, font_size = fontSize),na.rm = TRUE))) %>%
+    tidyr::pivot_longer(cols=tidyr::everything()) %>% dplyr::rename(strwidth = value)
 
   rowspans = tmp %>%
     huxtable::rowspan() %>%
     apply(function(.x) mean(.x),MARGIN = 2) %>%
-    as_vector() %>% enframe() %>%
-    rename(rowspan = value)
+    purrr::as_vector() %>% tibble::enframe() %>%
+    dplyr::rename(rowspan = value)
 
-  words = tmp %>% ungroup() %>%
-    summarise(across(everything(),
-                  .fns = ~ stringr::str_split(.x,fixed(" ")) %>% lapply(length) %>% unlist() %>% max()
+  words = tmp %>% dplyr::ungroup() %>%
+    dplyr::summarise(dplyr::across(tidyr::everything(),
+                  .fns = ~ stringr::str_split(.x,stringr::fixed(" ")) %>% lapply(length) %>% unlist() %>% max()
                   ,na.rm = TRUE)) %>%
-    pivot_longer(cols=everything()) %>% rename(words = value)
+    tidyr::pivot_longer(cols=tidyr::everything()) %>% dplyr::rename(words = value)
 
   # a maximum single word length in a column.
-  wordLength = tmp %>% ungroup() %>%
-    summarise(across(everything(),
-                     .fns = ~ stringr::str_split(.x,fixed(" ")) %>% lapply(function(.x) .get_text_cms(.x, font_size = fontSize)) %>% unlist() %>% max()
+  wordLength = tmp %>% dplyr::ungroup() %>%
+    dplyr::summarise(dplyr::across(tidyr::everything(),
+                     .fns = ~ stringr::str_split(.x,stringr::fixed(" ")) %>% lapply(function(.x) .get_text_cms(.x, font_size = fontSize)) %>% unlist() %>% max()
                      ,na.rm = TRUE)) %>%
-    pivot_longer(cols=everything()) %>% rename(minStrwidth = value)
+    tidyr::pivot_longer(cols=tidyr::everything()) %>% dplyr::rename(minStrwidth = value)
   # browser()
-  charLen = strwidths %>% inner_join(rowspans, by="name") %>% inner_join(words, by="name") %>% inner_join(wordLength, by="name") %>% mutate(
+  charLen = strwidths %>% dplyr::inner_join(rowspans, by="name") %>% dplyr::inner_join(words, by="name") %>% dplyr::inner_join(wordLength, by="name") %>% dplyr::mutate(
     newwidth = pmax(
       minStrwidth,
-      strwidth * case_when(
+      strwidth * dplyr::case_when(
         rowspan > 1 ~ 1/rowspan,
         words > 4 ~ 2/words,
         TRUE ~ 1)
     )
-  ) %>% pull(newwidth)
+  ) %>% dplyr::pull(newwidth)
 
   charLen = charLen / yourDevice # correct any scaling issues due to device.
   # charLen = charLen * cmsPerChar # charLen is now in cms.
@@ -367,18 +376,21 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 #' @return the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.
 #' @export
 hux_save_as = function(hux,filename,
-                      size = std_size$full, maxWidth = size$width, maxHeight = size$height,
-                      aspectRatio=maxWidth/maxHeight,
-                      formats = c("html","png","pdf"),
-                      defaultFontSize = 8,
-                      sheetname = fs::path_ext_remove(fs::path_file(filename))
-                      ) {
-  if (!huxtable::is_hux(hux)) hux = hux %>% hux_default_layout(defaultFontSize = defaultFontSize)
+      size = std_size$full, maxWidth = size$width, maxHeight = size$height,
+      aspectRatio=maxWidth/maxHeight,
+      formats = c("html","png","pdf"),
+      defaultFontSize = 8,
+      sheetname = fs::path_ext_remove(fs::path_file(filename))
+  ) {
+
+  html2 = NULL  # remove global binding note
+
+  if (!huxtable::is_hux(hux)) hux = hux %>% ggrrr::hux_default_layout(defaultFontSize = defaultFontSize)
   if (.is_knitting() & .is_latex_output()) {
     formats = unique(c(formats,"pdf"))
   }
 
-  if(is_installed("html2pdfr")) {
+  if(requireNamespace("html2pdfr", quietly=TRUE) & utils::packageVersion("html2pdfr") >= "0.4.0") {
     supported = c("html","png","pdf","docx","xlsx")
   } else {
     supported = c("html","docx","xlsx")
@@ -391,10 +403,16 @@ hux_save_as = function(hux,filename,
   if (!dir.exists(dir)) dir.create(dir,recursive = TRUE)
   filename = fs::path_ext_remove(filename)
   withExt = function(extn) {fs::path_ext_set(filename,extn)}
+  matchedFiles = function(extns) {
+    extns = paste0(extns,collapse="|")
+    fs::dir_ls(fs::path_dir(filename),regexp = paste0(rex::escape(filename),"(_[0-9]+)?\\.(",extns,")"))
+  }
 
-  # Does not do anything with the width
+  # clean up any possible outputs from previous run
+  lapply(matchedFiles(supported), function(x) try(unlink(x)))
 
-  lapply(formats, function(x) try(unlink(withExt(x))))
+  fonts_used = hux %>% huxtable::font() %>% as.vector() %>% unique()
+  non_local_fonts = fonts_used[!fonts_used %in% sysfonts::font_files()$family]
 
   if ("docx" %in% formats) {
     doc = officer::read_docx()
@@ -441,11 +459,16 @@ hux_save_as = function(hux,filename,
       hux %>% huxtable::to_html(),
       stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
 
-    write(sprintf("<html><head><meta charset='UTF-8'></head><body>%s</body></html>",html), withExt("html"))
+    # stylesheet for google fonts
+    used_google_fonts = non_local_fonts[non_local_fonts %in% sysfonts::font_families_google()]
+    used_google_fonts = used_google_fonts %>% stringr::str_replace_all("\\s","+")
+    style_dec = paste0("<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=",used_google_fonts,"'/>", collapse = "")
+
+    write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
 
     if (any(c("pdf","png") %in% formats)) {
 
-      if(requireNamespace("html2pdfr", quietly=TRUE) & packageVersion("html2pdfr") >= "0.4.0") {
+      if(requireNamespace("html2pdfr", quietly=TRUE) & utils::packageVersion("html2pdfr") >= "0.4.0") {
 
         conv = html2pdfr::html_converter(.font_paths())
 
@@ -462,7 +485,7 @@ hux_save_as = function(hux,filename,
         )
 
         try(
-          embedFonts(withExt("pdf")),
+          grDevices::embedFonts(withExt("pdf")),
           silent=TRUE
         );
       } else if (requireNamespace("webshot", quietly=TRUE)) {
@@ -482,12 +505,13 @@ hux_save_as = function(hux,filename,
 
           if("pdf" %in% formats) {
             tmp2 = hux
+            # for pdfs with webshot we need to adjust the font size by 2/3 to match png. This was determined empirically and it is really unclear why.
             attr(tmp2,"font_size") = ifelse(is.na(attr(tmp2,"font_size")),defaultFontSize,attr(tmp2,"font_size"))*2/3
-            html2 = stringr::str_remove(
+            eahtml2 = stringr::str_remove(
               tmp2 %>% huxtable::to_html(),
               stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
             tmpHtml = tempfile(fileext = ".html")
-            write(sprintf("<html><head><meta charset='UTF-8'></head><body>%s</body></html>",html2), tmpHtml)
+            write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html2), tmpHtml)
             webshot::webshot(
               url = sprintf("file://%s",tmpHtml),
               file = withExt("pdf"),
@@ -507,7 +531,10 @@ hux_save_as = function(hux,filename,
     }
   }
 
-  # TODO this is totally spurious. Need a much better way that is shared between this and gg_save_as of deciding what to actually display.
+  # TODO logic here is totally spurious and organic.
+  # Need a much better way that is shared between this and gg_save_as of deciding what to actually display.
+  # arguments that it should only display the format as rendered however it is
+  # currently deciding depending on what context called from in an arbitraty way.
 
   if (.is_knitting()) {
     hidetables = getOption("hide.tables",FALSE)
@@ -521,11 +548,12 @@ hux_save_as = function(hux,filename,
         # try and embed in the document
         return(hux %>% huxtable::set_width(1))
       } else {
-        if ("png" %in% formats) {
+        pngs = matchedFiles("png")
+        if (length(pngs)>0) {
           # this will be default output in many situations - a png with fallback to pdf if available.
-          return(knitr::include_graphics(path = withExt("png"),auto_pdf = TRUE, dpi=NA))
+          return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi=300))
         } else if (.is_latex_output() & "pdf" %in% formats) {
-          return(knitr::include_graphics(path = withExt("pdf"),auto_pdf = TRUE, dpi=NA))
+          return(knitr::include_graphics(path = withExt("pdf"),auto_pdf = TRUE, dpi=300))
         } else {
           # just let huxtable decide
           return(hux)
@@ -533,10 +561,18 @@ hux_save_as = function(hux,filename,
       }
     }
   } else {
+    pngs = matchedFiles("png")
     if (.is_running_in_chunk()) {
-      return(htmltools::HTML(hux %>% huxtable::to_html()))
+      if (length(pngs)>0) {
+        # this will be default output in many situations - a png with fallback to pdf if available (and single page).
+        return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi=300))
+      } else {
+        if (length(non_local_fonts) > 0) warning("These fonts used are not installed on this system and will not be rendered properly by RStudio: ",paste0(non_local_fonts,collapse = ", "))
+        return(htmltools::HTML(hux %>% huxtable::to_html()))
+      }
     } else {
       # on a console most likely: display html in the viewer.
+      if (length(non_local_fonts) > 0) warning("These fonts used are not installed on this system and will not be rendered properly by RStudio: ",paste0(non_local_fonts,collapse = ", "))
       return(htmltools::HTML(hux %>% huxtable::to_html()) %>% htmltools::html_print())
     }
   }
@@ -568,8 +604,8 @@ hux_sprintf = function(fmt, ..., na.text = "\u2014") {
 #' @return a ggplot object of the right width
 #' @export
 hux_to_ggplot = function(hux, width=5.9) {
-  longFormatTable = hux %>% as.long_format_table(hux)
-  gg_formatted_table(longFormatTable, width)
+  longFormatTable = hux %>% ggrrr::as.long_format_table(hux)
+  ggrrr::gg_formatted_table(longFormatTable, width)
 }
 
 
@@ -591,3 +627,86 @@ hux_bind_rows = function(...) {
   }
   return(out)
 }
+
+# Collecting a data supplement ----
+
+#' Create a function list that allows for supplementary tables (as huxtables) to be added to a XLSX output file.
+#'
+#' This function encapsulates a excel output file as a destination for data tables. With the output of this
+#' function you can add extra data to the supplement as a new sheet, or you can write the spreadsheet to disk.
+#' When each data table is written either the table can be written silently or returned so that it is included
+#' in a knitr document. This is controlled by `option("hide.supplementary.tables"=TRUE)`.
+#'
+#' @param ... output location options will be passed to outputter(...) to define the location of the file
+#' @param filename the xlsx filename
+#' @param out an outputter (defaults to a default outputter )
+#' @param nameGlue What will the tables be named
+#'
+#' @return a list of 2 functions.
+#' $add_table(hux, caption, footnote, index), which takes a huxtable, caption, and index a writes the huxtable into a supplementary.
+#' $write() which writes the collection of tables to the excel file.
+#' @export
+data_supplement = function(..., filename="supplementary-material.xlsx", out = ggrrr::outputter(...), nameGlue="Supplementary Table {index}") {
+  e1 = new.env(parent = environment())
+  with(e1, {
+
+    .out = out
+    .wb = openxlsx::createWorkbook()
+    .indexes = integer()
+    .default_filename = filename
+    .catalog = tidyr::tibble(table=character(),description=character())
+
+    add_table = function(hux, caption, footnote = NULL, index=NULL, hide=getOption("hide.supplementary.tables",default=TRUE)) {
+      wb = .wb
+      indexes = .indexes
+      if(is.null(index)) index = max(c(indexes,0))+1
+      sheetname = glue::glue(nameGlue)
+      if(sheetname %in% names(wb)) openxlsx::removeWorksheet(wb,sheet = sheetname)
+
+      hux2 = hux %>% ggrrr::hux_auto_widths("xlsx") %>%
+        huxtable::set_caption(paste0(sheetname," - ",caption)) %>%
+        huxtable::set_caption_pos("topleft")
+
+      if (!is.null(footnote)) {
+        hux2 = hux2 %>% huxtable::insert_row(footnote, after=nrow(hux2), colspan = ncol(hux2), fill="",copy_cell_props = FALSE)
+      }
+
+      wb = hux2 %>% huxtable::as_Workbook(Workbook = wb, sheet = sheetname)
+      .catalog <<- .catalog %>% dplyr::filter(table != sheetname) %>% dplyr::bind_rows(tidyr::tibble(table=sheetname,description=caption))
+      .wb <<- wb
+      # indexes keeps track of order in which sheets added and overwritten
+      .indexes <<- unique(c(indexes,index),fromLast = TRUE)
+      if(!hide) return(hux2 %>% huxtable::set_width("auto"))
+      invisible(sheetname)
+    }
+
+    write = function(filename = .out(.default_filename)) {
+
+      cat = .catalog %>%
+        dplyr::mutate(.sort = dplyr::dense_rank(.indexes)) %>%
+        dplyr::arrange(.sort) %>%
+        dplyr::select(-.sort) %>%
+        huxtable::as_hux(add_colnames=FALSE) %>%
+        huxtable::set_caption("Supplementary materials - table of contents") %>%
+        huxtable::set_caption_pos("topleft") %>%
+        huxtable::set_col_width(c(0.2,0.8)) %>%
+        # 25 here is the desired with of the table of contents
+        huxtable::set_width((25 / 0.206) / (20*ncol(.catalog)))
+      # %>%
+      # huxtable::set_height(nrow(.catalog)*20) %>%
+      # huxtable::set_row_height(rep(1/(nrow(.catalog)+1),(nrow(.catalog)+1)))
+
+      wb = .wb
+      # add in new contents page
+      if("Contents" %in% names(wb)) openxlsx::removeWorksheet(wb,"Contents")
+      wb = cat %>% huxtable::as_Workbook(Workbook = wb, sheet = "Contents")
+
+      # bring contents page to front. Order others by index.
+      openxlsx::worksheetOrder(wb) = order(c(.indexes,0))
+      openxlsx::saveWorkbook(wb,filename,overwrite = TRUE)
+      invisible(filename)
+    }
+  })
+  return(e1)
+}
+

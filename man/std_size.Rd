@@ -8,7 +8,7 @@
 A list with width and height in inches
 }
 \usage{
-data(std_size)
+std_size
 }
 \description{
 The width and height of images to fit scientific publication standards.

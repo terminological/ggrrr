@@ -42,16 +42,16 @@ google_font = function(family, ...) {
     stop(family, " cannot be found in sysfonts")
   }
 
-  maybe = function(x) if(x=="") NULL else x
+  .maybe = function(x) if(x=="") NULL else x
 
   if (!(family %in% c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)) &
       (family %in% showtextdb::font_installed())) {
     systemfonts::register_font(
       family,
       plain = system.file("fonts",family,"regular.ttf",package = "showtextdb"),
-      bold = system.file("fonts",family,"bold.ttf",package = "showtextdb") %>% maybe(),
-      italic = system.file("fonts",family,"italic.ttf",package = "showtextdb") %>% maybe(),
-      bolditalic = system.file("fonts",family,"bolditalic.ttf",package = "showtextdb") %>% maybe()
+      bold = system.file("fonts",family,"bold.ttf",package = "showtextdb") %>% .maybe(),
+      italic = system.file("fonts",family,"italic.ttf",package = "showtextdb") %>% .maybe(),
+      bolditalic = system.file("fonts",family,"bolditalic.ttf",package = "showtextdb") %>% .maybe()
     )
   }
 
@@ -88,22 +88,23 @@ fonts_available = function(family = NULL) {
 }
 
 .local_font_details = function(family, url=FALSE) {
+  face = path = NULL # remove global binding note
   thisfamily = family
   finst = sysfonts::font_files() %>%
-    filter(family==thisfamily) %>%
-    group_by(face) %>%
-    filter(row_number()==1) %>%
-    mutate(face = stringr::str_remove_all(tolower(face),"[^a-z]"))
+    dplyr::filter(family==thisfamily) %>%
+    dplyr::group_by(face) %>%
+    dplyr::filter(dplyr::row_number()==1) %>%
+    dplyr::mutate(face = stringr::str_remove_all(tolower(face),"[^a-z]"))
   if (url) {
-    finst = finst %>% mutate(path=paste0("file://localhost",path.expand(file.path(path,file))))%>%
-      select(showtext_name = family,face,path) %>%
-      pivot_wider(names_from = face, values_from = path, names_glue = "{face}_url") %>%
-      mutate(font_ext = "ttf") %>%
+    finst = finst %>% dplyr::mutate(path=paste0("file://localhost",path.expand(file.path(path,file))))%>%
+      dplyr::select(showtext_name = family,face,path) %>%
+      tidyr::pivot_wider(names_from = face, values_from = path, names_glue = "{face}_url") %>%
+      dplyr::mutate(font_ext = "ttf") %>%
       as.list()
   } else {
-    finst = finst %>% mutate(path=path.expand(file.path(path,file))) %>%
-      select(family,face,path) %>%
-      pivot_wider(names_from = face, values_from = path, names_glue = "{face}") %>%
+    finst = finst %>% dplyr::mutate(path=path.expand(file.path(path,file))) %>%
+      dplyr::select(family,face,path) %>%
+      tidyr::pivot_wider(names_from = face, values_from = path, names_glue = "{face}") %>%
       as.list()
   }
   return(finst)
@@ -111,7 +112,7 @@ fonts_available = function(family = NULL) {
 
 #' Ensures a font is available.
 #'
-#' This checks to see fi a font exists. If missing it will try and install from google fonts.
+#' This checks to see if a font exists. If missing it will try and install from google fonts.
 #' If this is not possible it will throw an error.
 #'
 #' @param family a font family name
@@ -128,7 +129,7 @@ check_font = function(family) {
       showtextdb::font_install(finst)
     } else {
       family = tryCatch({
-        google_font(family)
+        ggrrr::google_font(family)
       }, error = function(e) stop("Font family not found locally or on Google fonts: ",family," try something from fonts_available()."))
     }
   }

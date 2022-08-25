@@ -17,7 +17,7 @@ gg_save_as(
 \arguments{
 \item{plot}{a GGplot object or none}
 
-\item{filename}{base of target filename (excuding extension).}
+\item{filename}{base of target filename (excluding extension).}
 
 \item{size}{a standard size see `std_size`}
 

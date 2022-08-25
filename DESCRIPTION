@@ -47,12 +47,18 @@ Imports:
     showtext,
     base64enc,
     scales,
-    showtextdb
+    showtextdb,
+    functional,
+    git2r
 Suggests: 
     tidyverse,
     rmarkdown,
     knitr,
-    webshot
+    webshot,
+    gt,
+    html2pdfr,
+    rJava
+Remotes:
+    terminological/html2pdfr
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0
-

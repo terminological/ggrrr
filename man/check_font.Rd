@@ -13,7 +13,7 @@ check_font(family)
 the font family name if it can be located or an error otherwise
 }
 \description{
-This checks to see fi a font exists. If missing it will try and install from google fonts.
+This checks to see if a font exists. If missing it will try and install from google fonts.
 If this is not possible it will throw an error.
 }
 \examples{

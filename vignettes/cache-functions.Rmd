@@ -1,41 +1,190 @@
 ---
-title: 'ggrrr: Caching functions'
-output: html_document
+title: 'Caching functions'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Caching functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
-# Caching
-
-`ggrrr` supports a super simple passthrough caching layer. This assumes calculations are deterministic, and with a stated set of inputs can 
-compute and cache the result.
-
-Setting the caching location should be transparent. The default directory is the user cache directory, but in an analysis project a specific
-cache directory may be preferred
+`ggrrr` supports a super simple passthrough caching layer. This assumes calculations are deterministic, and with a stated set of inputs will 
+compute and cache the result. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+devtools::load_all("~/Git/ggrrr")
 ```
 
+Setting the caching location should be transparent. The default directory is the user cache directory, but in an analysis project a specific
+cache directory may be preferred
+
 ```{r}
-# Setting a cache in an analysis project might be in a subdirectory of the project
+# Setting a cache in an analysis project might be in a sub-directory of the project
 # options("cache.dir"=here::here("cache"))
 
 # If in a package you might be using a package specific cache
 # options("cache.dir"=rappdirs::user_cache_dir("my-package"))
 
-# for our purposes a temporary directory is OK.
+# for our purposes a temporary directory is OK, but caching to a tempdir will only persist as long as the session is active.
 options("cache.dir"= tempdir())
 ```
 
 ## Caching an item
 
+The item caches is the result of running an expression with in the current environment.
+We manually specify which items in the environment may affect the outcome.
+The cache key is a combination of the hash of the expression and the input data.
+
+We do not check the rest of the environment so it is up to the user to make sure all variables which 
+influence the expression output are states. Likewise if the code in the expression changes a new value will be cached
+but if the contents of a function used in the expression changes thsi might not be picked up.
+
 ```{r}
-seed = 101
-set.seed(seed)
-data = tibble(x = abs(rnorm(100,mean = 10, sd=5))) %>% 
-  mutate(y = abs(as.integer(x^2*rnorm(100,2,0.5) + x*rnorm(100,5,5) + x*rnorm(100,3,1))))
-fit = glm(y ~ x, family = poisson(),data = data)
-plot(fit)
-ggplot(data, aes(x=x,y=y))+geom_point()
+# Ten iterations of the same code
+# only the first iteration is actually calculated. The rest are loaded from disk.
+
+for (i in 1:10) {
+  
+  quantCutOff = 0.95
+  start = Sys.time()
+  
+  fit = ggrrr::cached({
+    
+    expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+    glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
+    
+  }, diamonds, quantCutOff )
+  
+  duration = Sys.time()-start
+  cat("iteration:",i," duration: ",duration,"\n")
+  
+}
 ```
 
+## Re-caching when code changes
+
+A change in the code (in this example a trivial change in a variable name) will result in the item being re-cached. White space changes
+do not trigger recalculation.
+
+```{r}
+fit = ggrrr::cached({
+  expensiveDiamonds2 = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+  glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds2 )
+}, diamonds, quantCutOff )
+```
+
+## Forcing execution of cached item
+
+If you want to defeat the caching for a one off execution the `.nocache` option achieves that.
+
+```{r}
+fit = ggrrr::cached({
+  expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+  glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
+}, diamonds, quantCutOff, .nocache = TRUE )
+```
+
+## Globally disabling cache
+
+You might want to cache interim results while developing (for speed) and disable the cache completely during final analysis.
+
+```{r}
+oldopt = options(cache.disable = TRUE)
+
+fit = ggrrr::cached({
+  expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+  glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
+}, diamonds, quantCutOff)
+
+options(oldopt)
+```
+
+## Manually removing items from cache
+
+In general items can be left in the cache, and they will get removed when it is determined that they are stale.
+A manual flush of the cache can be done like this. Usually the interactive option will be omitted if run at the command line
+
+```{r}
+ggrrr::cache_clear(interactive = FALSE)
+```
+
+## Caching multiple types of data
+
+Controlling the naming of the cache items helps to keep track of the items in the cache if you are manually inspecting it.
+If the items follow a naming convention then deleting items from the cache can then be done on a type by type basis.
+
+```{r}
+
+fit = ggrrr::cached({
+  expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+  glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
+}, diamonds, quantCutOff, .prefix = "diamonds")
+
+fit2 = ggrrr::cached({
+  fastCars = mtcars %>% mutate(fast = hp>quantile(hp,quantCutOff))
+  glm(fast ~ mpg+cyl+disp+drat+wt+gear, family = binomial(link='logit'), data=fastCars )
+}, mtcars, quantCutOff, .prefix = "cars")
+
+ggrrr::cache_clear(.prefix = "cars", interactive = FALSE)
+
+ggrrr::cache_clear(.prefix = "diamonds", interactive = FALSE)
+
+```
+
+## Caching data in multiple stages of analysis
+
+One use of this is to allow analysis to be cached in stages, and deleting cached content for unsuccessful stages.
+
+N.b. as cache_clear uses regex it is probably best to avoid full stop characters in the prefix.
+
+```{r}
+
+oldopts = options(cache.item.prefix = "stage-1")
+
+fit = ggrrr::cached({
+  expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
+  glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
+}, diamonds, quantCutOff)
+
+options(cache.item.prefix = "stage-2")
+
+fit2 = ggrrr::cached({
+  fastCars = mtcars %>% mutate(fast = hp>quantile(hp,quantCutOff))
+  glm(fast ~ mpg+cyl+disp+drat+wt+gear, family = binomial(link='logit'), data=fastCars )
+}, mtcars, quantCutOff)
+
+ggrrr::cache_clear(.prefix = "stage-1", interactive = FALSE)
+ggrrr::cache_clear(.prefix = "stage-2", interactive = FALSE)
+
+options(oldopts)
+```
+
+## Caching a url download
+
+Getting a file from the internet and locally caching. This does not check for remote changes. as before forcing the re-download can be achieved with .nocache.
+
+```{r}
+file = ggrrr::cache_download(
+  "https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv",
+  .extn = "csv"
+)
+```
+
+## Downloading changing data
+
+If you want a daily download setting the .stale parameter to one day will download the data at most once per day.
+Staleness is determined by the number of days from 2am on the current day in the current time-zone.
+A item cached for only one day becomes stale at 2am the day after it is cached.
+The time is configurable and for example `option(cache.time_day_starts = 0)` would set this to be midnight.
+Automated analysis using caches and updated data should ensure that analysis does not run over this time point otherwise
+it may end up unexpectedly using old data.
+
+```{r}
+# number of days before reloading
+file = ggrrr::cache_download(
+  "https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv",
+  .stale = 1,
+  .extn = "csv"
+)
+
+```
