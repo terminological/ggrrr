@@ -292,3 +292,42 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
     cut(x,include.lowest = TRUE,breaks = breaks, labels=labels$label2, ordered_result = TRUE)
   )
 }
+
+
+## Formula helpers ----
+
+.vars_from_rhs = function(formula) {
+  # formula = age+gender+region ~ date + count(n) + type(cls)
+  if (is.null(formula)) return(NULL)
+  vars = all.vars(rlang::f_rhs(formula))
+  expressions = attr(terms(as.formula(paste0("~ ",as_label(rlang::f_rhs(formula))))),"variables")
+  expressionStrings = lapply(expressions, as_label)[-1]
+  names = stringr::str_extract(expressionStrings,"(.*)\\(.*\\)") %>% stringr::str_remove("\\(.*\\)")
+  names[is.na(names)] = "date"
+  if (any(duplicated(names))) stop("the right had side has duplicates in it. Did you foget to name all the terms?")
+  tmp = lapply(vars,as.symbol)
+  names(tmp) = names
+  return(tmp)
+}
+
+.var_from_rhs = function(formula, match="date") {
+  if (is.null(formula)) return(NA)
+  v = .vars_from_rhs(formula)
+  if (!any(names(v)==match)) return(NA)
+  return(v[[match]])
+}
+
+.vars_from_lhs = function(formula) {
+  if (is.null(formula)) return(NULL)
+  vars = all.vars(rlang::f_lhs(formula))
+  if (length(vars)==0) return(vars())
+  lapply(vars, as.symbol)
+}
+
+.formula_from_vars = function(dateVar, grps, ...) {
+  lhs = paste0(grps, collapse = "+")
+  rhs = c(date=dateVar, rlang::list2(...))
+  rhs = rhs[!is.na(rhs)]
+  rhs = paste0(names(rhs),"(",rhs,")",collapse = "+")
+  return(as.formula(paste0(lhs," ~ ",rhs)))
+}

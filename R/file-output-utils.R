@@ -41,3 +41,83 @@ outputter = function(directory = here::here("output"), datedFile=!datedSubdirect
 }
 
 
+.this_script = function() {
+  if (.is_knitting()) return(knitr::current_input(dir = TRUE))
+  if (.is_running_in_chunk()) {
+    return(fs::path_abs(rstudioapi::getSourceEditorContext()$pat))
+  }
+  cmdArgs <- commandArgs(trailingOnly = FALSE)
+  needle <- "--file="
+  match <- grep(needle, cmdArgs)
+  if (length(match) > 0) {
+    # Rscript
+    return(fs::path_abs(sub(needle, "", cmdArgs[match])))
+  } else {
+    # 'source'd via R console
+    tryCatch({
+      return(fs::path_abs(sys.frames()[[1]]$ofile))
+    },error = function(e) return(fs::path_abs(getwd())))
+  }
+}
+
+# inputFile = fs::dir_ls(recurse = TRUE)
+.locate_project = function(inputFile = getwd()) {
+  absPath = inputFile %>% fs::path_abs() %>% magrittr::extract(stringr::str_starts(.,fs::path_home()))
+  parent = unique(ifelse(fs::is_dir(absPath), absPath, fs::path_dir(absPath)))
+  current = parent
+  repeat {
+    grandparent = unique(fs::path_dir(current))
+    grandparent = grandparent[!grandparent %in% parent]
+    if (length(grandparent) == 0) break
+    parent = c(parent,grandparent)
+    current = grandparent[grandparent != fs::path_home()]
+  }
+  root = fs::path_dir(fs::dir_ls(parent,glob="*.Rproj",type = "file"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob="*/DESCRIPTION",type = "file"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob="*/NAMESPACE",type = "file"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob = "*/R",type="directory"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob = "*/vignettes",type="directory"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob="*/.git",all = TRUE,type = "directory"))
+  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent,glob="*/.Rproj.user",all = TRUE,type = "directory"))
+  if(length(root) == 1) return(root)
+  # return the longest possible path with a .Rhistory file
+  root = fs::path_dir(fs::dir_ls(parent,glob="*/.Rhistory$",all = TRUE,type = "file"))
+  return(root %>% magrittr::extract(stringr::str_length(.) == max(stringr::str_length(.))))
+}
+
+#' Knit to a versioned file in a sub-directory of the project
+#'
+#' @param exts the extension of file to target e.g. "pdf", "html" (TODO: multiple)
+#' @param directory the root of the output - can be an absolute path or a relative path interpreted as relative to the root of the project.
+#' @param datedFile do you want the filename to have the date appended?
+#' @param datedSubdirectory do you want the files to be placed in a dated subdirectory?
+#'
+#' @return nothing. called for side effects
+#' @export
+knit_versioned = function(ext, directory = NULL, datedFile=!datedSubdirectory, datedSubdirectory=FALSE) {
+
+  return(function(inputFile,encoding) {
+    if (is.null(directory)) {
+      directory = fs::path_dir(inputFile)
+    } else if (!fs::is_absolute_path(directory)) {
+      root = .locate_project(inputFile)
+      directory = fs::path(root,directory)
+    }
+    if(datedSubdirectory) {
+      directory = fs::path(directory,Sys.Date())
+    }
+    fs::dir_create(directory)
+    filename = fs::path_file(inputFile)
+    if(datedFile) filename = paste0(fs::path_ext_remove(filename),"-",Sys.Date()) %>% fs::path_ext_set(ext)
+    path = fs::path(directory,filename)
+    rmarkdown::render(inputFile, encoding = encoding, output_file = path)
+    message("Output created: ",path)
+  })
+
+}

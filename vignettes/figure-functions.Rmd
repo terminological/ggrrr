@@ -30,7 +30,7 @@ out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALS
 
 ggrrr::gg_pedantic()
 
-plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
+plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello \u2014 world")+labs(tag = "A")+xlab("Carat\u2082")+ylab("price\u2265")
 plot
 ```
 
