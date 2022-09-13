@@ -1,11 +1,11 @@
 Package: ggrrr
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9007
+Version: 0.0.0.9008
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Rob",
+           family = "Challen",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "rob@terminolgical.co.uk",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
@@ -49,7 +49,9 @@ Imports:
     scales,
     showtextdb,
     functional,
-    git2r
+    git2r,
+    colorspace,
+    lubridate
 Suggests: 
     tidyverse,
     rmarkdown,

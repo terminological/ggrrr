@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git add -A
+git commit -m "release $1"
+git push
+
+git checkout -b release-$1
+git push --set-upstream origin release-$1
+
+gh release create $1 --target=release-$1 --generate-notes
+git checkout main

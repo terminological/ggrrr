@@ -12,17 +12,22 @@ knit_versioned(
 )
 }
 \arguments{
+\item{ext}{the extension of file to target e.g. "pdf", "html" (TODO: multiple)}
+
 \item{directory}{the root of the output - can be an absolute path or a relative path interpreted as relative to the root of the project.}
 
 \item{datedFile}{do you want the filename to have the date appended?}
 
 \item{datedSubdirectory}{do you want the files to be placed in a dated subdirectory?}
-
-\item{exts}{the extension of file to target e.g. "pdf", "html" (TODO: multiple)}
 }
 \value{
 nothing. called for side effects
 }
 \description{
-Knit to a versioned file in a sub-directory of the project
+used in a knitr preamble to direct the output to a subdirectory of the project
+---
+title: "Analysis 1"
+output: html_document
+knit: ggrrr::knit_versioned("html","output/analysis-1")
+---
 }

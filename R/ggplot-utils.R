@@ -622,3 +622,170 @@ gg_save_as = function(plot,filename = tempfile(),
     }
   }
 }
+
+
+## Colour scales ----
+
+.subtype_pal = function(x,...) {
+  UseMethod(".subtype_pal",x)
+}
+
+# undefined as grey
+# scales::show_col(.subtype_pal(scales::viridis_pal,direction=-1,subclasses = c(3,4,2))(12))
+# coninuous palette
+# scales::show_col(.subtype_pal(scales::hue_pal, h=c(-40,70) ,subclasses = c(3,4,2))(12))
+# no undefined
+# scales::show_col(.subtype_pal(scales::viridis_pal, h=c(-40,70) ,subclasses = c(3,4,2))(9))
+# shorter that specification
+# scales::show_col(.subtype_pal(scales::viridis_pal, h=c(-40,70) ,subclasses = c(3,4,2))(6))
+.subtype_pal.function = function(x, ..., subclasses, undefined="#606060", lighten=NA) {
+  dots = rlang::list2(...)
+  dots = dots[names(dots) %in% names(formals(x))]
+  pal_fun = rlang::exec(x, !!!dots)
+  continuous = isTRUE(is.na(pal_fun(2)))
+  return(function(n) {
+    majors = if (n > sum(subclasses)) length(subclasses)+1 else min((1:length(subclasses))[cumsum(subclasses)>=n])
+    tmp = subclasses[1:(majors-1)]
+    minors = c(tmp,n-sum(tmp))
+    if (n > sum(subclasses)) {
+      # undefined items
+      pal_input = if(continuous) seq(0,1,length.out = majors-1) else (majors-1)
+      major_pal = c(pal_fun(pal_input),undefined)
+    } else {
+      # no undefined items
+      pal_input = if(continuous) seq(0,1,length.out = majors) else (majors)
+      major_pal = pal_fun(pal_input)
+    }
+    out = purrr::map2(major_pal, minors, function(.x,.y) {
+      if(is.na(lighten)) lighten = 1/.y
+      fade = 1-(1-lighten)^((1:.y)-1)
+      return(colorspace::lighten(.x,fade))
+    }) %>% unlist()
+    return(out)
+  })
+}
+
+#scales::show_col(.subtype_pal(c("#FF0000","#00FF00","#0000FF"),subclasses = c(3,4,2))(12))
+.subtype_pal.character = function(x, ..., subclasses, undefined="#606060", lighten=NA) {
+  if (length(x) != length(subclasses)) stop("palette length and subclass length must be the same")
+  major_pal = c(x,undefined)
+  return(function(n) {
+    majors = if (n > sum(subclasses)) length(subclasses)+1 else min((1:length(subclasses))[cumsum(subclasses)>=n])
+    tmp = subclasses[1:(majors-1)]
+    minors = c(tmp,n-sum(tmp))
+    out = purrr::map2(major_pal, minors, function(.x,.y) {
+      if(is.na(lighten)) lighten = 1/.y
+      fade = 1-(1-lighten)^((1:.y)-1)
+      return(colorspace::lighten(.x,fade))
+    }) %>% unlist()
+    return(out)
+  })
+}
+
+#' Discrete fill or colour scale where there is a natural ordered subgrouping
+#'
+#' If you have a categorical variable defining colour or fill and
+#' it has a natural grouping you can use this to have a colour scale involving
+#' major colors defining the major groupings, and these are progressively
+#' lightened for each of the subcategories.
+#'
+#' @param .palette the palette for the major groupings, either as a function e.g. 'scales::viridis_pal', or as a manual set of colors e.g. 'c("#FF0000","#00FF00","#0000FF")'. if a function can be either discrete or continuous palette.
+#' @param subclasses a vector containing the count of the subcategories, e.g. c(2,3,4) defines 3 major categories and a total of 9 sub-categories
+#' @param ... additional options to be passed to the major palette function, e.g. 'option="magma"', or to 'discrete_scale()', e.g. 'alpha=0.5'
+#' @param undefined If the number of sub-categories in the data is longer than defined in 'subclasses', the extra categories are assumed to be an set of "other" categories, which will be coloured using this base colour
+#' @param lighten The factor by which to lighten the colour at each step of the subgrouping. If left blank this will calculate a fraction based on the number of levels of the subgroup.
+#' Otherwise if, e.g. 0.5 the first sub category will be the full saturation, the second 0.5 saturation, the third 0.25 saturation, the fourth 0.125 and so on.
+#' @param na.value what colour for NA values.
+#' @param aesthetics this is a fill scale by default but can be used for colour by setting this to "color" or both as c("fill","color")
+#'
+#' @return a ggplot scale
+#' @export
+#'
+#' @examples
+#' library(tidyverse)
+#'
+#' # prep some data:
+#' data = diamonds %>%
+#'   mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
+#'   group_by(color,cut,color_cut) %>%
+#'   count() %>%
+#'   ungroup() %>%
+#'   mutate(color_cut = ordered(color_cut))
+#'
+#' # work out the number of subgroups for each group:
+#' subgroups = data %>%
+#'   select(color,cut) %>%
+#'   distinct %>%
+#'   group_by(color) %>%
+#'   count() %>%
+#'   pull(n)
+#'
+#' # plot as a horizontal stacked bar chart using color brewer as the main
+#' # colour axis. N.b. having enough different colours here is important
+#' ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
+#'   geom_bar(stat="identity",orientation = "y")+
+#'   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
+#'     palette="Accent", subclasses = subgroups)+
+#'   ggrrr::scale_colour_subtype(subclasses=subgroups)+
+#'   ggrrr::gg_hide_Y_axis()+
+#'   ggrrr::gg_narrow()
+scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", lighten=NA,  na.value = "grey50", aesthetics = "fill") {
+  dots = rlang::list2(...)
+  discrete_scale_opts = dots[names(dots) %in% names(formals(ggplot2::discrete_scale))][!names(dots) %in% c("palette","scale_name")]
+  p = .subtype_pal(.palette, ..., subclasses=subclasses, undefined = undefined, lighten = lighten)
+  discrete_scale_opts = c(aesthetics=aesthetics, scale_name="subtype", palette=p, na.value = na.value, discrete_scale_opts)
+  return(rlang::exec(discrete_scale, !!!discrete_scale_opts))
+}
+
+
+#' A discrete colour scale for dividing where there is a natural ordered subgrouping into groups and subgroups
+#'
+#' This is intended to combine with 'scale_fill_subtype' when we want to divide major groupings differently to minor groups
+#'
+#' @param subclasses a vector containing the count of the subcategories, e.g. c(2,3,4) defines 3 major categories and a total of 9 sub-categories
+#' @param class_colour  the colour for major group divisions
+#' @param subclass_colour the colour for sub group divisions
+#' @param na.value missing value colour
+#' @param aesthetics this only really makes sense for color scales.
+#' @param ... passed on to discrete_scale()
+#'
+#' @return a ggplot scale
+#' @export
+#'
+#' @examples
+#' library(tidyverse)
+#'
+#' # prep some data:
+#' data = diamonds %>%
+#'   mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
+#'   group_by(color,cut,color_cut) %>%
+#'   count() %>%
+#'   ungroup() %>%
+#'   mutate(color_cut = ordered(color_cut))
+#'
+#' # work out the number of subgroups for each group:
+#' subgroups = data %>%
+#'   select(color,cut) %>%
+#'   distinct %>%
+#'   group_by(color) %>%
+#'   count() %>%
+#'   pull(n)
+#'
+#' # plot as a horizontal stacked bar chart using color brewer as the main
+#' # colour axis. N.b. having enough different colours here is important
+#' ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
+#'   geom_bar(stat="identity",orientation = "y")+
+#'   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
+#'     palette="Accent", subclasses = subgroups)+
+#'   ggrrr::scale_colour_subtype(subclasses=subgroups)+
+#'   ggrrr::gg_hide_Y_axis()+
+#'   ggrrr::gg_narrow()
+scale_colour_subtype = function( subclasses, class_colour = "black", subclass_colour = "grey50",  na.value = "grey50", aesthetics = "color", ...) {
+  discrete_scale(
+    aesthetics=aesthetics,
+    scale_name="subtype",
+    palette=function(n) {return(ifelse( c(TRUE,2:n %in% (cumsum(subclasses)+1)), class_colour, subclass_colour))},
+    na.value = na.value,
+    ...
+  )
+}

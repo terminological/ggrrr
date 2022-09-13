@@ -4,17 +4,23 @@
 \alias{full_seq_dates}
 \title{Expand a data vector to the full range}
 \usage{
-full_seq_dates(dates)
+full_seq_dates(dates, period = "1 day", anchor = "start", fmt = "\%d \%b")
 }
 \arguments{
 \item{dates}{a vector of dates, possibly including NA values}
+
+\item{period}{the gap between observations as a number or, a negative number means the resulting sequence defines a end of time periods, a positive defines the beginning. may be an integer number of days, or a text string like '2 weeks', '-1 month', etc.}
+
+\item{anchor}{defines the day of week the periods start or end. either "start", "end", a day of the week, or a date}
+
+\item{fmt}{a strptime formatting string for date range labels.}
 }
 \value{
-a vector of dates for every day between the minimum and maximum of dates
+a vector of dates for complete between the minimum and maximum of dates, on the day of week of the anchoring date
 }
 \description{
 Convert a vector of observation dates to a ordered sequence of every day in the time series
 }
 \examples{
-full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA))
+full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")
 }

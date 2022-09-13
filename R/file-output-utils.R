@@ -61,7 +61,11 @@ outputter = function(directory = here::here("output"), datedFile=!datedSubdirect
 }
 
 # inputFile = fs::dir_ls(recurse = TRUE)
+# gets a reverse directory listing and then finds the lowest directory
+# that contains an indication of there being a project in the directory.
+# needed because here package does not always work (when knitting in CRAN checks for example)
 .locate_project = function(inputFile = getwd()) {
+  . = NULL
   absPath = inputFile %>% fs::path_abs() %>% magrittr::extract(stringr::str_starts(.,fs::path_home()))
   parent = unique(ifelse(fs::is_dir(absPath), absPath, fs::path_dir(absPath)))
   current = parent
@@ -93,7 +97,14 @@ outputter = function(directory = here::here("output"), datedFile=!datedSubdirect
 
 #' Knit to a versioned file in a sub-directory of the project
 #'
-#' @param exts the extension of file to target e.g. "pdf", "html" (TODO: multiple)
+#' used in a knitr preamble to direct the output to a subdirectory of the project
+#' ---
+#' title: "Analysis 1"
+#' output: html_document
+#' knit: ggrrr::knit_versioned("html","output/analysis-1")
+#' ---
+#'
+#' @param ext the extension of file to target e.g. "pdf", "html" (TODO: multiple)
 #' @param directory the root of the output - can be an absolute path or a relative path interpreted as relative to the root of the project.
 #' @param datedFile do you want the filename to have the date appended?
 #' @param datedSubdirectory do you want the files to be placed in a dated subdirectory?
