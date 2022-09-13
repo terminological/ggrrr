@@ -6,7 +6,7 @@ Authors@R:
            family = "Challen",
            role = c("aut", "cre"),
            email = "rob@terminolgical.co.uk",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-5504-7768"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -50,7 +50,6 @@ Imports:
     scales,
     showtextdb,
     functional,
-    git2r,
     colorspace,
     lubridate
 Suggests: 

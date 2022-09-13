@@ -60,7 +60,6 @@ jobs:
           distribution: ${{ matrix.config.distribution }}
           java-package: jdk
           architecture: x86
-          cache: 'maven'
 
       - name: Info
         run: "bash -c 'java -version && which java && echo $PATH && echo $JAVA_HOME'"

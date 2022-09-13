@@ -97,6 +97,7 @@ tbl2 = tableExample2 %>% gg_simple_table(font = "Roboto",unwrapped = TRUE)
 plot+annotation_custom(tbl2)
 
 ```
+
 laying these tables out is tricky, and is worth looking at the `ggpp` package for assistance.
 
 # Scaling tables to fit

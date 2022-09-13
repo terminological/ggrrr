@@ -340,7 +340,7 @@ full_seq_dates = function(dates, period="1 day", anchor="start", fmt = "%d %b") 
 .day_interval = function(dates) {
   dates = sort(unique(dates))
   if (length(dates) < 4) return(1)
-  interval = .gcd(stats::na.omit(dates-lag(dates)))
+  interval = .gcd(stats::na.omit(as.numeric(dates-lag(dates))))
   return(interval)
 }
 
