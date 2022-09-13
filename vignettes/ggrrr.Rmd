@@ -34,12 +34,12 @@ out = outputter(here::here("output"))
 out("figure1.png")
 
 # an output directory in a temp directory which has versioned subdirectories
-out2 = outputter(tempdir(),datedSubdirectory = TRUE)
+out2 = outputter(normalizePath(tempdir(), mustWork = FALSE),datedSubdirectory = TRUE)
 out2("figure1.png")
 out2("supplementary1.xlsx",delete = TRUE)
 
 # unversioned files in temp directory
-out3 = outputter(tempdir(),datedSubdirectory = FALSE,datedFile = FALSE)
+out3 = outputter(normalizePath(tempdir(), mustWork = FALSE),datedSubdirectory = FALSE,datedFile = FALSE)
 out3("figure1.png")
 
 

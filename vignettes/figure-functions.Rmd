@@ -19,7 +19,7 @@ library(patchwork)
 
 ```{r setup}
 library(ggrrr)
-out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
+out = outputter(normalizePath(tempdir(), mustWork = FALSE),datedFile = FALSE,datedSubdirectory = FALSE)
 ```
 
 # Opinionated defaults for figures

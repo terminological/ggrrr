@@ -27,7 +27,7 @@ jobs:
         config:
           - {os: ubuntu-20.04, r: '4.1.0', java: 11, distribution: zulu}
           - {os: macOS-11, r: '4.1.0', java: 11, distribution: zulu}
-          - {os: windows-2022, r: '4.1.0', java: 11, distribution: zulu}
+#          - {os: windows-2022, r: '4.1.0', java: 11, distribution: zulu}
 #          - {os: ubuntu-20.04, r: '3.6.1', java: 8, distribution: zulu}
 #          - {os: ubuntu-20.04, r: '4.2.0', java: 17, distribution: zulu}
 #          - {os: ubuntu-20.04, r: 'devel', java: 17, distribution: zulu, http-user-agent: 'release'}
@@ -52,14 +52,14 @@ jobs:
           java-package: jdk
           architecture: x64
 
-      - name: Setup 32 bit java on windows
-        if: runner.os == 'Windows'
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ matrix.config.java }}
-          distribution: ${{ matrix.config.distribution }}
-          java-package: jdk
-          architecture: x86
+      # - name: Setup 32 bit java on windows
+      #   if: runner.os == 'Windows'
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: ${{ matrix.config.java }}
+      #     distribution: ${{ matrix.config.distribution }}
+      #     java-package: jdk
+      #     architecture: x86
 
       - name: Info
         run: "bash -c 'java -version && which java && echo $PATH && echo $JAVA_HOME'"
