@@ -22,7 +22,7 @@ It also addresses an eclectic mix of other issues that arose during my time deve
 `ggrrr` is not on CRAN you can install the most up to date version with:
 
 ```R
-devtools::install_github("terminological/ggrrr@0.0.0.9006")
+devtools::install_github("terminological/ggrrr@0.0.0.9008")
 ```
 
 It is pretty unstable and under continuous parallel development which may break things without warning.

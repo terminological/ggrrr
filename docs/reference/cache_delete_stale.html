@@ -40,7 +40,11 @@
 
 
 <meta property="og:title" content="Delete stale files in a cache — cache_delete_stale" />
-<meta property="og:description" content="Delete stale files in a cache" />
+<meta property="og:description" content="Staleness is determined by the number of days from 2am on the current day in the current time-zone.
+A item cached for only one day becomes stale at 2am the day after it is cached.
+The time is configurable and option(cache.time_day_starts = 0) would be midnight.
+Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
+it may end up using old data." />
 
 
 
@@ -72,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9008</span>
       </span>
     </div>
 
@@ -98,7 +102,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cache-functions.html">ggrrr: Caching functions</a>
+      <a href="../articles/cache-functions.html">Caching functions</a>
+    </li>
+    <li>
+      <a href="../articles/figure-functions.html">Figure functions</a>
+    </li>
+    <li>
+      <a href="../articles/font-functions.html">Font functions</a>
+    </li>
+    <li>
+      <a href="../articles/other-table-formats.html">Other table formats</a>
+    </li>
+    <li>
+      <a href="../articles/table-functions.html">Table functions</a>
     </li>
   </ul>
 </li>
@@ -127,7 +143,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Delete stale files in a cache</p>
+    <p>Staleness is determined by the number of days from 2am on the current day in the current time-zone.
+A item cached for only one day becomes stale at 2am the day after it is cached.
+The time is configurable and option(cache.time_day_starts = 0) would be midnight.
+Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
+it may end up using old data.</p>
     </div>
 
     <pre class="usage"><span class='fu'>cache_delete_stale</span><span class='op'>(</span>
@@ -168,7 +188,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Rob Challen.</p>
 </div>
 
 <div class="pkgdown">

@@ -3,6 +3,10 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   cache-functions: cache-functions.html
+  figure-functions: figure-functions.html
+  font-functions: font-functions.html
   ggrrr: ggrrr.html
-last_built: 2022-07-15T12:49Z
+  other-table-formats: other-table-formats.html
+  table-functions: table-functions.html
+last_built: 2022-09-13T13:12Z
 

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9008</span>
       </span>
     </div>
 
@@ -97,7 +97,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cache-functions.html">ggrrr: Caching functions</a>
+      <a href="../articles/cache-functions.html">Caching functions</a>
+    </li>
+    <li>
+      <a href="../articles/figure-functions.html">Figure functions</a>
+    </li>
+    <li>
+      <a href="../articles/font-functions.html">Font functions</a>
+    </li>
+    <li>
+      <a href="../articles/other-table-formats.html">Other table formats</a>
+    </li>
+    <li>
+      <a href="../articles/table-functions.html">Table functions</a>
     </li>
   </ul>
 </li>
@@ -218,9 +230,33 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="cut_date.html">cut_date()</a></code> </p>
+        </td>
+        <td><p>Places a set of dates withing a regular time series</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cut_integer.html">cut_integer()</a></code> </p>
+        </td>
+        <td><p>Cut and label an integer valued quantity</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cut_time.html">cut_time()</a></code> </p>
+        </td>
+        <td><p>Places a set of dates withing a regular time series</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="data_supplement.html">data_supplement()</a></code> </p>
         </td>
         <td><p>Create a function list that allows for supplementary tables (as huxtables) to be added to a XLSX output file.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="date_to_time.html">date_to_time()</a></code> </p>
+        </td>
+        <td><p>Convert a set of dates to numeric timepoints</p></td>
       </tr><tr>
         
         <td>
@@ -236,15 +272,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="fix_unqualified_functions.html">fix_unqualified_functions()</a></code> </p>
-        </td>
-        <td><p>Fix errors introduced in package creation by forgetting to qualify namespaces.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="fonts_available.html">fonts_available()</a></code> </p>
         </td>
         <td><p>Check a font exists on the system, or list all fonts available</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="full_seq_dates.html">full_seq_dates()</a></code> </p>
+        </td>
+        <td><p>Expand a data vector to the full range</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="full_seq_times.html">full_seq_times()</a></code> </p>
+        </td>
+        <td><p>Generate a full regular timepoint sequence</p></td>
       </tr><tr>
         
         <td>
@@ -410,6 +452,18 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="knit_versioned.html">knit_versioned()</a></code> </p>
+        </td>
+        <td><p>Knit to a versioned file in a sub-directory of the project</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="logit_trans.html">logit_trans()</a></code> </p>
+        </td>
+        <td><p>logit scale</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="non_cran.html">non_cran()</a></code> </p>
         </td>
         <td><p>Make sure github packages are installed.</p></td>
@@ -434,6 +488,18 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="scale_colour_subtype.html">scale_colour_subtype()</a></code> </p>
+        </td>
+        <td><p>A discrete colour scale for dividing where there is a natural ordered subgrouping into groups and subgroups</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="scale_fill_subtype.html">scale_fill_subtype()</a></code> </p>
+        </td>
+        <td><p>Discrete fill or colour scale where there is a natural ordered subgrouping</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="sprintf_list.html">sprintf_list()</a></code> </p>
         </td>
         <td><p>Sprintf with a list input</p></td>
@@ -449,6 +515,12 @@
           <p><code><a href="summarise_with_totals.html">summarise_with_totals()</a></code> </p>
         </td>
         <td><p>Summarise a subgroup and create a summary row</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="time_to_date.html">time_to_date()</a></code> </p>
+        </td>
+        <td><p>Convert a set of timepoints to dates</p></td>
       </tr><tr>
         
         <td>
@@ -470,7 +542,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Rob Challen.</p>
 </div>
 
 <div class="pkgdown">

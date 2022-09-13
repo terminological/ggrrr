@@ -73,7 +73,7 @@ Good examples of which are the quantile functions" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9008</span>
       </span>
     </div>
 
@@ -99,7 +99,19 @@ Good examples of which are the quantile functions" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cache-functions.html">ggrrr: Caching functions</a>
+      <a href="../articles/cache-functions.html">Caching functions</a>
+    </li>
+    <li>
+      <a href="../articles/figure-functions.html">Figure functions</a>
+    </li>
+    <li>
+      <a href="../articles/font-functions.html">Font functions</a>
+    </li>
+    <li>
+      <a href="../articles/other-table-formats.html">Other table formats</a>
+    </li>
+    <li>
+      <a href="../articles/table-functions.html">Table functions</a>
     </li>
   </ul>
 </li>
@@ -158,7 +170,9 @@ Good examples of which are the quantile functions</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
 <span class='co'># generate a mixture confidence interval from a set of distributions</span>
-<span class='fu'>sprintf_list</span><span class='op'>(</span><span class='st'>"%1.2f [%1.2f\u2013%1.2f]"</span>,<span class='fu'><a href='qmixnorm.html'>qmixnorm</a></span><span class='op'>(</span>p<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.025</span>,<span class='fl'>0.975</span><span class='op'>)</span>, means<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>13</span>,<span class='fl'>14</span><span class='op'>)</span>, sds<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>sprintf_list</span><span class='op'>(</span><span class='st'>"%1.2f [%1.2f\u2013%1.2f]"</span>,
+ <span class='fu'><a href='qmixnorm.html'>qmixnorm</a></span><span class='op'>(</span>p<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>,<span class='fl'>0.025</span>,<span class='fl'>0.975</span><span class='op'>)</span>,
+ means<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>13</span>,<span class='fl'>14</span><span class='op'>)</span>, sds<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "12.44 [8.54–16.88]"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -171,7 +185,7 @@ Good examples of which are the quantile functions</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Rob Challen.</p>
 </div>
 
 <div class="pkgdown">

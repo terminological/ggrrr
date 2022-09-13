@@ -75,7 +75,7 @@ in a knitr document. This is controlled by `option(&quot;hide.supplementary.tabl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9008</span>
       </span>
     </div>
 
@@ -101,7 +101,19 @@ in a knitr document. This is controlled by `option(&quot;hide.supplementary.tabl
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/cache-functions.html">ggrrr: Caching functions</a>
+      <a href="../articles/cache-functions.html">Caching functions</a>
+    </li>
+    <li>
+      <a href="../articles/figure-functions.html">Figure functions</a>
+    </li>
+    <li>
+      <a href="../articles/font-functions.html">Font functions</a>
+    </li>
+    <li>
+      <a href="../articles/other-table-formats.html">Other table formats</a>
+    </li>
+    <li>
+      <a href="../articles/table-functions.html">Table functions</a>
     </li>
   </ul>
 </li>
@@ -139,7 +151,7 @@ in a knitr document. This is controlled by `option("hide.supplementary.tables"=T
     <pre class="usage"><span class='fu'>data_supplement</span><span class='op'>(</span>
   <span class='va'>...</span>,
   filename <span class='op'>=</span> <span class='st'>"supplementary-material.xlsx"</span>,
-  out <span class='op'>=</span> <span class='fu'><a href='outputter.html'>outputter</a></span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>,
+  out <span class='op'>=</span> <span class='fu'>ggrrr</span><span class='fu'>::</span><span class='fu'><a href='outputter.html'>outputter</a></span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>,
   nameGlue <span class='op'>=</span> <span class='st'>"Supplementary Table {index}"</span>
 <span class='op'>)</span></pre>
 
@@ -181,7 +193,7 @@ $write() which writes the collection of tables to the excel file.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Rob Challen.</p>
 </div>
 
 <div class="pkgdown">

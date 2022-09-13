@@ -52,6 +52,16 @@ jobs:
           java-package: jdk
           architecture: x64
 
+      - name: Setup 32 bit java on windows
+        if: runner.os == 'Windows'
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.config.java }}
+          distribution: ${{ matrix.config.distribution }}
+          java-package: jdk
+          architecture: x86
+          cache: 'maven'
+
       - name: Info
         run: "bash -c 'java -version && which java && echo $PATH && echo $JAVA_HOME'"
 

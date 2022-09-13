@@ -69,7 +69,7 @@ p2
 
 ## Fixed sizes for save
 
-Previewing ggplots in RStudion resizes the plot to fit the windows, scaling the labels independently of the plot. 
+Previewing ggplots in RStudio resizes the plot to fit the windows, scaling the labels independently of the plot. 
 This is annoying when you are designing a plot for publication and the label sizes change with the size of the overall image.
 `ggrrr` can force ggplot to render it at the size it will be printed at. In doing so it produces both a PNG and PDF output which will be
 (very nearly) identical. It also by default saves an .Rdata of the ggplot object allowing later adjustment.
