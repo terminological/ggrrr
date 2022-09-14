@@ -80,6 +80,7 @@ jobs:
         with:
           cache-version: 3
           extra-packages: any::rcmdcheck
+          dependencies: '"hard"'
           needs: check
 
       - name: Setup R Java support

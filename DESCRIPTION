@@ -57,7 +57,8 @@ Suggests:
     rmarkdown,
     knitr,
     webshot,
-    gt,
+    gt
+Enhances:
     html2pdfr,
     rJava
 Remotes:
