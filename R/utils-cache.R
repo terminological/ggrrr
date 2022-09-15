@@ -96,13 +96,13 @@ cache_delete_stale = function(
 
   if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
   day_start = getOption("cache.time_day_starts", default=3)
-
+  stale_time = as.POSIXct(Sys.Date()-.stale+1 )+day_start*60*60
   fs::file_info(fs::dir_ls(.cache)) %>%
 
     dplyr::filter(change_time <
              # if .stale==1 this is (by default) 2am on the current day.
              # something cached before 2am is deemed to be the previous day.
-             as.POSIXct(as.character( Sys.Date()-.stale+1 ))+day_start*60*60
+             stale_time
     ) %>%
     dplyr::pull(path) %>%
     unlink()

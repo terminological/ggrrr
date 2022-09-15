@@ -21,12 +21,21 @@ jobs:
 
     name: ${{ matrix.config.os }} R:(${{ matrix.config.r }} Java:${{ matrix.config.java }})
 
+    # Windows R before 4.2.0 uses multiarch to check both i386 and x64 packages. This
+    # is a major problem for CI of rJava packages as both i386 and x64 Java distributions
+    # have to be installed and rJava installed supporting multiple architectures. This is
+    # avoidable using the --no-multiarch flag in R CMD install if CI is testing a rJava package
+    # however a transitive dependency on an in-development package specified as a Remote this flag is not propagated
+    # and the dependency package installation will fail.
+    # The only strategy to avoid this is to avoid CI on windows pre 4.2.0. In real life installation from source
+    # needs to be done with the --no-multiarch flag in R versions prior to 4.2.0.
+
     strategy:
       fail-fast: false
       matrix:
         config:
-#          - {os: ubuntu-20.04, r: '4.1.0', java: 11, distribution: zulu}
-#          - {os: macOS-11, r: '4.1.0', java: 11, distribution: zulu}
+          - {os: ubuntu-20.04, r: '4.1.0', java: 11, distribution: zulu}
+          - {os: macOS-11, r: '4.1.0', java: 11, distribution: zulu}
           - {os: windows-2022, r: '4.2.0', java: 11, distribution: zulu}
 #          - {os: ubuntu-20.04, r: '3.6.1', java: 8, distribution: zulu}
 #          - {os: ubuntu-20.04, r: '4.2.0', java: 17, distribution: zulu}
@@ -45,15 +54,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      # - name: Setup 32 bit java on windows
-      #   if: runner.os == 'Windows'
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     java-version: 9
-      #     distribution: zulu
-      #     java-package: jdk
-      #     architecture: x86
-
       - uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.config.java }}
@@ -64,17 +64,15 @@ jobs:
       - name: Info
         run: "bash -c 'java -version && which java && echo $PATH && echo $JAVA_HOME'"
 
-      # - name: Clear JAVA_HOME on windows to allow i386 builds
-      #   if: runner.os == 'Windows'
-      #   run: "set JAVA_HOME="
-      #   # issue is that rJava is trying to load i386 dll but JAVA_HOME is pointing to x64 java?
-      #   # unable to load shared object 'D:/a/_temp/Library/rJava/libs/i386/rJava.dll':
-
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+
+      - name: Install xquartz
+        if: runner.os == 'macOS'
+        run: brew install --cask xquartz
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -89,7 +87,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           error-on: '"error"'
-          args: 'c("--no-manual", "--no-multiarch")'
+          args: 'c("--no-manual")'
           upload-snapshots: true
 
       - name: Upload check results
