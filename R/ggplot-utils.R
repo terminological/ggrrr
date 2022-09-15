@@ -623,6 +623,30 @@ gg_save_as = function(plot,filename = tempfile(),
   }
 }
 
+# TODO: Show text haas an issue with some UTF8 characters: e.g.
+# library(showtext)
+# ## Loading Google fonts (https://fonts.google.com/)
+# font_add_google("Gochi Hand", "gochi")
+# font_add_google("Schoolbell", "bell")
+#
+# ## Automatically use showtext to render text
+# showtext_auto()
+# #extrafont::loadfonts()
+#
+# set.seed(123)
+# hist(rnorm(1000), breaks = 30, col = "steelblue", border = "white",
+#      main = "", xlab = "", ylab = "")
+# title("Histogram of Normal Random Numbers \u00B2 \u2074 \u2081 \u00B1 \u2463", family = "Roboto", cex.main = 2)
+# # title(ylab = "Frequency₂", family = "Arial", cex.lab = 2)
+# title(ylab = latex2exp::TeX("FiO_2"), family = "Arial", cex.lab = 2)
+# text(2, 70, latex2exp::TeX("FiO_2 = 1000 \u2014 \u2074 \u2082 \u00B1"), family = "bell", cex = 2.5)
+
+# These work when using extrafonts, but there are other issues with extrafonts in compatibility with
+# certain google ttf I think. extrafonts also only supports pdf.
+# showtext is good but has another issue in that the text is embedded not as a font but as a darwing object which makes it
+# difficult to edit. Not sure whether this is an issue for journals. If so we may need to revert to extrafonts, or use it as an option
+# at least. In this case we can use pdftools to generate a png file from the pdf to get consistency.
+
 
 ## Colour scales ----
 

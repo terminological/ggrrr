@@ -116,21 +116,21 @@
 <span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/outputter.html">outputter</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">"output"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; directing output to: /home/terminological/Dropbox/Git/ggrrr/output</span>
 <span class="fu">out</span><span class="op">(</span><span class="st">"figure1.png"</span><span class="op">)</span>
-<span class="co">#&gt; /home/terminological/Dropbox/Git/ggrrr/output/figure1-2022-09-14.png</span>
+<span class="co">#&gt; /home/terminological/Dropbox/Git/ggrrr/output/figure1-2022-09-15.png</span>
 
 <span class="co"># an output directory in a temp directory which has versioned subdirectories</span>
 <span class="va">out2</span> <span class="op">=</span> <span class="fu"><a href="../reference/outputter.html">outputter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,datedSubdirectory <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; directing output to: /tmp/RtmpqgmeUX</span>
+<span class="co">#&gt; directing output to: /tmp/RtmpEYaXE7</span>
 <span class="fu">out2</span><span class="op">(</span><span class="st">"figure1.png"</span><span class="op">)</span>
-<span class="co">#&gt; /tmp/RtmpqgmeUX/2022-09-14/figure1.png</span>
+<span class="co">#&gt; /tmp/RtmpEYaXE7/2022-09-15/figure1.png</span>
 <span class="fu">out2</span><span class="op">(</span><span class="st">"supplementary1.xlsx"</span>,delete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; /tmp/RtmpqgmeUX/2022-09-14/supplementary1.xlsx</span>
+<span class="co">#&gt; /tmp/RtmpEYaXE7/2022-09-15/supplementary1.xlsx</span>
 
 <span class="co"># unversioned files in temp directory</span>
 <span class="va">out3</span> <span class="op">=</span> <span class="fu"><a href="../reference/outputter.html">outputter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,datedSubdirectory <span class="op">=</span> <span class="cn">FALSE</span>,datedFile <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; directing output to: /tmp/RtmpqgmeUX</span>
+<span class="co">#&gt; directing output to: /tmp/RtmpEYaXE7</span>
 <span class="fu">out3</span><span class="op">(</span><span class="st">"figure1.png"</span><span class="op">)</span>
-<span class="co">#&gt; /tmp/RtmpqgmeUX/figure1.png</span></pre></div>
+<span class="co">#&gt; /tmp/RtmpEYaXE7/figure1.png</span></pre></div>
 </div>
 <div id="ggplot-utilities" class="section level1">
 <h1 class="hasAnchor">
@@ -148,8 +148,8 @@
 
 <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"Files were saved as: \n"</span>,<span class="fu">out2</span><span class="op">(</span><span class="st">"diamonds1"</span><span class="op">)</span>,<span class="st">".png\n"</span>,<span class="fu">out2</span><span class="op">(</span><span class="st">"diamonds1"</span><span class="op">)</span>,<span class="st">".pdf"</span><span class="op">)</span>
 <span class="co">#&gt; Files were saved as: </span>
-<span class="co">#&gt; /tmp/RtmpqgmeUX/2022-09-14/diamonds1.png</span>
-<span class="co">#&gt; /tmp/RtmpqgmeUX/2022-09-14/diamonds1.pdf</span></pre></div>
+<span class="co">#&gt; /tmp/RtmpEYaXE7/2022-09-15/diamonds1.png</span>
+<span class="co">#&gt; /tmp/RtmpEYaXE7/2022-09-15/diamonds1.pdf</span></pre></div>
 </div>
 <div id="tabular-data-in-ggplots" class="section level1">
 <h1 class="hasAnchor">

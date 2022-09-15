@@ -14,5 +14,9 @@
 * GGPlot scales included
 * date and timepoints, conversion, cut and full_seq examples using dated periods as an alternative.
 * integer values cutting to named factors.
+
+# ggrrr 0.0.0.9009
+
+* Fixed CI for mac and windows. Updated documentation
 * TODO: cache status function? memory cache layer
 * TODO: unzip a download?

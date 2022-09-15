@@ -187,20 +187,20 @@ if missing this will be derived from the data itself.</p></td>
 <span class='co'># in this specific situation the final date is not truncated because the</span>
 <span class='co'># input data is seen as an exact match for the whole output period.</span>
 <span class='fu'>cut_date</span><span class='op'>(</span><span class='va'>dates2</span>, fmt <span class='op'>=</span> <span class='st'>"%d/%b"</span>, factor <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] 14/Sep — 20/Sep 09/Nov — 15/Nov 26/Oct — 01/Nov 21/Sep — 27/Sep
-#&gt;  [5] 14/Sep — 20/Sep 12/Oct — 18/Oct 12/Oct — 18/Oct 28/Sep — 04/Oct
-#&gt;  [9] 02/Nov — 08/Nov 02/Nov — 08/Nov 09/Nov — 15/Nov 21/Sep — 27/Sep
-#&gt; [13] 14/Sep — 20/Sep 05/Oct — 11/Oct 12/Oct — 18/Oct 21/Sep — 27/Sep
-#&gt; [17] 12/Oct — 18/Oct 14/Sep — 20/Sep 05/Oct — 11/Oct 16/Nov — 22/Nov
-#&gt; [21] 28/Sep — 04/Oct 26/Oct — 01/Nov 02/Nov — 08/Nov 21/Sep — 27/Sep
-#&gt; [25] 16/Nov — 22/Nov 02/Nov — 08/Nov 14/Sep — 20/Sep 19/Oct — 25/Oct
-#&gt; [29] 26/Oct — 01/Nov 26/Oct — 01/Nov 14/Sep — 20/Sep 28/Sep — 04/Oct
-#&gt; [33] 05/Oct — 11/Oct 26/Oct — 01/Nov 12/Oct — 18/Oct 12/Oct — 18/Oct
-#&gt; [37] 02/Nov — 08/Nov 16/Nov — 22/Nov 21/Sep — 27/Sep 28/Sep — 04/Oct
-#&gt; [41] 26/Oct — 01/Nov 12/Oct — 18/Oct 26/Oct — 01/Nov 26/Oct — 01/Nov
-#&gt; [45] 14/Sep — 20/Sep 02/Nov — 08/Nov 02/Nov — 08/Nov 16/Nov — 22/Nov
-#&gt; [49] 16/Nov — 22/Nov 05/Oct — 11/Oct
-#&gt; 10 Levels: 14/Sep — 20/Sep &lt; 21/Sep — 27/Sep &lt; ... &lt; 16/Nov — 22/Nov</div><div class='input'>
+</div><div class='output co'>#&gt;  [1] 15/Sep — 21/Sep 10/Nov — 16/Nov 27/Oct — 02/Nov 22/Sep — 28/Sep
+#&gt;  [5] 15/Sep — 21/Sep 13/Oct — 19/Oct 13/Oct — 19/Oct 29/Sep — 05/Oct
+#&gt;  [9] 03/Nov — 09/Nov 03/Nov — 09/Nov 10/Nov — 16/Nov 22/Sep — 28/Sep
+#&gt; [13] 15/Sep — 21/Sep 06/Oct — 12/Oct 13/Oct — 19/Oct 22/Sep — 28/Sep
+#&gt; [17] 13/Oct — 19/Oct 15/Sep — 21/Sep 06/Oct — 12/Oct 17/Nov — 23/Nov
+#&gt; [21] 29/Sep — 05/Oct 27/Oct — 02/Nov 03/Nov — 09/Nov 22/Sep — 28/Sep
+#&gt; [25] 17/Nov — 23/Nov 03/Nov — 09/Nov 15/Sep — 21/Sep 20/Oct — 26/Oct
+#&gt; [29] 27/Oct — 02/Nov 27/Oct — 02/Nov 15/Sep — 21/Sep 29/Sep — 05/Oct
+#&gt; [33] 06/Oct — 12/Oct 27/Oct — 02/Nov 13/Oct — 19/Oct 13/Oct — 19/Oct
+#&gt; [37] 03/Nov — 09/Nov 17/Nov — 23/Nov 22/Sep — 28/Sep 29/Sep — 05/Oct
+#&gt; [41] 27/Oct — 02/Nov 13/Oct — 19/Oct 27/Oct — 02/Nov 27/Oct — 02/Nov
+#&gt; [45] 15/Sep — 21/Sep 03/Nov — 09/Nov 03/Nov — 09/Nov 17/Nov — 23/Nov
+#&gt; [49] 17/Nov — 23/Nov 06/Oct — 12/Oct
+#&gt; 10 Levels: 15/Sep — 21/Sep &lt; 22/Sep — 28/Sep &lt; ... &lt; 17/Nov — 23/Nov</div><div class='input'>
 <span class='co'># if the input dates don't line up with the output dates</span>
 <span class='co'># there may be incomplete coverage of the first and last category.</span>
 <span class='co'># where the cutting results in short periods. In this</span>

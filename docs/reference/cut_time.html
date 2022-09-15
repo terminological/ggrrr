@@ -203,20 +203,20 @@ if missing this will be derived from the data itself.</p></td>
 <span class='co'># in this specific situation the final date is not truncated because the</span>
 <span class='co'># input data is seen as an exact match for the whole output period.</span>
 <span class='fu'>cut_time</span><span class='op'>(</span><span class='va'>times2</span>, fmt <span class='op'>=</span> <span class='st'>"%d/%b"</span>, factor <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] 09/Nov — 15/Nov 28/Sep — 04/Oct 14/Sep — 20/Sep 16/Nov — 22/Nov
-#&gt;  [5] 12/Oct — 18/Oct 02/Nov — 08/Nov 26/Oct — 01/Nov 12/Oct — 18/Oct
-#&gt;  [9] 05/Oct — 11/Oct 02/Nov — 08/Nov 26/Oct — 01/Nov 14/Sep — 20/Sep
-#&gt; [13] 09/Nov — 15/Nov 14/Sep — 20/Sep 09/Nov — 15/Nov 21/Sep — 27/Sep
-#&gt; [17] 12/Oct — 18/Oct 28/Sep — 04/Oct 26/Oct — 01/Nov 21/Sep — 27/Sep
-#&gt; [21] 16/Nov — 22/Nov 05/Oct — 11/Oct 05/Oct — 11/Oct 09/Nov — 15/Nov
-#&gt; [25] 09/Nov — 15/Nov 21/Sep — 27/Sep 16/Nov — 22/Nov 02/Nov — 08/Nov
-#&gt; [29] 05/Oct — 11/Oct 16/Nov — 22/Nov 05/Oct — 11/Oct 16/Nov — 22/Nov
-#&gt; [33] 28/Sep — 04/Oct 14/Sep — 20/Sep 21/Sep — 27/Sep 09/Nov — 15/Nov
-#&gt; [37] 28/Sep — 04/Oct 28/Sep — 04/Oct 14/Sep — 20/Sep 16/Nov — 22/Nov
-#&gt; [41] 28/Sep — 04/Oct 02/Nov — 08/Nov 28/Sep — 04/Oct 09/Nov — 15/Nov
-#&gt; [45] 28/Sep — 04/Oct 16/Nov — 22/Nov 19/Oct — 25/Oct 02/Nov — 08/Nov
-#&gt; [49] 09/Nov — 15/Nov 02/Nov — 08/Nov
-#&gt; 10 Levels: 14/Sep — 20/Sep &lt; 21/Sep — 27/Sep &lt; ... &lt; 16/Nov — 22/Nov</div><div class='input'>
+</div><div class='output co'>#&gt;  [1] 10/Nov — 16/Nov 29/Sep — 05/Oct 15/Sep — 21/Sep 17/Nov — 23/Nov
+#&gt;  [5] 13/Oct — 19/Oct 03/Nov — 09/Nov 27/Oct — 02/Nov 13/Oct — 19/Oct
+#&gt;  [9] 06/Oct — 12/Oct 03/Nov — 09/Nov 27/Oct — 02/Nov 15/Sep — 21/Sep
+#&gt; [13] 10/Nov — 16/Nov 15/Sep — 21/Sep 10/Nov — 16/Nov 22/Sep — 28/Sep
+#&gt; [17] 13/Oct — 19/Oct 29/Sep — 05/Oct 27/Oct — 02/Nov 22/Sep — 28/Sep
+#&gt; [21] 17/Nov — 23/Nov 06/Oct — 12/Oct 06/Oct — 12/Oct 10/Nov — 16/Nov
+#&gt; [25] 10/Nov — 16/Nov 22/Sep — 28/Sep 17/Nov — 23/Nov 03/Nov — 09/Nov
+#&gt; [29] 06/Oct — 12/Oct 17/Nov — 23/Nov 06/Oct — 12/Oct 17/Nov — 23/Nov
+#&gt; [33] 29/Sep — 05/Oct 15/Sep — 21/Sep 22/Sep — 28/Sep 10/Nov — 16/Nov
+#&gt; [37] 29/Sep — 05/Oct 29/Sep — 05/Oct 15/Sep — 21/Sep 17/Nov — 23/Nov
+#&gt; [41] 29/Sep — 05/Oct 03/Nov — 09/Nov 29/Sep — 05/Oct 10/Nov — 16/Nov
+#&gt; [45] 29/Sep — 05/Oct 17/Nov — 23/Nov 20/Oct — 26/Oct 03/Nov — 09/Nov
+#&gt; [49] 10/Nov — 16/Nov 03/Nov — 09/Nov
+#&gt; 10 Levels: 15/Sep — 21/Sep &lt; 22/Sep — 28/Sep &lt; ... &lt; 17/Nov — 23/Nov</div><div class='input'>
 <span class='co'># if the input dates don't line up with the output dates</span>
 <span class='co'># there may be incomplete coverage of the first and last category.</span>
 <span class='co'># where the cutting results in short periods. In this instance</span>
@@ -237,15 +237,15 @@ if missing this will be derived from the data itself.</p></td>
 #&gt; [45] 26/Sep — 09/Oct &lt;NA&gt;            10/Oct — 23/Oct 24/Oct — 06/Nov
 #&gt; [49] &lt;NA&gt;            24/Oct — 06/Nov
 #&gt; Levels: 26/Sep — 09/Oct &lt; 10/Oct — 23/Oct &lt; 24/Oct — 06/Nov</div><div class='input'><span class='va'>times2</span> <span class='op'>-</span> <span class='fu'>cut_time</span><span class='op'>(</span><span class='va'>times2</span>, fmt <span class='op'>=</span> <span class='st'>"%d/%b"</span>, factor <span class='op'>=</span> <span class='cn'>FALSE</span>, period <span class='op'>=</span> <span class='st'>"-2 weeks"</span>, anchor<span class='op'>=</span><span class='st'>"sun"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1]         NA -1.5714286         NA         NA -1.5714286 -0.5714286
-#&gt;  [7] -1.5714286 -1.5714286 -0.5714286 -0.5714286 -1.5714286         NA
-#&gt; [13]         NA         NA         NA         NA -1.5714286 -1.5714286
-#&gt; [19] -1.5714286         NA         NA -0.5714286 -0.5714286         NA
-#&gt; [25]         NA         NA         NA -0.5714286 -0.5714286         NA
-#&gt; [31] -0.5714286         NA -1.5714286         NA         NA         NA
-#&gt; [37] -1.5714286 -1.5714286         NA         NA -1.5714286 -0.5714286
-#&gt; [43] -1.5714286         NA -1.5714286         NA -0.5714286 -0.5714286
-#&gt; [49]         NA -0.5714286
+</div><div class='output co'>#&gt;  [1]         NA -1.4285714         NA         NA -1.4285714 -0.4285714
+#&gt;  [7] -1.4285714 -1.4285714 -0.4285714 -0.4285714 -1.4285714         NA
+#&gt; [13]         NA         NA         NA         NA -1.4285714 -1.4285714
+#&gt; [19] -1.4285714         NA         NA -0.4285714 -0.4285714         NA
+#&gt; [25]         NA         NA         NA -0.4285714 -0.4285714         NA
+#&gt; [31] -0.4285714         NA -1.4285714         NA         NA         NA
+#&gt; [37] -1.4285714 -1.4285714         NA         NA -1.4285714 -0.4285714
+#&gt; [43] -1.4285714         NA -1.4285714         NA -0.4285714 -0.4285714
+#&gt; [49]         NA -0.4285714
 #&gt; attr(,"day_zero")
 #&gt; [1] "2019-12-29"
 #&gt; attr(,"unit")

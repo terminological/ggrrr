@@ -27,7 +27,7 @@ outputter = function(directory = here::here("output"), datedFile=!datedSubdirect
   directory = fs::path_norm(directory)
   fs::dir_create(directory)
   message("directing output to: ",directory)
-  return(function(filename, delete=FALSE) {
+  return(function(filename = "", delete=FALSE) {
     if(datedSubdirectory) {
       directory = fs::path(directory,Sys.Date())
       fs::dir_create(directory)

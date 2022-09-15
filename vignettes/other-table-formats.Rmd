@@ -16,7 +16,7 @@ library(gt)
 devtools::load_all()
 out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
 
-if (interactive()) devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-multiarch"))
+# if (interactive()) devtools::install_github("terminological/html2pdfr@0.4.1", build_opts = c("--no-multiarch"))
 ```
 
 # Create a table from a tibble
