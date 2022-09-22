@@ -474,7 +474,7 @@ time_to_date = function(timepoints, unit = attr(timepoints,"unit"), day_zero = g
 
   x = sort(unique(c(floor(timepoints),ceiling(timepoints))))
   y = day_zero+unit*x
-  as.Date(stats::approx(x,y,xout=timepoints)$y,"1970-01-01")
+  as.Date(floor(stats::approx(x,y,xout=timepoints)$y),"1970-01-01")
 }
 
 
@@ -603,6 +603,18 @@ cut_time = function(timepoints, full_seq = timepoints, unit = attr(timepoints,"u
 }
 
 
+#' Format date as dmy
+#'
+#' @param date
+#'
+#' @return the formatted date
+#' @export
+#'
+#' @examples
+#' fdmy(Sys.Date())
+fdmy = function(date) {
+  format(date,"%d %b %Y")
+}
 
 
 # wrap functions that chuck an error

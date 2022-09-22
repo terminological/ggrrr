@@ -23,7 +23,6 @@ unstable = function(pkg = "ggrrr", org="terminological") {
   } else {
     devtools::install_github(sprintf("%s/%s",org, pkg),upgrade = FALSE)
   }
-  library(ggrrr)
 }
 
 #' check if a package is installed

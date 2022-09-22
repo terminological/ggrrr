@@ -4,6 +4,7 @@ git add -A
 git commit -m "release $1"
 git push
 
+Rscript -e 'desc::desc_set(Version="$1")'
 git checkout -b release-$1
 git push --set-upstream origin release-$1
 
