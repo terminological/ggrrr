@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9009
+Version: 0.0.0.9010
 Authors@R: 
     person(given = "Rob",
            family = "Challen",
