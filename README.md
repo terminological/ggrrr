@@ -4,6 +4,7 @@ Data presentation and visualisation hacks.
 
 [![R-CMD-check](https://github.com/terminological/ggrrr/workflows/R-CMD-check/badge.svg)](https://github.com/terminological/ggrrr/actions)
 [![DOI](https://zenodo.org/badge/489738724.svg)](https://zenodo.org/badge/latestdoi/489738724)
+[![ggrrr status badge](https://terminological.r-universe.dev/badges/ggrrr)](https://terminological.r-universe.dev)
 
 see the [package documentation](https://terminological.github.io/ggrrr/docs/)
 

@@ -27,10 +27,12 @@
 * fdmy for formatting a date
 * optional_fn for hiding references to potentially non installed functions
 
-* TODO: cache status function? memory cache layer
-* TODO: unzip a download?
+# ggrrr 0.0.0.9013
+
+* Documentation tweaks
 
 # future work
 
-* Showtext font handling has limited support for UTF8 unicode characters.
-* 
+* BUG: Showtext font handling has limited support for UTF8 unicode characters.
+* TODO: cache status function? memory cache layer
+* TODO: unzip a download?
