@@ -605,7 +605,7 @@ cut_time = function(timepoints, full_seq = timepoints, unit = attr(timepoints,"u
 
 #' Format date as dmy
 #'
-#' @param date
+#' @param date a date to convert
 #'
 #' @return the formatted date
 #' @export

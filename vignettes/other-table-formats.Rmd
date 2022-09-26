@@ -25,14 +25,16 @@ This is a wrapper
 
 ```{r}
 
-gtcars_8 =
-  gtcars %>%
-  group_by(ctry_origin) %>%
-  slice_head(n = 2) %>%
-  ungroup() %>%
-  filter(ctry_origin != "United Kingdom") %>%
-  group_by(ctry_origin) %>%
-  gt()
+# gtcars_8 =
+#   gtcars %>%
+#   group_by(ctry_origin) %>%
+#   slice_head(n = 2) %>%
+#   ungroup() %>%
+#   filter(ctry_origin != "United Kingdom") %>%
+#   group_by(ctry_origin) %>%
+#   gt()
+
+
 
 ```
 

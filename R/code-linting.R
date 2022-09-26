@@ -29,7 +29,7 @@
 #' @export
 fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes")), description = here::here("DESCRIPTION"), dry_run = TRUE ) {
 
-  devtools::load_all(here::here())
+  path = package = function_name = f = generic = content.old = name = value = content = changed = NULL
 
   files = dplyr::bind_rows(lapply(rDirectories, fs::dir_info)) %>% filter(fs::path_ext(path) %in% c("R","Rmd"))
   dMap = yaml::read_yaml(description)

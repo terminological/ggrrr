@@ -1,13 +1,14 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9010
+Version: 0.0.0.9012
 Authors@R: 
-    person(given = "Rob",
+    person(given = "Robert",
            family = "Challen",
            role = c("aut", "cre"),
            email = "rob@terminolgical.co.uk",
            comment = c(ORCID = "0000-0002-5504-7768"))
-Description: Visualisation hacks, tabular data helpers, fonts, caching, tidy data functions. It is an swiss army knife, jack of all trades.
+Description: Visualisation hacks, tabular data helpers, fonts, caching, 
+    tidy data functions. It is an swiss army knife, jack of all trades.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -56,11 +57,7 @@ Suggests:
     tidyverse,
     rmarkdown,
     knitr,
-    webshot,
     gt,
-    html2pdfr,
     rJava
-Remotes:
-    terminological/html2pdfr
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0

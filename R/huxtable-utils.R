@@ -390,7 +390,7 @@ hux_save_as = function(hux,filename,
     formats = unique(c(formats,"pdf"))
   }
 
-  if(requireNamespace("html2pdfr", quietly=TRUE) & utils::packageVersion("html2pdfr") >= "0.4.0") {
+  if(rlang::is_installed("html2pdfr") & utils::packageVersion("html2pdfr") >= "0.4.0") {
     supported = c("html","png","pdf","docx","xlsx")
   } else {
     supported = c("html","docx","xlsx")
@@ -468,11 +468,16 @@ hux_save_as = function(hux,filename,
 
     if (any(c("pdf","png") %in% formats)) {
 
-      if(requireNamespace("html2pdfr", quietly=TRUE) & utils::packageVersion("html2pdfr") >= "0.4.0") {
+      if(rlang::is_installed("html2pdfr") & utils::packageVersion("html2pdfr") >= "0.4.0") {
 
-        conv = html2pdfr::html_converter(.font_paths())
+        # get these functions without R CMD Check noticing that they might not be installed
+        # since we check for these above we don't need to handle failure.
+        html_converter = optional_fn("html2pdfr","html_converter")
+        html_fragment_to_pdf = optional_fn("html2pdfr","html_fragment_to_pdf")
 
-        html2pdfr::html_fragment_to_pdf(
+        conv = html_converter(.font_paths())
+
+        html_fragment_to_pdf(
           htmlFragment = html,
           outFile = filename,
           formats = c("pdf","png")[c("pdf","png") %in% formats],
@@ -488,12 +493,18 @@ hux_save_as = function(hux,filename,
           grDevices::embedFonts(withExt("pdf")),
           silent=TRUE
         );
-      } else if (requireNamespace("webshot", quietly=TRUE)) {
+      } else if (rlang::is_installed("webshot")) {
         warning("html2pdfr (version >0.4.0) is not installed but webshot is. We'll use that but it will not respect page length constraints, there will only be 1 PNG for multiple pages, and output will be fixed width.")
-        if (webshot::is_phantomjs_installed()) {
+
+        # get these functions without R CMD Check noticing that they might not be installed
+        # since we check for these above we don't need to handle failure.
+        is_phantomjs_installed = optional_fn("webshot","is_phantomjs_installed")
+        webshot = optional_fn("webshot","webshot")
+
+        if (is_phantomjs_installed()) {
           # webshot alternative
           if("png" %in% formats) {
-            webshot::webshot(
+            webshot(
               url = sprintf("file://%s",withExt("html")),
               file = withExt("png"),
               # webshots page width dimensions are messed up
@@ -512,7 +523,7 @@ hux_save_as = function(hux,filename,
               stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
             tmpHtml = tempfile(fileext = ".html")
             write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html2), tmpHtml)
-            webshot::webshot(
+            webshot(
               url = sprintf("file://%s",tmpHtml),
               file = withExt("pdf"),
               # webshots page width dimensions are messed up

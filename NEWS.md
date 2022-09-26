@@ -18,5 +18,19 @@
 # ggrrr 0.0.0.9009
 
 * Fixed CI for mac and windows. Updated documentation
+* Cairo dependency for xquartz on mac
+* no mulitarch on windows
+
+# ggrrr 0.0.0.9012
+
+* reinstalled sinew alternative fix_qualified_functions
+* fdmy for formatting a date
+* optional_fn for hiding references to potentially non installed functions
+
 * TODO: cache status function? memory cache layer
 * TODO: unzip a download?
+
+# future work
+
+* Showtext font handling has limited support for UTF8 unicode characters.
+* 

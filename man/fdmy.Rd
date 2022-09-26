@@ -7,7 +7,7 @@
 fdmy(date)
 }
 \arguments{
-\item{date}{}
+\item{date}{a date to convert}
 }
 \value{
 the formatted date

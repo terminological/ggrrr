@@ -86,4 +86,27 @@ non_cran = function(name,github,force=FALSE,subdir="",...) {
   }
 }
 
+
+
+#' Get an optional function without triggering a CRAN warning
+#'
+#' You want to use a function if it is installed but don't want it to
+#' be installed as part of your package and you don't want to reference it
+#' as part of the Imports or Suggests fields in a package DESCRIPTION.
+#'
+#' @param pkg the package name
+#' @param name the function you wish to use
+#' @param alt a function that can be used instead
+#'
+#' @return the function you want if available or the alternative
+#' @export
+#'
+#' @examples
+#' fn = optional_fn("openssl", "md5", digest::digest)
+#' as.character(fn(as.raw(c(1,2,3))))
+optional_fn = function(pkg, name, alt=function(...) {message("Skipping function call as ",pkg,"::",name," not available")}) {
+  if (!rlang::is_installed(pkg)) return(alt)
+  return(getFromNamespace(name, pkg))
+}
+
 # TODO: unload and reload a package including installation using devtools::install_local or devtools::install_github
