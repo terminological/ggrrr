@@ -31,6 +31,10 @@
 
 * Documentation tweaks
 
+# ggrrr 0.0.0.9014
+
+* fix anomalous dependencies
+
 # future work
 
 * BUG: Showtext font handling has limited support for UTF8 unicode characters.

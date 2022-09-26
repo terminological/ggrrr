@@ -1,4 +1,5 @@
 # NOTE TO SELF: THIS FILE IS HARD LINKED TO FROM SEVERAL PROJECTS AND MUST BE STAND ALONE.
+# It creates a dependency on dplyr and 
 
 #' Convert a table to long format
 #'
@@ -38,6 +39,7 @@
 as.long_format_table = function(table, ...) {
   UseMethod("as.long_format_table", table)
 }
+
 
 # NOTE TO SELF: THIS FILE IS HARD LINKED TO FROM SEVERAL PROJECTS AND MUST BE STAND ALONE.
 
@@ -88,11 +90,37 @@ as.long_format_table.data.frame = function(table, fontName = "Roboto", fontSize 
   )
 
   class(tidy) = c("long_format_table",class(tidy))
-  if (is.null(colWidths)) colWidths = ggrrr::fit_col_widths(tidy)
+  if (is.null(colWidths)) colWidths = fit_col_widths(tidy)
   attr(tidy,"colWidths") = colWidths
 
   return(tidy)
 }
+
+#' Estimate column content widths
+#'
+#' Widths are based on dataframe or huxtable content ignoring rowspans and
+#' potential for wrapping.
+#'
+#' @param table a table to get column content widths for.
+#'
+#' @return a vector of column widths
+#' @export
+#'
+#' @examples
+#' library(tidyverse)
+#' iris %>% fit_col_widths()
+fit_col_widths = function(table) {
+
+  label= fontName = fontFace = colSpan = NULL # remove global binding note
+
+  table %>% as.long_format_table() %>%
+    dplyr::mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% dplyr::pull(ar)) %>%
+    dplyr::filter(colSpan == 1) %>%
+    dplyr::group_by(col) %>%
+    dplyr::summarise(ar = max(ar)) %>%
+    dplyr::arrange(col) %>% dplyr::pull(ar)
+}
+
 
 # NOTE TO SELF: THIS FILE IS HARD LINKED TO FROM SEVERAL PROJECTS AND MUST BE STAND ALONE.
 
@@ -137,9 +165,9 @@ as.long_format_table.huxtable = function(table, fontName = "Roboto", fontSize = 
       italic ~ "italic",
       TRUE ~ "plain"
     ),
-    topBorderWeight = rJava::head(attr(table,"tb_borders")$thickness,-1) %>% as.vector() %>% tidyr::replace_na(0),
+    topBorderWeight = head(attr(table,"tb_borders")$thickness,-1) %>% as.vector() %>% tidyr::replace_na(0),
     bottomBorderWeight = attr(table,"tb_borders")$thickness[-1,] %>% as.vector() %>% tidyr::replace_na(0),
-    leftBorderWeight = t(rJava::head(t(attr(table,"lr_borders")$thickness),-1)) %>% as.vector() %>% tidyr::replace_na(0),
+    leftBorderWeight = t(head(t(attr(table,"lr_borders")$thickness),-1)) %>% as.vector() %>% tidyr::replace_na(0),
     rightBorderWeight = attr(table,"lr_borders")$thickness[,-1] %>% as.vector() %>% tidyr::replace_na(0)
   ) %>% dplyr::select(-bold,-italic)
 

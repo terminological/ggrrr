@@ -1,3 +1,10 @@
+# from rex:::escape.character
+.escape = function (x) {
+  chars <- c("*", ".", "?", "^", "+", "$", "|", "(", ")", "[",
+             "]", "{", "}", "\\")
+  regex(sanitize(x, chars))
+}
+
 .move_safe = function(file, new_file = paste0(file,".old")) {
   if (!fs::file_exists(new_file)) {
     fs::file_move(file, new_file)
@@ -66,7 +73,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
     functions = packageMap2 %>% filter(package == pkg) %>% pull(function_name)
 
     if (length(functions) > 0) {
-      functionRegex = paste0(lapply(functions, rex::escape),collapse = "|")
+      functionRegex = paste0(lapply(functions, .escape),collapse = "|")
       functionRegex = paste0("([^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
       replacement = paste0("\\1",pkg,"::\\2(")
       # c = files$content.old[[1]]

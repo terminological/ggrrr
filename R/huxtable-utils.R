@@ -236,30 +236,6 @@ hux_nest_group = function(t, col=1) {
 
 
 
-#' Estimate column content widths
-#'
-#' Widths are based on dataframe or huxtable content ignoring rowspans and
-#' potential for wrapping.
-#'
-#' @param table a table to get column content widths for.
-#'
-#' @return a vector of column widths
-#' @export
-#'
-#' @examples
-#' library(tidyverse)
-#' iris %>% fit_col_widths()
-fit_col_widths = function(table) {
-
-  label= fontName = fontFace = colSpan = NULL # remove global binding note
-
-  table %>% ggrrr::as.long_format_table() %>%
-    dplyr::mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% dplyr::pull(ar)) %>%
-    dplyr::filter(colSpan == 1) %>%
-    dplyr::group_by(col) %>%
-    dplyr::summarise(ar = max(ar)) %>%
-    dplyr::arrange(col) %>% dplyr::pull(ar)
-}
 
 #' Calculate a sensible column and table width for a huxtable based on its content.
 #'
@@ -405,7 +381,7 @@ hux_save_as = function(hux,filename,
   withExt = function(extn) {fs::path_ext_set(filename,extn)}
   matchedFiles = function(extns) {
     extns = paste0(extns,collapse="|")
-    fs::dir_ls(fs::path_dir(filename),regexp = paste0(rex::escape(filename),"(_[0-9]+)?\\.(",extns,")"))
+    fs::dir_ls(fs::path_dir(filename),regexp = paste0(.escape(filename),"(_[0-9]+)?\\.(",extns,")"))
   }
 
   # clean up any possible outputs from previous run

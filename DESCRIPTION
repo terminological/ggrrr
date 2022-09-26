@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9013
+Version: 0.0.0.9014
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -37,7 +37,6 @@ Imports:
     patchwork,
     purrr,
     readr,
-    rex,
     rstudioapi,
     stringr,
     tidyselect,
