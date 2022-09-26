@@ -2,7 +2,12 @@
 .escape = function (x) {
   chars <- c("*", ".", "?", "^", "+", "$", "|", "(", ")", "[",
              "]", "{", "}", "\\")
-  regex(sanitize(x, chars))
+  .sanitize(x, chars)
+}
+
+.sanitize = function (x, chars) {
+  gsub(paste0("([\\", paste0(collapse = "\\", chars), "])"),
+       "\\\\\\1", x, perl = TRUE)
 }
 
 .move_safe = function(file, new_file = paste0(file,".old")) {

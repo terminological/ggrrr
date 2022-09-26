@@ -195,6 +195,31 @@ hux_nest_group = function(t, col=1) {
   return(t2)
 }
 
+#' Estimate column content widths
+#'
+#' Widths are based on dataframe or huxtable content ignoring rowspans and
+#' potential for wrapping.
+#'
+#' @param table a table to get column content widths for.
+#'
+#' @return a vector of column widths
+#' @export
+#'
+#' @examples
+#' library(tidyverse)
+#' iris %>% fit_col_widths()
+fit_col_widths = function(table) {
+
+  ar = NULL
+  label= fontName = fontFace = colSpan = NULL # remove global binding note
+
+  table %>% as.long_format_table() %>%
+    dplyr::mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% dplyr::pull(ar)) %>%
+    dplyr::filter(colSpan == 1) %>%
+    dplyr::group_by(col) %>%
+    dplyr::summarise(ar = max(ar)) %>%
+    dplyr::arrange(col) %>% dplyr::pull(ar)
+}
 
 # get the aspect ratio of a bit of text - this gives the width/height of a bit of text
 # TODO I think sysfonts or systemfonts might have something to help here

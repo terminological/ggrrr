@@ -1,5 +1,4 @@
 # NOTE TO SELF: THIS FILE IS HARD LINKED TO FROM SEVERAL PROJECTS AND MUST BE STAND ALONE.
-# It creates a dependency on dplyr and 
 
 #' Convert a table to long format
 #'
@@ -113,7 +112,7 @@ fit_col_widths = function(table) {
 
   label= fontName = fontFace = colSpan = NULL # remove global binding note
 
-  table %>% as.long_format_table() %>%
+  table %>% ggrrr::as.long_format_table() %>%
     dplyr::mutate(ar = .get_text_ar(label,font = fontName,face = fontFace) %>% dplyr::pull(ar)) %>%
     dplyr::filter(colSpan == 1) %>%
     dplyr::group_by(col) %>%
@@ -165,9 +164,9 @@ as.long_format_table.huxtable = function(table, fontName = "Roboto", fontSize = 
       italic ~ "italic",
       TRUE ~ "plain"
     ),
-    topBorderWeight = head(attr(table,"tb_borders")$thickness,-1) %>% as.vector() %>% tidyr::replace_na(0),
+    topBorderWeight = rJava::head(attr(table,"tb_borders")$thickness,-1) %>% as.vector() %>% tidyr::replace_na(0),
     bottomBorderWeight = attr(table,"tb_borders")$thickness[-1,] %>% as.vector() %>% tidyr::replace_na(0),
-    leftBorderWeight = t(head(t(attr(table,"lr_borders")$thickness),-1)) %>% as.vector() %>% tidyr::replace_na(0),
+    leftBorderWeight = t(rJava::head(t(attr(table,"lr_borders")$thickness),-1)) %>% as.vector() %>% tidyr::replace_na(0),
     rightBorderWeight = attr(table,"lr_borders")$thickness[,-1] %>% as.vector() %>% tidyr::replace_na(0)
   ) %>% dplyr::select(-bold,-italic)
 
