@@ -391,7 +391,7 @@ hux_save_as = function(hux,filename,
     formats = unique(c(formats,"pdf"))
   }
 
-  if(rlang::is_installed("html2pdfr") & utils::packageVersion("html2pdfr") >= "0.4.0") {
+  if(rlang::is_installed("html2pdfr") && utils::packageVersion("html2pdfr") >= "0.4.0") {
     supported = c("html","png","pdf","docx","xlsx")
   } else {
     supported = c("html","docx","xlsx")
@@ -469,7 +469,7 @@ hux_save_as = function(hux,filename,
 
     if (any(c("pdf","png") %in% formats)) {
 
-      if(rlang::is_installed("html2pdfr") & utils::packageVersion("html2pdfr") >= "0.4.0") {
+      if(rlang::is_installed("html2pdfr") && utils::packageVersion("html2pdfr") >= "0.4.0") {
 
         # get these functions without R CMD Check noticing that they might not be installed
         # since we check for these above we don't need to handle failure.
