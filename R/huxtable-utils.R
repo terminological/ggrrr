@@ -1,5 +1,7 @@
 ## Huxtable utils ----
 
+### hux_default_layout ----
+
 #' A tidy article theme for huxtables
 #'
 #' The main aim is to get something that works with google docs when you copy and paste.
@@ -14,22 +16,9 @@
 #' @examples
 #' library(tidyverse)
 #' hux = iris %>% hux_default_layout()
-hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
-  defaultFont = ggrrr::check_font(defaultFont)
-  # TODO: load it from google if not.
-  if(!huxtable::is_hux(hux)) hux = huxtable::as_hux(hux)
-  return( hux %>%
-            huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
-            huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont) %>%
-            huxtable::set_top_border(1, huxtable::everywhere, 1) %>%
-            huxtable::set_bottom_border(headerRows, huxtable::everywhere, 1) %>%
-            huxtable::set_bottom_border(nrow(hux), huxtable::everywhere, 1) %>%
-            huxtable::set_wrap(huxtable::everywhere, huxtable::everywhere, TRUE) %>%
-            huxtable::set_top_padding(huxtable::everywhere,huxtable::everywhere,1) %>%
-            huxtable::set_bottom_padding(huxtable::everywhere,huxtable::everywhere,0) %>%
-            huxtable::set_valign(huxtable::everywhere,huxtable::everywhere,"top")
-            )
-}
+hux_default_layout = .hux_default_layout
+
+### hux_set_font ----
 
 #' Set the font family and size in a huxtable globally
 #'
@@ -39,128 +28,44 @@ hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", he
 #'
 #' @return the altered huxtable
 #' @export
-hux_set_font = function(hux, defaultFontSize=8, defaultFont = "Roboto") {
-  defaultFont = ggrrr::check_font(defaultFont)
-  hux %>%
-    huxtable::set_font_size(huxtable::everywhere,huxtable::everywhere,defaultFontSize) %>%
-    huxtable::set_font(huxtable::everywhere,huxtable::everywhere,defaultFont)
-}
+hux_set_font = .hux_set_font
 
+### hux_tidy ----
 
 #' Convert a dataframe to a huxtable with nested rows and columns.
 #'
-#' The assumption here is that the input data is a long format tidy dataframe with both
-#' rows and columns specified by values of the `rowGroupVars` and `colGroupVars` columns.
-#' The long format (sparse) table is translated into a nested tree of rows (using `rowGroupVars`)
-#' and a nested tree of columns (from `colGroupVars`). Individual data items are placed in the cell
-#' intersecting these two trees. If there are multiple matches an additional layer of grouing is
-#' added to the columns.
+#' The assumption here is that the input data is a long format tidy dataframe
+#' with both rows and columns specified by values of the `rowGroupVars` and
+#' `colGroupVars` columns. The long format (sparse) table is translated into a
+#' nested tree of rows (using `rowGroupVars`) and a nested tree of columns (from
+#' `colGroupVars`). Individual data items are placed in the cell intersecting
+#' these two trees. If there are multiple matches an additional layer of grouing
+#' is added to the columns.
 #'
-#' @param tidyDf A dataframe with row groupings (as a set of columns) and column groupings (as a set of columns) and data, where the data is in a tidy format with a row per "cell" or cell group.
-#' @param rowGroupVars A vars(...) column specification which will define how rows are grouped
-#' @param colGroupVars A vars(...) column specification with defines how columns will be grouped
-#' @param missing If there is no content for a given rowGroup / colGroup combination then this character will be used as a placeholder
+#' @param tidyDf A dataframe with row groupings (as a set of columns) and column
+#'   groupings (as a set of columns) and data, where the data is in a tidy
+#'   format with a row per "cell" or cell group.
+#' @param rowGroupVars A vars(...) column specification which will define how
+#'   rows are grouped
+#' @param colGroupVars A vars(...) column specification with defines how columns
+#'   will be grouped
+#' @param missing If there is no content for a given rowGroup / colGroup
+#'   combination then this character will be used as a placeholder
 #' @param na If there are NA contents then this character will be used.
+#' @param displayRedundantColumnNames if there is one column per column group
+#'   the name of that column may be irrelevant (e.g. if there is a `col_name`,
+#'   `value` fully tidy format) and `col_name` is inthe colGroupVars list then
+#'   the name of the column `value` is redundant and not displayed by default.
+#'   However sometimes you want to display this if you have named it as something specific
+#'   e.g. including the units. If there is more than one column per `colGroup` the
+#'   column titles are needed and kept.
 #' @param ... passed onto hux_default_layout
 #'
 #' @return a huxtable table
 #' @export
-hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014", ...) {
+hux_tidy = .hux_tidy
 
-  name = .y = .x = value = rows = NULL  # remove global binding note
-
-  if(tidyDf %>% dplyr::group_by(!!!colGroupVars,!!!rowGroupVars) %>% count() %>% dplyr::pull(n) %>% max() > 1) stop("rowGroupVars and colGroupVars do not define unique rows (did you forget to summarise?)")
-
-  cols = lapply(colnames(tidyDf),as.symbol)
-  data = colnames(tidyDf)[!colnames(tidyDf) %in% sapply(c(rowGroupVars, colGroupVars),as_label)]
-
-  tmp = tidyDf %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(dplyr::across(.cols = tidyr::all_of(data), as.character)) %>%
-    tidyr::pivot_longer(cols = data) %>%
-    dplyr::mutate(name = factor(name,levels=data)) %>%
-    #TODO formatters?
-    dplyr::ungroup() %>%
-    dplyr::group_by(!!!colGroupVars,name) %>%
-    dplyr::arrange(!!!rowGroupVars) %>%
-    dplyr::mutate(.x = dplyr::cur_group_id()) %>%
-    dplyr::group_by(!!!rowGroupVars) %>%
-    dplyr::mutate(.y = dplyr::cur_group_id())
-
-  # browser()
-
-  rowHeadings = tmp %>% dplyr::ungroup() %>% dplyr::select(!!!rowGroupVars,.y) %>% dplyr::arrange(.y) %>% dplyr::distinct()
-  colHeadings = tmp %>% dplyr::ungroup() %>% dplyr::select(!!!colGroupVars,name,.x) %>% dplyr::arrange(.x) %>% dplyr::distinct()
-
-  colHux = as.data.frame(unname(t(colHeadings %>% dplyr::select(-.x))),stringsAsFactors = FALSE)
-  colnames(colHux) = 1:length(colHux)
-
-  hux = tmp %>% dplyr::ungroup() %>% dplyr::select(.y,.x,value) %>% dplyr::mutate(value = ifelse(is.na(value), na, value)) %>%
-    tidyr::pivot_wider(names_from = .x, values_from = value, values_fill=missing) %>% dplyr::arrange(.y) %>% dplyr::select(-.y)
-
-  rowHux = rowHeadings %>% dplyr::select(-.y) %>% dplyr::mutate(dplyr::across(tidyr::everything(), as.character))
-
-  # browser()
-  xOffset = length(colnames(rowHux))
-  yOffset = nrow(colHux)
-  topCornerHux = as.data.frame(t(matrix(c(rep("",(yOffset-1)*xOffset),colnames(rowHux)),nrow = xOffset,byrow = FALSE)),stringsAsFactors = FALSE)
-  colnames(topCornerHux) = colnames(rowHux)
-  #browser()
-  fullHux = dplyr::bind_cols(
-    dplyr::bind_rows(topCornerHux,rowHux),
-    dplyr::bind_rows(colHux,hux)
-  )
-
-  fullHux = fullHux %>% huxtable::hux(add_colnames = FALSE) %>%
-    huxtable::set_header_rows(1:yOffset, TRUE) %>%
-    huxtable::set_header_cols(1:xOffset, TRUE) %>%
-    ggrrr::hux_default_layout(headerRows = yOffset, ...)
-
-  # do column merges
-  tmpVars = colGroupVars
-  while(length(tmpVars)>0) {
-    for( mergeCols in colHeadings %>% dplyr::group_by(!!!tmpVars) %>% dplyr::summarise(cols = list(unique(.x))) %>% dplyr::pull(cols)) {
-      # mergeCols = colHeadings %>% group_by(!!!tmpVars) %>% group_data() %>% pull(.rows) %>% `[[`(1)
-      rowIndex = length(tmpVars)
-      l = min(mergeCols)+xOffset
-      lr = c(min(mergeCols),max(mergeCols))+xOffset
-      #fullHux = fullHux %>% huxtable::set_align(col=lr, row=rowIndex, "center")
-      fullHux = fullHux %>% huxtable::merge_cells(col=lr, row=rowIndex)
-      # column borders?
-    }
-    tmpVars = tmpVars %>% utils::head(-1)
-  }
-
-
-  # do row merges
-  tmpVars = rowGroupVars
-  while(length(tmpVars)>0) {
-    rowGroups = rowHeadings %>% dplyr::group_by(!!!tmpVars) %>% dplyr::summarise(rows = list(unique(.y)), count=length(unique(.y)))
-    # do the merge if and only if there are multiple rows in at least one group.
-    if(any(rowGroups$count > 1)) {
-      for( mergeRows in rowGroups %>% dplyr::pull(rows)) {
-        # mergeCols = colHeadings %>% group_by(!!!tmpVars) %>% group_data() %>% pull(.rows) %>% `[[`(1)
-        colIndex = length(tmpVars)
-        l = min(mergeRows)+yOffset
-        lr = c(min(mergeRows),max(mergeRows))+yOffset
-        # fullHux = fullHux %>% huxtable::set_valign(lr,colindex,"middle")
-        fullHux = fullHux %>% huxtable::merge_cells(row=lr, col=colIndex)
-        fullHux = fullHux %>%
-          huxtable::set_top_border(l, huxtable::final(ncol(fullHux)-colIndex+1), 0.5) %>%
-          # This fills in the bottom border of a merged cell.
-          huxtable::set_bottom_border(l, colIndex, 0.5)
-        # column borders?
-      }
-    }
-    tmpVars = tmpVars %>% utils::head(-1)
-  }
-
-  # Fix merged borders.
-  fullHux %>% huxtable::set_bottom_border(nrow(hux), huxtable::everywhere, 0.5)
-
-  return(fullHux)
-}
-
+### hux_nest_group ----
 
 #' Make a huxtable narrower
 #'
@@ -169,31 +74,7 @@ hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u
 #'
 #' @return a narrower huxtable
 #' @export
-hux_nest_group = function(t, col=1) {
-  # examine content rows
-  rows = (1:nrow(t))[!t %>% huxtable::header_rows()]
-  # the row spans for this column
-  spans = attributes(t)$rowspan[rows,col]
-  # to adjust the rows where the row+span is greater than the maximum row+span so far
-  toadj = (rows+spans)[rows+spans > cummax(dplyr::lag(rows+spans,default = 0))]
-  # reverse them so inserting the rows does not mess up the indices
-  toadj = rev(as.integer(names(toadj)))
-  t2 = t
-  for (row in toadj) {
-    # insert the row and copy the content
-    t2 = huxtable::insert_row(ht = t2, t[row,1:col],fill = t[row,col], after=row-1)
-    # spand all the way accross from col to end
-    t2 = t2 %>% huxtable::set_colspan(row = row, col = col, value = ncol(t)-col+1)
-    # clear lower border of just spanned columns
-    t2 = t2 %>% huxtable::set_bottom_border(row = row, col = col:ncol(t), value = 0)
-    # clear the unnested cell
-    t2[row+1,col]=""
-  }
-  # clear the headers for this row (so we can make it small)
-  headers = (1:nrow(t))[t %>% huxtable::header_rows()]
-  t2[headers,col] = ""
-  return(t2)
-}
+hux_nest_group = .hux_nest_group
 
 #' Estimate column content widths
 #'
@@ -640,6 +521,58 @@ hux_bind_rows = function(...) {
   return(out)
 }
 
+#' Set a huxtable caption as a first row
+#'
+#' Keeps the same formatting as the rest of the table
+#'
+#' @param hux a huxtable
+#' @param caption caption text
+#'
+#' @return a huxtable with first row caption
+#' @export
+hux_set_caption = function(hux, caption) {
+  caption = paste0(caption,collapse="\n")
+  hux %>% hux_insert_start(caption, colspan = ncol(hux)) %>%
+    huxtable::set_top_border(1, huxtable::everywhere, 0) %>%
+    huxtable::set_wrap(1, huxtable::everywhere, TRUE)
+}
+
+#' Insert row at start maintaining format
+#'
+#' @param hux a huxtable
+#' @param ... stuff to insert
+#' @param fill padding
+#'
+#' @return a huxtable with row inserted at start in the same format
+#' @export
+hux_insert_start = function(hux, ..., fill="", colspan = 1) {
+  hux = hux %>% huxtable::insert_row(
+    ...,
+    after=1, fill=fill,copy_cell_props = TRUE)
+  tmp = hux[2,]
+  hux[2,] = hux[1,]
+  hux[1,] = tmp
+  hux %>% huxtable:::set_colspan(1, 1, colspan)
+}
+
+#' Set a huxtable caption as a first row
+#'
+#' Keeps the same formatting as the rest of the table
+#'
+#' @param hux a huxtable
+#' @param footer footer text
+#'
+#' @return a huxtable with first row caption
+#' @export
+hux_set_footer = function(hux, footer) {
+  footer = paste0(footer,collapse="\n")
+  hux %>% huxtable::insert_row(
+    footer,
+    after=nrow(hux), colspan = ncol(hux), fill="",copy_cell_props = TRUE) %>%
+    huxtable::set_bottom_border(huxtable::final(1), huxtable::everywhere, 0) %>%
+    huxtable::set_wrap(huxtable::final(1), huxtable::everywhere, TRUE)
+}
+
 # Collecting a data supplement ----
 
 #' Create a function list that allows for supplementary tables (as huxtables) to be added to a XLSX output file.
@@ -675,12 +608,12 @@ data_supplement = function(..., filename="supplementary-material.xlsx", out = gg
       sheetname = glue::glue(nameGlue)
       if(sheetname %in% names(wb)) openxlsx::removeWorksheet(wb,sheet = sheetname)
 
-      hux2 = hux %>% ggrrr::hux_auto_widths("xlsx") %>%
-        huxtable::set_caption(paste0(sheetname," - ",caption)) %>%
-        huxtable::set_caption_pos("topleft")
+      hux2 = hux %>% ggrrr::hux_auto_widths("xlsx")
+
+      hux2 = hux2 %>% ggrrr::hux_set_caption(paste0(sheetname," - ",caption))
 
       if (!is.null(footnote)) {
-        hux2 = hux2 %>% huxtable::insert_row(footnote, after=nrow(hux2), colspan = ncol(hux2), fill="",copy_cell_props = FALSE)
+        hux2 = hux2 %>% hux_set_footer(footnote)
       }
 
       wb = hux2 %>% huxtable::as_Workbook(Workbook = wb, sheet = sheetname)
@@ -698,9 +631,9 @@ data_supplement = function(..., filename="supplementary-material.xlsx", out = gg
         dplyr::mutate(.sort = dplyr::dense_rank(.indexes)) %>%
         dplyr::arrange(.sort) %>%
         dplyr::select(-.sort) %>%
-        huxtable::as_hux(add_colnames=FALSE) %>%
-        huxtable::set_caption("Supplementary materials - table of contents") %>%
-        huxtable::set_caption_pos("topleft") %>%
+        huxtable::as_hux(add_colnames=TRUE) %>%
+        .hux_default_layout() %>%
+        hux_set_caption("Supplementary materials - table of contents") %>%
         huxtable::set_col_width(c(0.2,0.8)) %>%
         # 25 here is the desired with of the table of contents
         huxtable::set_width((25 / 0.206) / (20*ncol(.catalog)))

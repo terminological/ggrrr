@@ -101,43 +101,25 @@ gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
 #'
 #' @return the label size in ggplot units
 #' @export
-gg_label_size = function(pts) {
-  return (pts/ggplot2::.pt) #/(96/72))
-}
+gg_label_size = .gg_label_size
 
 #' Hide the x axis of a plot
 #'
 #' @return a theme
 #' @export
-gg_hide_X_axis = function() {
-  ggplot2::theme(
-    axis.title.x = ggplot2::element_blank(),
-    axis.text.x = ggplot2::element_blank(),
-    axis.text.x.bottom = ggplot2::element_blank(),
-    axis.text.x.top = ggplot2::element_blank()
-  );
-}
+gg_hide_X_axis = .gg_hide_X_axis
 
 #' Hide the y axis of a plot
 #'
 #' @return a theme
 #' @export
-gg_hide_Y_axis = function() {
-  ggplot2::theme(
-    axis.title.y = ggplot2::element_blank(),
-    axis.text.y = ggplot2::element_blank(),
-    axis.text.y.left = ggplot2::element_blank(),
-    axis.text.y.right = ggplot2::element_blank()
-  );
-}
+gg_hide_Y_axis = .gg_hide_Y_axis
 
 #' Hide the legend of a plot
 #'
 #' @return a theme
 #' @export
-gg_hide_legend = function() {
-  ggplot2::theme(legend.position = "none")
-}
+gg_hide_legend = .gg_hide_legend
 
 #' Set the angle of the x axis labels of a plot
 #'
@@ -145,21 +127,7 @@ gg_hide_legend = function() {
 #'
 #' @return a theme
 #' @export
-gg_set_X_angle = function(ang = 60) {
-  hj = dplyr::case_when(
-    ang == 0 ~ 0.5,
-    TRUE ~ 1
-  )
-  vj = dplyr::case_when(
-    ang > 90 ~ 0,
-    ang == 90 ~ 0.5,
-    TRUE ~ 1
-  )
-  ggplot2::theme(
-    axis.text.x.top = ggplot2::element_text(angle = ang, hjust = 1-hj, vjust = 1-vj),
-    axis.text.x.bottom = ggplot2::element_text(angle = ang, hjust = hj, vjust = vj)
-  )
-}
+gg_set_X_angle = .gg_set_X_angle
 
 #' Make a plot narrower
 #'
@@ -167,17 +135,7 @@ gg_set_X_angle = function(ang = 60) {
 #'
 #' @return a theme
 #' @export
-gg_narrow = function(ang = 90) {
-  list(
-    ggplot2::theme(
-      legend.position = "bottom",
-      legend.direction = "horizontal",
-      legend.box="vertical",
-      legend.justification = "center"
-    ),
-    ggrrr::gg_set_X_angle(ang = ang)
-  )
-}
+gg_narrow = .gg_narrow
 
 #' Make the legend smaller
 #'
@@ -187,16 +145,7 @@ gg_narrow = function(ang = 90) {
 #'
 #' @return a theme
 #' @export
-gg_resize_legend <- function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75) {
-  return(list(
-    ggplot2::guides(shape = ggplot2::guide_legend(override.aes = list(size = pointSize)),
-           color = ggplot2::guide_legend(override.aes = list(size = pointSize))),
-    ggplot2::theme(legend.title = ggplot2::element_text(size = textSize),
-          legend.text  = ggplot2::element_text(size = textSize),
-          legend.key.size = ggplot2::unit(spaceLegend, "lines"),
-          legend.box.margin = ggplot2::margin())
-  ))
-}
+gg_resize_legend = .gg_resize_legend
 
 # drawDetails.watermark <<- function(x, rot = 45, ...){
 # does this need to be global to work or is package scope ok?
@@ -755,7 +704,7 @@ gg_save_as = function(plot,filename = tempfile(),
 #'   ggrrr::gg_narrow()
 scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", lighten=NA,  na.value = "grey50", aesthetics = "fill") {
   dots = rlang::list2(...)
-  discrete_scale_opts = dots[names(dots) %in% names(formals(ggplot2::discrete_scale))][!names(dots) %in% c("palette","scale_name")]
+  discrete_scale_opts = dots[names(dots) %in% names(formals(ggplot2::discrete_scale)) & !names(dots) %in% c("palette","scale_name")]
   p = .subtype_pal(.palette, ..., subclasses=subclasses, undefined = undefined, lighten = lighten)
   discrete_scale_opts = c(aesthetics=aesthetics, scale_name="subtype", palette=p, na.value = na.value, discrete_scale_opts)
   return(rlang::exec(discrete_scale, !!!discrete_scale_opts))

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9017</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/ggrrr.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -77,7 +73,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/terminological/ggrrr/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -87,203 +90,226 @@
 
       
 
-      </header><script src="font-functions_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Font functions</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/terminological/ggrrr/blob/HEAD/vignettes/font-functions.Rmd" class="external-link"><code>vignettes/font-functions.Rmd</code></a></small>
       <div class="hidden name"><code>font-functions.Rmd</code></div>
 
     </div>
 
     
     
-<p>There are quite a few systems for font management in R. A key part of our work is trying to make graphs and tables cross platform reproducible, and consistent. This means dealing with fonts across different platforms.</p>
-<div id="transparently-ensure-a-font-is-available" class="section level2">
-<h2 class="hasAnchor">
-<a href="#transparently-ensure-a-font-is-available" class="anchor"></a>Transparently ensure a font is available</h2>
-<p>Instead of specifying a font family as a character in a call to ggplot, we can use a <code><a href="../reference/check_font.html">check_font()</a></code> call which tries to find the font on your system and if not available downloads it from google fonts and registers it with <code>sysfonts</code> and <code>systemfonts</code>, returning the family name.</p>
+<p>There are quite a few systems for font management in R. A key part of
+our work is trying to make graphs and tables cross platform
+reproducible, and consistent. This means dealing with fonts across
+different platforms.</p>
+<div class="section level3">
+<h3 id="transparently-ensure-a-font-is-available">Transparently ensure a font is available<a class="anchor" aria-label="anchor" href="#transparently-ensure-a-font-is-available"></a>
+</h3>
+<p>Instead of specifying a font family as a character in a call to
+ggplot, we can use a <code><a href="../reference/check_font.html">check_font()</a></code> call which tries to find
+the font on your system and if not available downloads it from google
+fonts and registers it with <code>sysfonts</code> and
+<code>systemfonts</code>, returning the family name.</p>
 <p>This also sets ggplot to use showtext as the font provider.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="st">"Roboto"</span><span class="op">)</span></pre></div>
-<pre><code>## [1] "Roboto"</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="st">"Roboto"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Roboto"</span></span></code></pre>
 </div>
-<div id="check-what-fonts-are-available" class="section level2">
-<h2 class="hasAnchor">
-<a href="#check-what-fonts-are-available" class="anchor"></a>Check what fonts are available</h2>
+<div class="section level3">
+<h3 id="check-what-fonts-are-available">Check what fonts are available<a class="anchor" aria-label="anchor" href="#check-what-fonts-are-available"></a>
+</h3>
 <p>Find out what fonts <code>ggrrr</code> can find on this system.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># list all available fonts</span>
-<span class="fu"><a href="../reference/fonts_available.html">fonts_available</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<pre><code>##   [1] "aakar"                            "Abyssinica SIL"                  
-##   [3] "Accanthis ADF Std"                "Accanthis ADF Std No2"           
-##   [5] "Accanthis ADF Std No3"            "Amiri"                           
-##   [7] "Amiri Quran"                      "Andale Mono"                     
-##   [9] "Ani"                              "AnjaliOldLipi"                   
-##  [11] "Arial"                            "Arial Black"                     
-##  [13] "Asana Math"                       "Cabin"                           
-##  [15] "Caladea"                          "Carlito"                         
-##  [17] "Chandas"                          "Comfortaa"                       
-##  [19] "Comic Sans MS"                    "Courier New"                     
-##  [21] "DejaVu Sans"                      "DejaVu Sans Mono"                
-##  [23] "DejaVu Serif"                     "Dyuthi"                          
-##  [25] "EB Garamond Initials"             "EB Garamond Initials Fill1"      
-##  [27] "EB Garamond Initials Fill2"       "FontAwesome"                     
-##  [29] "FreeMono"                         "FreeSans"                        
-##  [31] "FreeSerif"                        "Gargi"                           
-##  [33] "Garuda"                           "Gentium"                         
-##  [35] "GentiumAlt"                       "Gentium Basic"                   
-##  [37] "Gentium Book Basic"               "Gentium Plus"                    
-##  [39] "Georgia"                          "GFS Artemisia"                   
-##  [41] "GFS Baskerville"                  "GFS Complutum"                   
-##  [43] "GFS Didot"                        "GFS Olga"                        
-##  [45] "GFS Porson"                       "GFS Solomos"                     
-##  [47] "Gillius ADF"                      "Gillius ADF Cd"                  
-##  [49] "Gillius ADF No2"                  "Gillius ADF No2 Cd"              
-##  [51] "Gubbi"                            "Impact"                          
-##  [53] "IPAexGothic"                      "IPAexMincho"                     
-##  [55] "IPAGothic"                        "IPAMincho"                       
-##  [57] "IPAPGothic"                       "IPAPMincho"                      
-##  [59] "Jamrul"                           "Junicode"                        
-##  [61] "KacstArt"                         "KacstBook"                       
-##  [63] "KacstDecorative"                  "KacstDigital"                    
-##  [65] "KacstFarsi"                       "KacstLetter"                     
-##  [67] "KacstNaskh"                       "KacstOffice"                     
-##  [69] "KacstOne"                         "KacstPen"                        
-##  [71] "KacstPoster"                      "KacstQurn"                       
-##  [73] "KacstScreen"                      "KacstTitle"                      
-##  [75] "KacstTitleL"                      "Kalapi"                          
-##  [77] "Kalimati"                         "Kalyani"                         
-##  [79] "Khmer OS"                         "Khmer OS System"                 
-##  [81] "Kinnari"                          "Laksaman"                        
-##  [83] "Lato"                             "Liberation Mono"                 
-##  [85] "Liberation Sans"                  "Liberation Sans Narrow"          
-##  [87] "Liberation Serif"                 "Likhan"                          
-##  [89] "Linux Biolinum Keyboard O"        "Linux Biolinum O"                
-##  [91] "Linux Libertine Display O"        "Linux Libertine Initials O"      
-##  [93] "Linux Libertine Mono O"           "Linux Libertine O"               
-##  [95] "LKLUG"                            "Lobster Two"                     
-##  [97] "Lohit Assamese"                   "Lohit Bengali"                   
-##  [99] "Lohit Devanagari"                 "Lohit Gujarati"                  
-## [101] "Lohit Kannada"                    "Lohit Malayalam"                 
-## [103] "Lohit Oriya"                      "Lohit Punjabi"                   
-## [105] "Lohit Tamil"                      "Lohit Tamil Classical"           
-## [107] "Lohit Telugu"                     "Loma"                            
-## [109] "MathJax_AMS"                      "MathJax_Caligraphic"             
-## [111] "MathJax_Fraktur"                  "MathJax_Main"                    
-## [113] "MathJax_Math"                     "MathJax_SansSerif"               
-## [115] "MathJax_Script"                   "MathJax_Size1"                   
-## [117] "MathJax_Size2"                    "MathJax_Size3"                   
-## [119] "MathJax_Size4"                    "MathJax_Typewriter"              
-## [121] "MathJax_WinChrome"                "MathJax_WinIE6"                  
-## [123] "Meera"                            "Mitra Mono"                      
-## [125] "mry_KacstQurn"                    "Mukti Narrow"                    
-## [127] "Nakula"                           "NanumBarunGothic"                
-## [129] "NanumGothic"                      "NanumMyeongjo"                   
-## [131] "Navilu"                           "Norasi"                          
-## [133] "Noto Kufi Arabic"                 "Noto Mono"                       
-## [135] "Noto Naskh Arabic"                "Noto Naskh Arabic UI"            
-## [137] "Noto Nastaliq Urdu"               "Noto Sans"                       
-## [139] "Noto Sans Armenian"               "Noto Sans Avestan"               
-## [141] "Noto Sans Balinese"               "Noto Sans Bamum"                 
-## [143] "Noto Sans Batak"                  "Noto Sans Bengali"               
-## [145] "Noto Sans Bengali UI"             "Noto Sans Brahmi"                
-## [147] "Noto Sans Buginese"               "Noto Sans Buhid"                 
-## [149] "Noto Sans Canadian Aboriginal"    "Noto Sans Carian"                
-## [151] "Noto Sans Cham"                   "Noto Sans Cherokee"              
-## [153] "Noto Sans Coptic"                 "Noto Sans Cuneiform"             
-## [155] "Noto Sans Cypriot"                "Noto Sans Deseret"               
-## [157] "Noto Sans Devanagari"             "Noto Sans Devanagari UI"         
-## [159] "Noto Sans Egyptian Hieroglyphs"   "Noto Sans Ethiopic"              
-## [161] "Noto Sans Georgian"               "Noto Sans Glagolitic"            
-## [163] "Noto Sans Gothic"                 "Noto Sans Gujarati"              
-## [165] "Noto Sans Gujarati UI"            "Noto Sans Gurmukhi"              
-## [167] "Noto Sans Gurmukhi UI"            "Noto Sans Hanunoo"               
-## [169] "Noto Sans Hebrew"                 "Noto Sans Imperial Aramaic"      
-## [171] "Noto Sans Inscriptional Pahlavi"  "Noto Sans Inscriptional Parthian"
-## [173] "Noto Sans Javanese"               "Noto Sans Kaithi"                
-## [175] "Noto Sans Kannada"                "Noto Sans Kannada UI"            
-## [177] "Noto Sans Kayah Li"               "Noto Sans Kharoshthi"            
-## [179] "Noto Sans Khmer"                  "Noto Sans Khmer UI"              
-## [181] "Noto Sans Lao"                    "Noto Sans Lao UI"                
-## [183] "Noto Sans Lepcha"                 "Noto Sans Limbu"                 
-## [185] "Noto Sans Linear B"               "Noto Sans Lisu"                  
-## [187] "Noto Sans Lycian"                 "Noto Sans Lydian"                
-## [189] "Noto Sans Malayalam"              "Noto Sans Malayalam UI"          
-## [191] "Noto Sans Mandaic"                "Noto Sans Meetei Mayek"          
-## [193] "Noto Sans Mongolian"              "Noto Sans Myanmar"               
-## [195] "Noto Sans Myanmar UI"             "Noto Sans New Tai Lue"           
-## [197] "Noto Sans NKo"                    "Noto Sans Ogham"                 
-## [199] "Noto Sans Ol Chiki"               "Noto Sans Old Italic"            
-## [201] "Noto Sans Old Persian"            "Noto Sans Old South Arabian"     
-## [203] "Noto Sans Old Turkic"             "Noto Sans Oriya"                 
-## [205] "Noto Sans Oriya UI"               "Noto Sans Osmanya"               
-## [207] "Noto Sans Phags Pa"               "Noto Sans Phoenician"            
-## [209] "Noto Sans Rejang"                 "Noto Sans Runic"                 
-## [211] "Noto Sans Samaritan"              "Noto Sans Saurashtra"            
-## [213] "Noto Sans Shavian"                "Noto Sans Sinhala"               
-## [215] "Noto Sans Sundanese"              "Noto Sans Syloti Nagri"          
-## [217] "Noto Sans Symbols"                "Noto Sans Syriac Eastern"        
-## [219] "Noto Sans Syriac Estrangela"      "Noto Sans Syriac Western"        
-## [221] "Noto Sans Tagalog"                "Noto Sans Tagbanwa"              
-## [223] "Noto Sans Tai Le"                 "Noto Sans Tai Tham"              
-## [225] "Noto Sans Tai Viet"               "Noto Sans Tamil"                 
-## [227] "Noto Sans Tamil UI"               "Noto Sans Telugu"                
-## [229] "Noto Sans Telugu UI"              "Noto Sans Thaana"                
-## [231] "Noto Sans Thai"                   "Noto Sans Thai UI"               
-## [233] "Noto Sans Tibetan"                "Noto Sans Tifinagh"              
-## [235] "Noto Sans Ugaritic"               "Noto Sans UI"                    
-## [237] "Noto Sans Vai"                    "Noto Sans Yi"                    
-## [239] "Noto Serif"                       "Noto Serif Armenian"             
-## [241] "Noto Serif Bengali"               "Noto Serif Georgian"             
-## [243] "Noto Serif Gujarati"              "Noto Serif Kannada"              
-## [245] "Noto Serif Khmer"                 "Noto Serif Lao"                  
-## [247] "Noto Serif Malayalam"             "Noto Serif Tamil"                
-## [249] "Noto Serif Telugu"                "Noto Serif Thai"                 
-## [251] "OpenSymbol"                       "Oxygen Mono"                     
-## [253] "Oxygen-Sans"                      "Padauk"                          
-## [255] "Padauk Book"                      "padmaa"                          
-## [257] "padmaa-Bold.1.1"                  "Pagul"                           
-## [259] "Phetsarath OT"                    "Pothana2000"                     
-## [261] "Purisa"                           "Rachana"                         
-## [263] "RaghuMalayalam"                   "Rekha"                           
-## [265] "Roboto"                           "Roboto Condensed"                
-## [267] "Saab"                             "Sahadeva"                        
-## [269] "Samanata"                         "Samyak Devanagari"               
-## [271] "Samyak Gujarati"                  "Samyak Malayalam"                
-## [273] "Samyak Tamil"                     "Sarai"                           
-## [275] "Sawasdee"                         "STIX"                            
-## [277] "STIXGeneral"                      "STIXIntegralsD"                  
-## [279] "STIXIntegralsSm"                  "STIXIntegralsUp"                 
-## [281] "STIXIntegralsUpD"                 "STIXIntegralsUpSm"               
-## [283] "STIX Math"                        "STIXNonUnicode"                  
-## [285] "STIXSizeFiveSym"                  "STIXSizeFourSym"                 
-## [287] "STIXSizeOneSym"                   "STIXSizeThreeSym"                
-## [289] "STIXSizeTwoSym"                   "STIXVariants"                    
-## [291] "Suruma"                           "Symbola"                         
-## [293] "TakaoPGothic"                     "Tibetan Machine Uni"             
-## [295] "Times New Roman"                  "Tlwg Typist"                     
-## [297] "Tlwg Typo"                        "Trebuchet MS"                    
-## [299] "Ubuntu"                           "Ubuntu Condensed"                
-## [301] "Ubuntu Mono"                      "Umpush"                          
-## [303] "Universalis ADF Cd Std"           "Universalis ADF Std"             
-## [305] "Vemana2000"                       "Verdana"                         
-## [307] "Waree"                            "Webdings"                        
-## [309] "WenQuanYi Micro Hei"</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># Check if specific fonts are available</span>
-<span class="fu"><a href="../reference/fonts_available.html">fonts_available</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Arial"</span>,<span class="st">"Helvetica"</span><span class="op">)</span><span class="op">)</span></pre></div>
-<pre><code>## [1] "Roboto" "Arial"</code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># list all available fonts</span></span>
+<span><span class="fu"><a href="../reference/fonts_available.html">fonts_available</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   [1] "aakar"                              "Abyssinica SIL"                    </span></span>
+<span><span class="co">##   [3] "Andale Mono"                        "Ani"                               </span></span>
+<span><span class="co">##   [5] "AnjaliOldLipi"                      "Arial"                             </span></span>
+<span><span class="co">##   [7] "Arial Black"                        "C059"                              </span></span>
+<span><span class="co">##   [9] "Chandas"                            "Chilanka"                          </span></span>
+<span><span class="co">##  [11] "Comic Sans MS"                      "Courier New"                       </span></span>
+<span><span class="co">##  [13] "D050000L"                           "DejaVu Math TeX Gyre"              </span></span>
+<span><span class="co">##  [15] "DejaVu Sans"                        "DejaVu Sans Mono"                  </span></span>
+<span><span class="co">##  [17] "DejaVu Serif"                       "Dhurjati"                          </span></span>
+<span><span class="co">##  [19] "Droid Sans Fallback"                "Dyuthi"                            </span></span>
+<span><span class="co">##  [21] "FreeMono"                           "FreeSans"                          </span></span>
+<span><span class="co">##  [23] "FreeSerif"                          "Gargi"                             </span></span>
+<span><span class="co">##  [25] "Garuda"                             "Gayathri"                          </span></span>
+<span><span class="co">##  [27] "Georgia"                            "Gidugu"                            </span></span>
+<span><span class="co">##  [29] "Gubbi"                              "Gurajada"                          </span></span>
+<span><span class="co">##  [31] "Hack"                               "Impact"                            </span></span>
+<span><span class="co">##  [33] "Jamrul"                             "KacstArt"                          </span></span>
+<span><span class="co">##  [35] "KacstBook"                          "KacstDecorative"                   </span></span>
+<span><span class="co">##  [37] "KacstDigital"                       "KacstFarsi"                        </span></span>
+<span><span class="co">##  [39] "KacstLetter"                        "KacstNaskh"                        </span></span>
+<span><span class="co">##  [41] "KacstOffice"                        "KacstOne"                          </span></span>
+<span><span class="co">##  [43] "KacstPen"                           "KacstPoster"                       </span></span>
+<span><span class="co">##  [45] "KacstQurn"                          "KacstScreen"                       </span></span>
+<span><span class="co">##  [47] "KacstTitle"                         "KacstTitleL"                       </span></span>
+<span><span class="co">##  [49] "Kalapi"                             "Kalimati"                          </span></span>
+<span><span class="co">##  [51] "Karumbi"                            "Keraleeyam"                        </span></span>
+<span><span class="co">##  [53] "Khmer OS"                           "Khmer OS System"                   </span></span>
+<span><span class="co">##  [55] "Kinnari"                            "LakkiReddy"                        </span></span>
+<span><span class="co">##  [57] "Laksaman"                           "Liberation Mono"                   </span></span>
+<span><span class="co">##  [59] "Liberation Sans"                    "Liberation Sans Narrow"            </span></span>
+<span><span class="co">##  [61] "Liberation Serif"                   "Likhan"                            </span></span>
+<span><span class="co">##  [63] "LKLUG"                              "Lohit Assamese"                    </span></span>
+<span><span class="co">##  [65] "Lohit Bengali"                      "Lohit Devanagari"                  </span></span>
+<span><span class="co">##  [67] "Lohit Gujarati"                     "Lohit Gurmukhi"                    </span></span>
+<span><span class="co">##  [69] "Lohit Kannada"                      "Lohit Malayalam"                   </span></span>
+<span><span class="co">##  [71] "Lohit Odia"                         "Lohit Tamil"                       </span></span>
+<span><span class="co">##  [73] "Lohit Tamil Classical"              "Lohit Telugu"                      </span></span>
+<span><span class="co">##  [75] "Loma"                               "Mallanna"                          </span></span>
+<span><span class="co">##  [77] "Mandali"                            "Manjari"                           </span></span>
+<span><span class="co">##  [79] "Meera"                              "mry_KacstQurn"                     </span></span>
+<span><span class="co">##  [81] "Mukti"                              "Nakula"                            </span></span>
+<span><span class="co">##  [83] "NATS"                               "Navilu"                            </span></span>
+<span><span class="co">##  [85] "Nimbus Mono PS"                     "Nimbus Roman"                      </span></span>
+<span><span class="co">##  [87] "Nimbus Sans"                        "Nimbus Sans Narrow"                </span></span>
+<span><span class="co">##  [89] "Norasi"                             "Noto Color Emoji"                  </span></span>
+<span><span class="co">##  [91] "Noto Kufi Arabic"                   "Noto Mono"                         </span></span>
+<span><span class="co">##  [93] "Noto Music"                         "Noto Naskh Arabic"                 </span></span>
+<span><span class="co">##  [95] "Noto Naskh Arabic UI"               "Noto Nastaliq Urdu"                </span></span>
+<span><span class="co">##  [97] "Noto Rashi Hebrew"                  "Noto Sans"                         </span></span>
+<span><span class="co">##  [99] "Noto Sans Adlam"                    "Noto Sans Adlam Unjoined"          </span></span>
+<span><span class="co">## [101] "Noto Sans Arabic"                   "Noto Sans Arabic UI"               </span></span>
+<span><span class="co">## [103] "Noto Sans Armenian"                 "Noto Sans Avestan"                 </span></span>
+<span><span class="co">## [105] "Noto Sans Balinese"                 "Noto Sans Bamum"                   </span></span>
+<span><span class="co">## [107] "Noto Sans Bassa Vah"                "Noto Sans Batak"                   </span></span>
+<span><span class="co">## [109] "Noto Sans Bengali"                  "Noto Sans Bengali UI"              </span></span>
+<span><span class="co">## [111] "Noto Sans Bhaiksuki"                "Noto Sans Brahmi"                  </span></span>
+<span><span class="co">## [113] "Noto Sans Buginese"                 "Noto Sans Buhid"                   </span></span>
+<span><span class="co">## [115] "Noto Sans Carian"                   "Noto Sans Chakma"                  </span></span>
+<span><span class="co">## [117] "Noto Sans Cham"                     "Noto Sans Cherokee"                </span></span>
+<span><span class="co">## [119] "Noto Sans CJK JP"                   "Noto Sans Coptic"                  </span></span>
+<span><span class="co">## [121] "Noto Sans Cuneiform"                "Noto Sans Cypriot"                 </span></span>
+<span><span class="co">## [123] "Noto Sans Deseret"                  "Noto Sans Devanagari"              </span></span>
+<span><span class="co">## [125] "Noto Sans Devanagari UI"            "Noto Sans Display"                 </span></span>
+<span><span class="co">## [127] "Noto Sans Duployan"                 "Noto Sans Elbasan"                 </span></span>
+<span><span class="co">## [129] "Noto Sans Elymaic"                  "Noto Sans Ethiopic"                </span></span>
+<span><span class="co">## [131] "Noto Sans Georgian"                 "Noto Sans Glagolitic"              </span></span>
+<span><span class="co">## [133] "Noto Sans Gothic"                   "Noto Sans Grantha"                 </span></span>
+<span><span class="co">## [135] "Noto Sans Gujarati"                 "Noto Sans Gujarati UI"             </span></span>
+<span><span class="co">## [137] "Noto Sans Gunjala Gondi"            "Noto Sans Gurmukhi"                </span></span>
+<span><span class="co">## [139] "Noto Sans Gurmukhi UI"              "Noto Sans Hanifi Rohingya"         </span></span>
+<span><span class="co">## [141] "Noto Sans Hanunoo"                  "Noto Sans Hatran"                  </span></span>
+<span><span class="co">## [143] "Noto Sans Hebrew"                   "Noto Sans Indic Siyaq Numbers"     </span></span>
+<span><span class="co">## [145] "Noto Sans Javanese"                 "Noto Sans Kaithi"                  </span></span>
+<span><span class="co">## [147] "Noto Sans Kannada"                  "Noto Sans Kannada UI"              </span></span>
+<span><span class="co">## [149] "Noto Sans Kayah Li"                 "Noto Sans Kharoshthi"              </span></span>
+<span><span class="co">## [151] "Noto Sans Khmer"                    "Noto Sans Khmer UI"                </span></span>
+<span><span class="co">## [153] "Noto Sans Khojki"                   "Noto Sans Khudawadi"               </span></span>
+<span><span class="co">## [155] "Noto Sans Lao"                      "Noto Sans Lao UI"                  </span></span>
+<span><span class="co">## [157] "Noto Sans Lepcha"                   "Noto Sans Limbu"                   </span></span>
+<span><span class="co">## [159] "Noto Sans Linear A"                 "Noto Sans Linear B"                </span></span>
+<span><span class="co">## [161] "Noto Sans Lisu"                     "Noto Sans Lycian"                  </span></span>
+<span><span class="co">## [163] "Noto Sans Lydian"                   "Noto Sans Mahajani"                </span></span>
+<span><span class="co">## [165] "Noto Sans Malayalam"                "Noto Sans Malayalam UI"            </span></span>
+<span><span class="co">## [167] "Noto Sans Mandaic"                  "Noto Sans Manichaean"              </span></span>
+<span><span class="co">## [169] "Noto Sans Marchen"                  "Noto Sans Masaram Gondi"           </span></span>
+<span><span class="co">## [171] "Noto Sans Math"                     "Noto Sans Mayan Numerals"          </span></span>
+<span><span class="co">## [173] "Noto Sans Medefaidrin"              "Noto Sans Mende Kikakui"           </span></span>
+<span><span class="co">## [175] "Noto Sans Meroitic"                 "Noto Sans Miao"                    </span></span>
+<span><span class="co">## [177] "Noto Sans Modi"                     "Noto Sans Mongolian"               </span></span>
+<span><span class="co">## [179] "Noto Sans Mono"                     "Noto Sans Mro"                     </span></span>
+<span><span class="co">## [181] "Noto Sans Multani"                  "Noto Sans Myanmar"                 </span></span>
+<span><span class="co">## [183] "Noto Sans Myanmar UI"               "Noto Sans Nabataean"               </span></span>
+<span><span class="co">## [185] "Noto Sans Newa"                     "Noto Sans NKo"                     </span></span>
+<span><span class="co">## [187] "Noto Sans Nushu"                    "Noto Sans Ogham"                   </span></span>
+<span><span class="co">## [189] "Noto Sans Ol Chiki"                 "Noto Sans Old Italic"              </span></span>
+<span><span class="co">## [191] "Noto Sans Old Permic"               "Noto Sans Old Turkic"              </span></span>
+<span><span class="co">## [193] "Noto Sans Oriya"                    "Noto Sans Oriya UI"                </span></span>
+<span><span class="co">## [195] "Noto Sans Osage"                    "Noto Sans Osmanya"                 </span></span>
+<span><span class="co">## [197] "Noto Sans Pahawh Hmong"             "Noto Sans Palmyrene"               </span></span>
+<span><span class="co">## [199] "Noto Sans PhagsPa"                  "Noto Sans Phoenician"              </span></span>
+<span><span class="co">## [201] "Noto Sans Rejang"                   "Noto Sans Runic"                   </span></span>
+<span><span class="co">## [203] "Noto Sans Samaritan"                "Noto Sans Saurashtra"              </span></span>
+<span><span class="co">## [205] "Noto Sans Sharada"                  "Noto Sans Shavian"                 </span></span>
+<span><span class="co">## [207] "Noto Sans Siddham"                  "Noto Sans Sinhala"                 </span></span>
+<span><span class="co">## [209] "Noto Sans Sinhala UI"               "Noto Sans Sogdian"                 </span></span>
+<span><span class="co">## [211] "Noto Sans Sora Sompeng"             "Noto Sans Soyombo"                 </span></span>
+<span><span class="co">## [213] "Noto Sans Sundanese"                "Noto Sans Syloti Nagri"            </span></span>
+<span><span class="co">## [215] "Noto Sans Symbols"                  "Noto Sans Symbols2"                </span></span>
+<span><span class="co">## [217] "Noto Sans Syriac"                   "Noto Sans Tagalog"                 </span></span>
+<span><span class="co">## [219] "Noto Sans Tagbanwa"                 "Noto Sans Tai Le"                  </span></span>
+<span><span class="co">## [221] "Noto Sans Tai Tham"                 "Noto Sans Tai Viet"                </span></span>
+<span><span class="co">## [223] "Noto Sans Takri"                    "Noto Sans Tamil"                   </span></span>
+<span><span class="co">## [225] "Noto Sans Tamil Supplement"         "Noto Sans Tamil UI"                </span></span>
+<span><span class="co">## [227] "Noto Sans Telugu"                   "Noto Sans Telugu UI"               </span></span>
+<span><span class="co">## [229] "Noto Sans Thaana"                   "Noto Sans Thai"                    </span></span>
+<span><span class="co">## [231] "Noto Sans Thai UI"                  "Noto Sans Tifinagh"                </span></span>
+<span><span class="co">## [233] "Noto Sans Tifinagh Adrar"           "Noto Sans Tifinagh Agraw Imazighen"</span></span>
+<span><span class="co">## [235] "Noto Sans Tifinagh Ahaggar"         "Noto Sans Tifinagh Air"            </span></span>
+<span><span class="co">## [237] "Noto Sans Tifinagh APT"             "Noto Sans Tifinagh Azawagh"        </span></span>
+<span><span class="co">## [239] "Noto Sans Tifinagh Ghat"            "Noto Sans Tifinagh Hawad"          </span></span>
+<span><span class="co">## [241] "Noto Sans Tifinagh Rhissa Ixa"      "Noto Sans Tifinagh SIL"            </span></span>
+<span><span class="co">## [243] "Noto Sans Tifinagh Tawellemmet"     "Noto Sans Tirhuta"                 </span></span>
+<span><span class="co">## [245] "Noto Sans Ugaritic"                 "Noto Sans Vai"                     </span></span>
+<span><span class="co">## [247] "Noto Sans Wancho"                   "Noto Sans Yi"                      </span></span>
+<span><span class="co">## [249] "Noto Serif"                         "Noto Serif Ahom"                   </span></span>
+<span><span class="co">## [251] "Noto Serif Armenian"                "Noto Serif Balinese"               </span></span>
+<span><span class="co">## [253] "Noto Serif Bengali"                 "Noto Serif CJK JP"                 </span></span>
+<span><span class="co">## [255] "Noto Serif Devanagari"              "Noto Serif Display"                </span></span>
+<span><span class="co">## [257] "Noto Serif Dogra"                   "Noto Serif Ethiopic"               </span></span>
+<span><span class="co">## [259] "Noto Serif Georgian"                "Noto Serif Grantha"                </span></span>
+<span><span class="co">## [261] "Noto Serif Gujarati"                "Noto Serif Gurmukhi"               </span></span>
+<span><span class="co">## [263] "Noto Serif Hebrew"                  "Noto Serif Hmong Nyiakeng"         </span></span>
+<span><span class="co">## [265] "Noto Serif Kannada"                 "Noto Serif Khmer"                  </span></span>
+<span><span class="co">## [267] "Noto Serif Khojki"                  "Noto Serif Lao"                    </span></span>
+<span><span class="co">## [269] "Noto Serif Malayalam"               "Noto Serif Myanmar"                </span></span>
+<span><span class="co">## [271] "Noto Serif Sinhala"                 "Noto Serif Tamil"                  </span></span>
+<span><span class="co">## [273] "Noto Serif Tangut"                  "Noto Serif Telugu"                 </span></span>
+<span><span class="co">## [275] "Noto Serif Thai"                    "Noto Serif Tibetan"                </span></span>
+<span><span class="co">## [277] "Noto Serif Yezidi"                  "Noto Traditional Nushu"            </span></span>
+<span><span class="co">## [279] "NTR"                                "OpenSymbol"                        </span></span>
+<span><span class="co">## [281] "P052"                               "Padauk"                            </span></span>
+<span><span class="co">## [283] "Padauk Book"                        "padmaa"                            </span></span>
+<span><span class="co">## [285] "padmaa-Bold.1.1"                    "Pagul"                             </span></span>
+<span><span class="co">## [287] "Peddana"                            "Phetsarath OT"                     </span></span>
+<span><span class="co">## [289] "Ponnala"                            "Pothana2000"                       </span></span>
+<span><span class="co">## [291] "Potti Sreeramulu"                   "Purisa"                            </span></span>
+<span><span class="co">## [293] "Quicksand"                          "Quicksand Light"                   </span></span>
+<span><span class="co">## [295] "Quicksand Medium"                   "Rachana"                           </span></span>
+<span><span class="co">## [297] "RaghuMalayalamSans"                 "Ramabhadra"                        </span></span>
+<span><span class="co">## [299] "Ramaraja"                           "Rasa"                              </span></span>
+<span><span class="co">## [301] "RaviPrakash"                        "Rekha"                             </span></span>
+<span><span class="co">## [303] "Saab"                               "Sahadeva"                          </span></span>
+<span><span class="co">## [305] "Samanata"                           "Samyak Devanagari"                 </span></span>
+<span><span class="co">## [307] "Samyak Gujarati"                    "Samyak Malayalam"                  </span></span>
+<span><span class="co">## [309] "Samyak Tamil"                       "Sarai"                             </span></span>
+<span><span class="co">## [311] "Sawasdee"                           "Sree Krushnadevaraya"              </span></span>
+<span><span class="co">## [313] "Standard Symbols PS"                "Suranna"                           </span></span>
+<span><span class="co">## [315] "Suravaram"                          "Suruma"                            </span></span>
+<span><span class="co">## [317] "Syamala Ramana"                     "TenaliRamakrishna"                 </span></span>
+<span><span class="co">## [319] "Tibetan Machine Uni"                "Times New Roman"                   </span></span>
+<span><span class="co">## [321] "Timmana"                            "Tlwg Typist"                       </span></span>
+<span><span class="co">## [323] "Tlwg Typo"                          "Trebuchet MS"                      </span></span>
+<span><span class="co">## [325] "Ubuntu"                             "Ubuntu Condensed"                  </span></span>
+<span><span class="co">## [327] "Ubuntu Mono"                        "Umpush"                            </span></span>
+<span><span class="co">## [329] "Uroob"                              "URW Bookman"                       </span></span>
+<span><span class="co">## [331] "URW Gothic"                         "Vemana2000"                        </span></span>
+<span><span class="co">## [333] "Verdana"                            "Waree"                             </span></span>
+<span><span class="co">## [335] "Webdings"                           "Yrsa"                              </span></span>
+<span><span class="co">## [337] "Z003"</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check if specific fonts are available</span></span>
+<span><span class="fu"><a href="../reference/fonts_available.html">fonts_available</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Arial"</span>,<span class="st">"Helvetica"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Arial"</span></span></code></pre>
 </div>
-<div id="download-a-font-from-google" class="section level1">
-<h1 class="hasAnchor">
-<a href="#download-a-font-from-google" class="anchor"></a>Download a font from google</h1>
-<p>Downloads and installs the font into both <code>sysfonts</code> and <code>systemfonts</code> packages. This is generally used internally by <code>check_font</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="../reference/google_font.html">google_font</a></span><span class="op">(</span><span class="st">"Roboto"</span><span class="op">)</span></pre></div>
-<pre><code>## [1] "Roboto"</code></pre>
+<div class="section level2">
+<h2 id="download-a-font-from-google">Download a font from google<a class="anchor" aria-label="anchor" href="#download-a-font-from-google"></a>
+</h2>
+<p>Downloads and installs the font into both <code>sysfonts</code> and
+<code>systemfonts</code> packages. This is generally used internally by
+<code>check_font</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/google_font.html">google_font</a></span><span class="op">(</span><span class="st">"Roboto"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Roboto"</span></span></code></pre>
 </div>
   </div>
 
@@ -298,11 +324,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Rob Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -310,6 +338,8 @@
 
   
 
+
+  
 
   </body>
 </html>

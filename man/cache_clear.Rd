@@ -25,5 +25,5 @@ Clear data from the passthrough cache for complex or long running operations
 }
 \examples{
 library(tidyverse)
-ggrrr::cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
+cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
 }

@@ -39,68 +39,70 @@
 #'
 #' @return nothing. called for side effects.
 #' @export
-fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes")), description = here::here("DESCRIPTION"), dry_run = TRUE ) {
+fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here("vignettes"),here::here("tests/testthat")), description = here::here("DESCRIPTION"), dry_run = TRUE ) {
 
+  devtools::load_all(rDirectories[[1]])
   path = package = function_name = f = generic = content.old = name = value = content = changed = NULL
 
-  files = dplyr::bind_rows(lapply(rDirectories, fs::dir_info)) %>% filter(fs::path_ext(path) %in% c("R","Rmd"))
+  files = dplyr::bind_rows(lapply(rDirectories, fs::dir_info)) %>% dplyr::filter(fs::path_ext(path) %in% c("R","Rmd"))
   dMap = yaml::read_yaml(description)
-  imports = dMap$Imports %>% stringr::str_split(",\\s+") %>% `[[`(1)
+  imports = dMap$Imports %>% stringr::str_split(",\\s+") %>% `[[`(1) %>%
+    stringr::str_extract("^[a-zA-Z0-9\\.]*")
   loaded = (.packages())
   packages = unique(c(imports,loaded))
   packages = packages[!packages %in% c(dMap$Package,"base")]
-  files = files %>% mutate(content.old = purrr::map(path, ~ readr::read_lines(.x)))
+  files = files %>% dplyr::mutate(content.old = purrr::map(path, ~ readr::read_lines(.x)))
   packageMap = tibble::tibble(package = c("base",packages)) %>%
-    mutate(function_name = purrr::map(package, ~ ls(asNamespace(.)))) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(function_name = list(ls(envir = asNamespace(package)))) %>%
     tidyr::unnest(function_name) %>%
-    mutate( f = purrr::map2(function_name, package, function(f,p) {
+    dplyr::mutate( f = purrr::map2(function_name, package, function(f,p) {
       tryCatch(getFromNamespace(f,p), error = function(e) {function(){}})
     })) %>%
-    mutate( generic = .isGeneric(f)) %>%
-    select(-f)
+    dplyr::mutate( generic = .isGeneric(f)) %>%
+    dplyr::select(-f)
 
   # functions from base or this package
-  theseFunctions = c(ls(asNamespace(dMap$Package)),ls(asNamespace("base")))
+  theseFunctions = c(ls(envir = asNamespace(dMap$Package)),ls(asNamespace("base")))
 
-  packageMap2 = packageMap %>% group_by(function_name) %>%
-    mutate(package = ordered(package,levels = c("base",packages))) %>%
-    arrange(desc(generic),package) %>%
-    filter(row_number()==1) %>%
-    filter(package != "base") %>%
-    filter(!function_name %in% theseFunctions) %>%
-    filter(stringr::str_detect(function_name,"[a-zA-Z]")) %>%
-    filter(!is.na(function_name))
+  packageMap2 = packageMap %>% dplyr::group_by(function_name) %>%
+    dplyr::mutate(package = ordered(package,levels = c("base",packages))) %>%
+    dplyr::arrange(desc(generic),package) %>%
+    dplyr::filter(dplyr::row_number()==1) %>%
+    dplyr::filter(package != "base") %>%
+    dplyr::filter(!function_name %in% theseFunctions) %>%
+    dplyr::filter(stringr::str_detect(function_name,"[a-zA-Z]")) %>%
+    dplyr::filter(!is.na(function_name))
 
-  files = files %>% mutate(content = content.old, matches=list(tibble()))
+  files = files %>% dplyr::mutate(content = content.old, matches=list(tibble::tibble()))
 
   for (pkg in packages) {
     # pkg = "dplyr"
-    functions = packageMap2 %>% filter(package == pkg) %>% pull(function_name)
+    functions = packageMap2 %>% dplyr::filter(package == pkg) %>% dplyr::pull(function_name)
 
     if (length(functions) > 0) {
       functionRegex = paste0(lapply(functions, .escape),collapse = "|")
       functionRegex = paste0("([^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
       replacement = paste0("\\1",pkg,"::\\2(")
       # c = files$content.old[[1]]
-
-      getm = function(c) enframe(table(unlist(lapply(stringr::str_match_all(c,functionRegex), function(l) l[,3])))) %>% mutate(pkg = pkg, name = as.character(name), value=as.integer(value))
-      #TODO
-      # map the files$content using getm to get a per file list of matches for each package
-      # present a option to the user describing what we are about to do for this package.
-
-      files = files %>% mutate(
-        content = purrr::map(content, ~ .x %>% stringr::str_replace_all(functionRegex, replacement)),
-        matches = purrr::map2(content, matches, ~ bind_rows(.y,getm(.x) ))
-      )
+      for (i in 1:nrow(files)) {
+        file = files %>% purrr::map(~ .x[[i]])
+        files$content[[i]] = file$content %>% stringr::str_replace_all(functionRegex, replacement)
+        tmp = stringr::str_match_all(file$content,functionRegex) %>% purrr::map(~ .x[,3]) %>%
+          unlist()
+        tmp = tibble::tibble(name=tmp) %>% dplyr::group_by(name) %>%
+          dplyr::summarise(value = dplyr::n()) %>% dplyr::mutate(pkg =pkg)
+        files$matches[[i]] = file$matches %>% dplyr::bind_rows(tmp)
+      }
     }
   }
 
-  files = files %>% mutate(changed = purrr::map2_lgl(content.old, content, ~ any(.x!=.y)))
-  tmp = files %>% select(path,matches) %>% unnest(matches)
+  files = files %>% dplyr::mutate(changed = purrr::map2_lgl(content.old, content, ~ any(.x!=.y)))
+  tmp = files %>% dplyr::select(path,matches) %>% tidyr::unnest(matches)
 
   if(any(files$changed)) {
     message(sum(tmp$value)," function calls missing namespaces found: ", paste0(unique(tmp$pkg), collapse = "; "))
-    files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) message(path))
+    files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content.old,...) message(path))
 
     if(dry_run) {
       fixme = 3
@@ -113,26 +115,30 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
 
       if (dry_run) message("dry run: this is what would have been done")
       message("backing originals up to:")
-      files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) message("\t",path,".old"))
-      if (!dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content.old,...) .write_safe(content.old,paste0(path,".old")))
+      files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content.old,...) message("\t",path,".old"))
+      if (!dry_run) files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content.old,...) .write_safe(content.old,paste0(path,".old")))
 
       message("writing modified files to: ")
-      files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) message("\t",path))
-      if (!dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,path))
-      if (dry_run) files %>% filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,paste0(path,".dry_run")))
+      files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content,...) message("\t",path))
+      if (!dry_run) files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,path))
+      if (dry_run) files %>% dplyr::filter(changed) %>% purrr::pwalk(function(path,content,...) readr::write_lines(content,paste0(path,".dry_run")))
+
     }
 
   }
 
 
-  nsMissing = tmp %>% filter(!(pkg %in% imports)) %>% pull(pkg) %>% unique()
+  nsMissing = tmp %>% dplyr::filter(!(pkg %in% imports)) %>% dplyr::pull(pkg) %>% unique()
   if(length(nsMissing) > 0) {
     message("Your DESCRIPTION file is missing packages that are currently loaded and used in your code. These are: ",paste(nsMissing,collapse = "; "))
-    fixns = utils::menu(c("Yes","No"), "Would you like me to fix these?")
+    fixns = utils::menu(c("Yes","No"), title = "Would you like me to fix these?")
     if (fixns==1) {
       x = lapply(nsMissing, function(p) usethis::use_package(p))
     }
   }
+
+  # TODO: format a diff output
+  # tmp = diffobj::diffChr(files$content[[6]],files$content.old[[6]])
 
   message("Done. You may want to run some tests before deleting the backup files.")
   return(files)

@@ -38,5 +38,5 @@ library(tidyverse)
 colName = "Petal.Width"
 {
   iris[[colName]]
-} \%>\% ggrrr::cached(iris, colName, .prefix="example", .cache=tempdir())
+} \%>\% cached(iris, colName, .prefix="example", .cache=tempdir())
 }

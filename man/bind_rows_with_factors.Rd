@@ -14,7 +14,7 @@ the union of those dataframes. Factor levels are combined with a superset of all
 }
 \description{
 Bind_rows works until there are factors with a set of different levels then it throws a
-wobbly. This handles that paricular situation by combining factor levels.
+wobbly. This handles that particular situation by combining factor levels.
 }
 \examples{
 library(tidyverse)

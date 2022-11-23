@@ -4,18 +4,39 @@
 \alias{hux_tidy}
 \title{Convert a dataframe to a huxtable with nested rows and columns.}
 \usage{
-hux_tidy(tidyDf, rowGroupVars, colGroupVars, missing = "—", na = "—", ...)
+hux_tidy(
+  tidyDf,
+  rowGroupVars,
+  colGroupVars,
+  missing = "—",
+  na = "—",
+  displayRedundantColumnNames = FALSE,
+  ...
+)
 }
 \arguments{
-\item{tidyDf}{A dataframe with row groupings (as a set of columns) and column groupings (as a set of columns) and data, where the data is in a tidy format with a row per "cell" or cell group.}
+\item{tidyDf}{A dataframe with row groupings (as a set of columns) and column
+groupings (as a set of columns) and data, where the data is in a tidy
+format with a row per "cell" or cell group.}
 
-\item{rowGroupVars}{A vars(...) column specification which will define how rows are grouped}
+\item{rowGroupVars}{A vars(...) column specification which will define how
+rows are grouped}
 
-\item{colGroupVars}{A vars(...) column specification with defines how columns will be grouped}
+\item{colGroupVars}{A vars(...) column specification with defines how columns
+will be grouped}
 
-\item{missing}{If there is no content for a given rowGroup / colGroup combination then this character will be used as a placeholder}
+\item{missing}{If there is no content for a given rowGroup / colGroup
+combination then this character will be used as a placeholder}
 
 \item{na}{If there are NA contents then this character will be used.}
+
+\item{displayRedundantColumnNames}{if there is one column per column group
+the name of that column may be irrelevant (e.g. if there is a `col_name`,
+`value` fully tidy format) and `col_name` is inthe colGroupVars list then
+the name of the column `value` is redundant and not displayed by default.
+However sometimes you want to display this if you have named it as something specific
+e.g. including the units. If there is more than one column per `colGroup` the
+column titles are needed and kept.}
 
 \item{...}{passed onto hux_default_layout}
 }
@@ -23,10 +44,11 @@ hux_tidy(tidyDf, rowGroupVars, colGroupVars, missing = "—", na = "—", ...)
 a huxtable table
 }
 \description{
-The assumption here is that the input data is a long format tidy dataframe with both
-rows and columns specified by values of the `rowGroupVars` and `colGroupVars` columns.
-The long format (sparse) table is translated into a nested tree of rows (using `rowGroupVars`)
-and a nested tree of columns (from `colGroupVars`). Individual data items are placed in the cell
-intersecting these two trees. If there are multiple matches an additional layer of grouing is
-added to the columns.
+The assumption here is that the input data is a long format tidy dataframe
+with both rows and columns specified by values of the `rowGroupVars` and
+`colGroupVars` columns. The long format (sparse) table is translated into a
+nested tree of rows (using `rowGroupVars`) and a nested tree of columns (from
+`colGroupVars`). Individual data items are placed in the cell intersecting
+these two trees. If there are multiple matches an additional layer of grouing
+is added to the columns.
 }

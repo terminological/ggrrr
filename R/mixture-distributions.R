@@ -80,7 +80,7 @@ qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
   # quantile of the mixed distributions
   minmax <- range(sapply(p, function(x) stats::qnorm(x,means,sds)))
   solve = tryCatch({
-    sapply(p, function(qPrime) stats::uniroot(function(x) ggrrr::pmixnorm(x,means,sds,weights)-qPrime,interval = minmax,tol = 10^{-16})$root)
+    sapply(p, function(qPrime) stats::uniroot(function(x) pmixnorm(x,means,sds,weights)-qPrime,interval = minmax,tol = 10^{-16})$root)
   }, error = browser)
   names(solve) = paste0("Q.",p)
   return(solve)

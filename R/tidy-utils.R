@@ -1,94 +1,10 @@
-# look for a dataframe as the first argument in the call stack
-.search_call_stack = function(nframe = sys.nframe()-1) {
-  frame = sys.frame(nframe)
-  first_arg_name = ls(frame)[1]
-  try({
-    data = suppressWarnings(first_arg_name %>% get(envir=frame))
-    if(is.data.frame(data)) return(data)
-  })
-  nframe = nframe-1
-  if (nframe < 1) stop("no data frame found")
-  .search_call_stack(nframe)
-}
-
-
-#' Reuse tidy-select syntax outside of a tidy-select function
-#'
-#' @param tidyselect a tidyselect syntax which will be evaluated in context by looking for a call in the call stack that includes a dataframe as the first argument
-#' @param data (optional) a specific dataframe with which to evaluate the tidyselect
-#'
-#' @return a list of symbols resulting from the evaluation of the tidyselect in the context of the current call stack (or a provided data frame)
-#' @export
-as_vars = function(tidyselect, data=NULL) {
-  expr = rlang::enquo(tidyselect)
-  if(is.null(data)) data = .search_call_stack()
-  res = tidyselect::eval_select(expr,data)
-  lapply(names(res), as.symbol)
-}
-
-## Dataset description helpers ----
-
-
-#' Get a value set list of a dataframe
-#'
-#' This function examines a dataframe and returns a list of the columns with sub-lists as all the options for factors.
-#' This provides programmatic access (and automcomplete) to the values available in a dataframe, and throws and early
-#' error if we try and access data by a variable that does not exist.
-#'
-#' @param df a dataframe to examine
-#'
-#' @return a list of lists with the column name and the factor levels as list, as a `checked list`.
-#' @export
-get_value_sets = function(df) {
-  v = lapply(colnames(df), function(x) {
-    if (all(is.na(df[[x]]))) {
-      node = list(empty = TRUE)
-    } else if (is.factor(df[[x]])) {
-      node = as.list(levels(df[[x]]))
-      names(node) = node
-    } else if (is.character(df[[x]])) {
-      tmp = unique(df[[x]])
-      # TODO: sort by frequency
-      node = as.list(tmp)
-      names(node) = node
-    } else if (is.numeric(df[[x]])) {
-      node = list(
-        min = min(df[[x]],na.rm = TRUE),
-        max = max(df[[x]],na.rm = TRUE),
-        mean = mean(df[[x]],na.rm = TRUE)
-      )
-    } else {
-      node = list()
-    }
-    class(node) = c("checked_list",class(node))
-    return(node)
-  })
-  names(v) = colnames(df)
-  class(v) = c("checked_list",class(v))
-  return(v)
-}
-
-# This is a sub class of list access operator that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
-# the point of this is to throw errors early if the data changes.
-`$.checked_list` <- function(x, y) {
-  if (is.character(y)) {
-    ylab = y
-  } else {
-    ylab <- deparse(substitute(y))
-  }
-  if(!ylab %in% names(x)) {
-    stop("The value `",ylab,"` is not a valid entry") # for ",xlab)
-  }
-  NextMethod()
-}
-
 
 ## Summarisation helpers ----
 
 #' Bind rows for colums with factors
 #'
 #' Bind_rows works until there are factors with a set of different levels then it throws a
-#' wobbly. This handles that paricular situation by combining factor levels.
+#' wobbly. This handles that particular situation by combining factor levels.
 #'
 #' @param ... a list of dataframes
 #'
@@ -220,6 +136,100 @@ intersecting_group_by = function(.data, ..., .colname = "group") {
 #   tmp = ifelse(!!predicateExpr, NA, as.character(x))
 #   factor(tmp, levels=levels(x), ordered = is.ordered(x))
 # }
+
+## Rowwise mutate
+
+#' Create new data in a strictly row-wise fashion without vectorisation
+#'
+#' Applies an expression to each row and assignes it to a new column.
+#' Per-row failures are handled with default values (NAs) or can be intercepted
+#' by the user with a tryCatch(...) expression. There are many other ways to
+#' do a similar thing in `dplyr` and `purrr` but they are all more complicated than
+#' I expect them to be.
+#'
+#' @param .data a dataframe. grouping is ingnored
+#' @param ... a named list of expressions similar to mutate but where the expressions
+#'   to be evaluated are evaluated in only in the context of the current row - and
+#'   are not vecotrised. This does not support [dpylr::accross] syntax.
+#' @param .onerror a function that is called for
+#'
+#' @return a dataframe the same length as input with additional or altered columns
+#' @export
+#'
+#' @examples
+#' # calculations are scoped only to current row. Hence max(x) == x always:
+#' iris %>% rowwise_mutate(
+#'   widths = Sepal.Width+max(Petal.Width),
+#'   lengths = Sepal.Length+max(Petal.Length),
+#'   tmp = tibble(a=1, b=2)) %>%
+#' glimpse()
+#'
+#' # This is different to standard dplyr behaviour when the additional tibble
+#' # column is considered. standard dplyr rowwise does something unexpected:
+#' iris %>% dplyr::rowwise() %>% dplyr::mutate(
+#'   widths = Sepal.Width+max(Petal.Width),
+#'   lengths = Sepal.Length+max(Petal.Length),
+#'   tmp = tibble(a=1, b=2)) %>%
+#' glimpse()
+#'
+#' # As expressions are not vectorised we can use normal if ... else ... statements
+#' # and errors can be handled and default values provided.
+#' iris %>% rowwise_mutate(
+#'   tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
+#'   .onerror = function(e) -Petal.Width
+#' ) %>%
+#' glimpse()
+#'
+#' # The default values
+#' # are evaluated in the same context as the original expression, but only are
+#' # defaults for all the columns so makes most sense when a default value is given
+#' iris %>% rowwise_mutate(
+#'   tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
+#'   tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
+#'   .onerror = function(e) Inf
+#' ) %>%
+#' glimpse()
+#'
+rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
+  out = .data
+  list = enexprs(...)
+  env = rlang::caller_env()
+  tmp = lapply(names(list), function(x) vector("list", nrow(out)))
+  # var = names(list)[1]
+  errors = c()
+
+  for (i in 1:nrow(out)) {
+    input = lapply(.data, `[[`, i)
+    env = list2env(input, envir=env)
+
+    for (var in names(list)) {
+      expr = list[[var]]
+      result = tryCatch(rlang::eval_bare(expr,env = env),error = function(e,...) {
+        errors <<- unique(c(errors,sprintf("`%s`: evaluating %s", e$message, var)))
+        .onerror(e,...)
+      })
+      tmp[[var]][[i]] = result
+    }
+  }
+
+  for (var in names(list)) {
+    tmp2 = unlist(tmp[[var]])
+    if (
+      # unlisting worked
+      is.null(names(tmp2)) && length(tmp2) == nrow(out)
+    ) {
+      out[[var]] = tmp2
+    } else {
+      # stick with a list column
+      out[[var]] = tmp[[var]]
+    }
+  }
+
+  if (length(errors) > 0) warning("errors occurred (max 10 shown):\n",paste0(head(errors,10),collapse = "\n"))
+
+  return(out)
+
+}
 
 ## Data manipulation helpers ----
 
@@ -675,4 +685,3 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
 }
 
 
-## Formula helpers ----

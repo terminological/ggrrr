@@ -5,7 +5,8 @@
 \title{Fix errors introduced in package creation by forgetting to qualify namespaces.}
 \usage{
 fix_unqualified_functions(
-  rDirectories = c(here::here("R"), here::here("vignettes")),
+  rDirectories = c(here::here("R"), here::here("vignettes"),
+    here::here("tests/testthat")),
   description = here::here("DESCRIPTION"),
   dry_run = TRUE
 )

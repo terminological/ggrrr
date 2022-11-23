@@ -1,7 +1,3 @@
-.md5obj = function(obj) {
-  as.character(digest::digest(obj, algo="md5"))
-}
-
 #.arear.cache <- new.env(parent=emptyenv())
 
 #' A simple pass-through cache for complex or long running operations
@@ -24,7 +20,7 @@
 #' colName = "Petal.Width"
 #' {
 #'   iris[[colName]]
-#' } %>% ggrrr::cached(iris, colName, .prefix="example", .cache=tempdir())
+#' } %>% cached(iris, colName, .prefix="example", .cache=tempdir())
 cached = function (
   .expr,
   ...,
@@ -33,43 +29,7 @@ cached = function (
   .prefix = getOption("cache.item.prefix", default="cached"),
   .stale = getOption("cache.stale", default=Inf))
 {
-
-  # .expr2 = enquo(.expr)
-  hash = rlang::list2(...)
-  code = deparse(substitute(.expr))
-  md5code = .md5obj(code)
-
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
-
-  dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
-
-  md5params = NULL
-  if (!is.null(hash))
-    md5params = .md5obj(hash)
-
-  path = paste0(.cache,paste(.prefix,md5code,md5params,sep = "-"),".rda")
-
-  if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
-  ggrrr::cache_delete_stale(.cache = .cache, .prefix = .prefix, .stale = .stale)
-
-  if (file.exists(path)) {
-    message("using cached item: ",path)
-    obj = readRDS(path)
-    #assign(path, obj, envir=.arear.cache)
-  } else {
-    message("caching item: ",path)
-    obj = .expr #eval(.expr2)
-    attr(obj,"cache-path")=path
-    attr(obj,"cache-date")=Sys.time()
-    saveRDS(obj, path)
-    #assign(path, obj, envir=.arear.cache)
-  }
-  return(obj)
+   .cached(.expr,...,.nocache=.nocache,.cache=.cache,.prefix=.prefix,.stale=.stale)
 }
 
 #' Delete stale files in a cache
@@ -81,7 +41,7 @@ cached = function (
 #' it may end up using old data.
 #'
 #' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
-#' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
+#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale.
 #'
 #' @return nothing. called for side effects.
@@ -92,25 +52,7 @@ cache_delete_stale = function(
   .stale = getOption("cache.stale", default=Inf)
 ) {
 
-  change_time = path = NULL # remove global binding note
-
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
-  day_start = getOption("cache.time_day_starts", default=3)
-  stale_time = as.POSIXct(Sys.Date()-.stale+1 )+day_start*60*60
-  fs::file_info(fs::dir_ls(.cache)) %>%
-
-    dplyr::filter(change_time <
-             # if .stale==1 this is (by default) 2am on the current day.
-             # something cached before 2am is deemed to be the previous day.
-             stale_time
-    ) %>%
-    dplyr::pull(path) %>%
-    unlink()
-    # purrr::pwalk(function(path, ...) {
-    #   # tmp = rlang::list2(...)
-    #   message("deleting: ", path)
-    #   unlink(path)
-    # })
+  .cache_delete_stale(.cache,.prefix,.stale)
 }
 
 # TODO:
@@ -128,32 +70,14 @@ cache_delete_stale = function(
 #'
 #' @examples
 #' library(tidyverse)
-#' ggrrr::cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
+#' cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
 cache_clear = function (
   .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
   interactive = TRUE
 ) {
 
-  paths = filename = NULL # remove global binding note
-
-  if (!fs::dir_exists(.cache)) {
-    warning("cache does not exist (yet)")
-  } else {
-    files = tidyr::tibble(paths = fs::dir_ls(.cache,recurse=TRUE)) %>%
-      dplyr::mutate( filename = fs::path_file(paths)) %>%
-      dplyr::filter(stringr::str_starts(filename,.prefix))
-
-    if(!interactive) {
-      lapply(files$paths, unlink)
-    } else {
-      message("About to delete ",nrow(files)," cached files.")
-      sure = utils::menu(c("Yes", "No"), title="Are you sure?")
-      if(sure==1) lapply(files$paths, unlink)
-      else message("operation aborted by the user")
-    }
-  }
-  invisible(NULL)
+  .cache_clear(.cache, .prefix, interactive)
 }
 
 #' Download a file into a local cache.
@@ -179,33 +103,6 @@ cache_download = function(
   .extn = NULL
 ) {
 
-  qualifier = basename(url) %>% stringr::str_extract("^[^?]*")
-  if (!is.null(.extn)) {
-    qualifier = qualifier %>% fs::path_ext_remove() %>% fs::path_ext_set(.extn)
-  }
-  md5 = .md5obj(url)
-  fname = paste0(md5,"-",qualifier)
-
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
-  dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
-  path = normalizePath(paste0(.cache,fname), mustWork = FALSE)
-
-  if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
-  ggrrr::cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
-
-  if (file.exists(path)) {
-    message("using cached item: ",path)
-    return(path)
-    #assign(path, obj, envir=.arear.cache)
-  } else {
-    message("downloading item: ",qualifier)
-    utils::download.file(url,path)
-    return(path)
-  }
+  .cache_download(url, ..., .nocache=.nocache, .cache=.cache, .stale=.stale, .extn=.extn)
 
 }

@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9016
+Version: 0.0.0.9017
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -57,9 +57,11 @@ Suggests:
     rmarkdown,
     knitr,
     gt,
-    rJava
+    rJava,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 URL: https://terminological.github.io/ggrrr/index.html,
 	https://github.com/terminological/ggrrr
 BugReports: https://github.com/terminological/ggrrr/issues
+Config/testthat/edition: 3

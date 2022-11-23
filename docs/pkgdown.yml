@@ -1,5 +1,5 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   cache-functions: cache-functions.html
@@ -8,5 +8,5 @@ articles:
   ggrrr: ggrrr.html
   other-table-formats: other-table-formats.html
   table-functions: table-functions.html
-last_built: 2022-09-15T10:47Z
+last_built: 2022-11-23T00:55Z
 

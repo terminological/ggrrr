@@ -37,8 +37,13 @@ summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,
   `median price` = sprintf_list("%1.0f [%1.0f \u2014 %1.0f]", quantile(price, c(0.5,0.25,0.75)))
 )
 
-table = summary %>% hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
 
+
+table = summary %>% .hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
+table
+```
+
+```{r}
 # this saves the table into a multipage pdf and multiple png files (one per page). This is based on a full A4 page size, minus margins which demonstrates the overflow onto 
 # a second page.
 table %>% hux_default_layout(defaultFontSize = 8) %>% hux_save_as(out("multipage_t2"), std_size$full)

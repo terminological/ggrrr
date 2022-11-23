@@ -16,12 +16,14 @@
 #' ggrrr::unstable()
 #' }
 unstable = function(pkg = "ggrrr", org="terminological") {
-  if (pkg %in% rownames(utils::installed.packages())) devtools::unload(pkg)
-  if (file.exists(sprintf("~/Git/%s",pkg))) {
-    devtools::document(sprintf("~/Git/%s",pkg),quiet = TRUE)
-    devtools::install_local(sprintf("~/Git/%s",pkg), force=TRUE,upgrade = FALSE)
+  if (pkg %in% rownames(utils::installed.packages())) try({devtools::unload(pkg)},silent = TRUE)
+  local = sprintf("~/Git/%s",pkg)
+  if (file.exists(local)) {
+    devtools::install_deps(local, upgrade = "never")
+    devtools::document(pkg = local, quiet = TRUE)
+    devtools::install_local(path = local, force=TRUE,upgrade = FALSE)
   } else {
-    devtools::install_github(sprintf("%s/%s",org, pkg),upgrade = FALSE)
+    devtools::install_github(sprintf("%s/%s",org, pkg),upgrade = "never")
   }
 }
 
@@ -32,9 +34,10 @@ unstable = function(pkg = "ggrrr", org="terminological") {
 #' @return boolean value
 #' @export
 is_installed = function(packageName) {
-  if (length(packageName)>1) stop("is_installed() can only check for one package at a time")
-  t=requireNamespace(packageName, quietly=TRUE)
-  return(t)
+  return(rlang::is_installed(packagename))
+  # if (length(packageName)>1) stop("is_installed() can only check for one package at a time")
+  # t=requireNamespace(packageName, quietly=TRUE)
+  # return(t)
   #return(nzchar(find.package(package = packageName)))
 }
 
