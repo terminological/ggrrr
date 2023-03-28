@@ -476,16 +476,19 @@ gg_save_as = function(plot,filename = tempfile(),
 
 
   if ("formatted.table"==class(plot)[[1]]) {
+    # override width specificially for formatted tables
     maxWidth = attr(plot,"target.width")
-    # plot comes with an aspect ratio which is expressed as height/width
-    # this is geenrally true if the coords_fixed has been used.
-    plotAr = tryCatch({plot$coordinates$ratio}, error = function(e) NULL)
-    if(!is.null(plotAr)) {
-      aspectRatio = 1/plotAr
-      if (maxWidth/aspectRatio > maxHeight) maxWidth = maxHeight*aspectRatio
-      if (maxHeight*aspectRatio > maxWidth) maxHeight = maxWidth/aspectRatio
-    }
   }
+
+  # plot comes with an aspect ratio which is expressed as height/width
+  # this is generally true if the coords_fixed (?coords_sf) has been used.
+  plotAr = tryCatch({plot$coordinates$ratio}, error = function(e) NULL)
+  if(!is.null(plotAr)) {
+    aspectRatio = 1/plotAr
+    if (maxWidth/aspectRatio > maxHeight) maxWidth = maxHeight*aspectRatio
+    if (maxHeight*aspectRatio > maxWidth) maxHeight = maxWidth/aspectRatio
+  }
+
   # else just better to let ggplot lay it out
 
   dir = fs::path_dir(filename)
@@ -706,8 +709,8 @@ scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", l
   dots = rlang::list2(...)
   discrete_scale_opts = dots[names(dots) %in% names(formals(ggplot2::discrete_scale)) & !names(dots) %in% c("palette","scale_name")]
   p = .subtype_pal(.palette, ..., subclasses=subclasses, undefined = undefined, lighten = lighten)
-  discrete_scale_opts = c(aesthetics=aesthetics, scale_name="subtype", palette=p, na.value = na.value, discrete_scale_opts)
-  return(rlang::exec(discrete_scale, !!!discrete_scale_opts))
+  discrete_scale_opts = c(list(aesthetics=aesthetics, scale_name="subtype", palette=p, na.value = na.value), discrete_scale_opts)
+  return(rlang::exec(ggplot2::discrete_scale, !!!discrete_scale_opts))
 }
 
 
@@ -754,7 +757,7 @@ scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", l
 #'   ggrrr::gg_hide_Y_axis()+
 #'   ggrrr::gg_narrow()
 scale_colour_subtype = function( subclasses, class_colour = "black", subclass_colour = "grey50",  na.value = "grey50", aesthetics = "color", ...) {
-  discrete_scale(
+  ggplot2::discrete_scale(
     aesthetics=aesthetics,
     scale_name="subtype",
     palette=function(n) {return(ifelse( c(TRUE,2:n %in% (cumsum(subclasses)+1)), class_colour, subclass_colour))},

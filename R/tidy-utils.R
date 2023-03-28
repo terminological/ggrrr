@@ -109,7 +109,17 @@ summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .to
 #'   Sepal.Length > mean(Sepal.Length) ~ "Long",
 #'   Sepal.Width > mean(Sepal.Width) ~ "Wide"
 #' )
-intersecting_group_by = function(.data, ..., .colname = "group") {
+intersecting_group_by = function(.data, ...) {
+  UseMethod("intersecting_group_by", .data)
+}
+
+#' @export
+intersecting_group_by.default = function(.data, ...) {
+  stop("Only dataframes and traced dataframes are supported by intersecting_group_by")
+}
+
+#' @export
+intersecting_group_by.data.frame = function(.data, ..., .colname = "group") {
   .colname = rlang::ensym(.colname)
   grps = .data %>% dplyr::groups()
   dots = rlang::list2(...)
@@ -117,7 +127,26 @@ intersecting_group_by = function(.data, ..., .colname = "group") {
     value = rlang::f_rhs(form)
     predicate = rlang::f_lhs(form)
     .data %>% dplyr::filter(!!predicate) %>% dplyr::mutate(!!.colname := value)
-  })) %>% dplyr::group_by(!!!grps, !!.colname)
+  })) %>%
+  dplyr::group_by(!!!grps, !!.colname)
+}
+
+#' @export
+intersecting_group_by.trackr_df = function(.data, ..., .colname = "group", .headline = "Create overlapping subsets", .messages="{.count.out} items") {
+  .colname = rlang::ensym(.colname)
+  grps = .data %>% dplyr::groups()
+
+  # wrap this is a group modify for tracked dataframes.
+  .data %>% dplyr::ungroup(.messages="") %>% dplyr::group_modify(function(d,g,...) {
+    dots = rlang::list2(...)
+    dplyr::bind_rows(lapply(dots, function(form) {
+      value = rlang::f_rhs(form)
+      predicate = rlang::f_lhs(form)
+      d %>% dplyr::filter(!!predicate) %>% dplyr::mutate(!!.colname := value)
+    }))
+
+  }, ..., .headline = .headline, .messages=.messages) %>%
+    dplyr::group_by(!!!grps, !!.colname, .messages="")
 }
 
 # .maybe = function(expr) {
@@ -261,13 +290,13 @@ full_seq_dates = function(dates, period="1 day", anchor="start", fmt = "%d %b") 
   neg = match[[1]][1,2]
   quantity = if (match[[1]][1,3] == "") 1 else as.numeric(match[[1]][1,3])
   unit = match[[1]][1,4]
-  if (anchor == "end") neg = "-"
+  if (is.character(anchor) && anchor == "end") neg = "-"
   by = sprintf("%s%1.0f %s", neg, quantity, unit)
 
 
   anchor_date = NA
-  if (anchor == "start") anchor_date=start
-  if (anchor == "end") anchor_date=end+1
+  if (is.character(anchor) && anchor == "start") anchor_date=start
+  if (is.character(anchor) && anchor == "end") anchor_date=end+1
   if (is.na(anchor_date)) anchor_date = tryCatch(as.Date(anchor), error=function(e) NA)
   if (is.na(anchor_date)) anchor_date = (as.Date("1970-01-01")+0:6)[stringr::str_starts(tolower(weekdays(as.Date("1970-01-01")+0:6)),tolower(anchor))]
   if (length(anchor_date)!=1) stop("Did not understand anchor value. It should be one of 'start', 'end', or a (possibly abbreviated) day of week (e.g. sun)")
@@ -655,7 +684,7 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
 
   next_low = NULL # remove global binding note
 
-  if (!all(as.integer(x)==x)) warning("input to cut_integer(...) has been coerced to integer values")
+  if (!all(as.integer(x)==x,na.rm = TRUE)) warning("input to cut_integer(...) has been coerced to integer values")
   x = floor(x)
   if (!all(as.integer(cut_points)==cut_points)) stop("cut_points must be integer valued, and define the lower end of each category.")
   if (any(cut_points <= lower_limit | cut_points >= upper_limit)) warning("cut_point values should be between lower_limit (",lower_limit,") and upper_limit (",upper_limit,").")
@@ -680,7 +709,7 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
   )
 
   return(
-    cut(x,include.lowest = TRUE,breaks = breaks, labels=labels$label2, ordered_result = TRUE)
+    cut(x,include.lowest = TRUE,breaks = breaks, labels=labels$label2, ordered_result = TRUE, right=FALSE)
   )
 }
 

@@ -193,15 +193,15 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 
   words = tmp %>% dplyr::ungroup() %>%
     dplyr::summarise(dplyr::across(tidyr::everything(),
-                  .fns = ~ stringr::str_split(.x,stringr::fixed(" ")) %>% lapply(length) %>% unlist() %>% max()
-                  ,na.rm = TRUE)) %>%
+                  .fns = ~ stringr::str_split(stats::na.omit(.x),stringr::fixed(" ")) %>% lapply(length) %>% unlist() %>% max()
+                  )) %>%
     tidyr::pivot_longer(cols=tidyr::everything()) %>% dplyr::rename(words = value)
 
   # a maximum single word length in a column.
   wordLength = tmp %>% dplyr::ungroup() %>%
     dplyr::summarise(dplyr::across(tidyr::everything(),
-                     .fns = ~ stringr::str_split(.x,stringr::fixed(" ")) %>% lapply(function(.x) .get_text_cms(.x, font_size = fontSize)) %>% unlist() %>% max()
-                     ,na.rm = TRUE)) %>%
+                     .fns = ~ stringr::str_split(stats::na.omit(.x),stringr::fixed(" ")) %>% lapply(function(.x) .get_text_cms(.x, font_size = fontSize)) %>% unlist() %>% max()
+                     )) %>%
     tidyr::pivot_longer(cols=tidyr::everything()) %>% dplyr::rename(minStrwidth = value)
   # browser()
   charLen = strwidths %>% dplyr::inner_join(rowspans, by="name") %>% dplyr::inner_join(words, by="name") %>% dplyr::inner_join(wordLength, by="name") %>% dplyr::mutate(

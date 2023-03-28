@@ -60,7 +60,7 @@ Suggests:
     rJava,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 URL: https://terminological.github.io/ggrrr/index.html,
 	https://github.com/terminological/ggrrr
 BugReports: https://github.com/terminological/ggrrr/issues

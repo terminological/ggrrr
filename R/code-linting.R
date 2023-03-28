@@ -90,6 +90,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
         files$content[[i]] = file$content %>% stringr::str_replace_all(functionRegex, replacement)
         tmp = stringr::str_match_all(file$content,functionRegex) %>% purrr::map(~ .x[,3]) %>%
           unlist()
+        if (is.null(tmp)) tmp = character()
         tmp = tibble::tibble(name=tmp) %>% dplyr::group_by(name) %>%
           dplyr::summarise(value = dplyr::n()) %>% dplyr::mutate(pkg =pkg)
         files$matches[[i]] = file$matches %>% dplyr::bind_rows(tmp)
