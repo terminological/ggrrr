@@ -19,10 +19,10 @@ hux_tidy(
 groupings (as a set of columns) and data, where the data is in a tidy
 format with a row per "cell" or cell group.}
 
-\item{rowGroupVars}{A vars(...) column specification which will define how
+\item{rowGroupVars}{A dplyr::vars(...) column specification which will define how
 rows are grouped}
 
-\item{colGroupVars}{A vars(...) column specification with defines how columns
+\item{colGroupVars}{A dplyr::vars(...) column specification with defines how columns
 will be grouped}
 
 \item{missing}{If there is no content for a given rowGroup / colGroup

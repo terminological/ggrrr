@@ -40,6 +40,12 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/as.character.rendered_plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/as.character.rendered_table.html</loc>
+  </url>
+  <url>
     <loc>/reference/as.long_format_table.html</loc>
   </url>
   <url>
@@ -101,6 +107,9 @@
   </url>
   <url>
     <loc>/reference/dot-cached.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-find_chrome.html</loc>
   </url>
   <url>
     <loc>/reference/dot-gg_hide_X_axis.html</loc>
@@ -238,6 +247,12 @@
     <loc>/reference/is_installed.html</loc>
   </url>
   <url>
+    <loc>/reference/knit_print.rendered_plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/knit_print.rendered_table.html</loc>
+  </url>
+  <url>
     <loc>/reference/knit_versioned.html</loc>
   </url>
   <url>
@@ -259,7 +274,19 @@
     <loc>/reference/pmixnorm.html</loc>
   </url>
   <url>
+    <loc>/reference/print.rendered_plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.rendered_table.html</loc>
+  </url>
+  <url>
     <loc>/reference/qmixnorm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/register_web_fonts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reset_fonts.html</loc>
   </url>
   <url>
     <loc>/reference/rowwise_mutate.html</loc>
@@ -281,6 +308,9 @@
   </url>
   <url>
     <loc>/reference/time_to_date.html</loc>
+  </url>
+  <url>
+    <loc>/reference/univariate_from_multivariate.html</loc>
   </url>
   <url>
     <loc>/reference/unstable.html</loc>

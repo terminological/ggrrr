@@ -45,9 +45,9 @@ hux_set_font = .hux_set_font
 #' @param tidyDf A dataframe with row groupings (as a set of columns) and column
 #'   groupings (as a set of columns) and data, where the data is in a tidy
 #'   format with a row per "cell" or cell group.
-#' @param rowGroupVars A vars(...) column specification which will define how
+#' @param rowGroupVars A dplyr::vars(...) column specification which will define how
 #'   rows are grouped
-#' @param colGroupVars A vars(...) column specification with defines how columns
+#' @param colGroupVars A dplyr::vars(...) column specification with defines how columns
 #'   will be grouped
 #' @param missing If there is no content for a given rowGroup / colGroup
 #'   combination then this character will be used as a placeholder
@@ -157,17 +157,17 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 
   # TODO: this needs a bit of a tidy up.
   fontSize = stats::median(huxtable::font_size(hux))
-  # par(family = "sans", ps = fontSize)
+  # graphics::par(family = "sans", ps = fontSize)
   merged_headers = sum(huxtable::header_rows(hux))-1
   # empirically determined for the default 8pt font size in excel:
   yourDevice = graphics::strwidth("mmmm",units="in")/0.5416667 #my device
   cmsPerChar = mean(c(5.01/7.461250,  4.22/6.297083, 0.68/0.714375, 3.45/5.000625,   0.68/0.714375, 3.49/5.000625, 2.1/2.963333,  0.95/1.031875))
 
-  # Huxtable tries to guess appropriate widths and height for rows and columns; numeric width() and height() are treated as scaling factors:
-  # cw <- col_width(ht)
+  # Huxtable tries to guess appropriate widths and height for rows and columns; numeric huxtable::width() and huxtable::height() are treated as scaling factors:
+  # cw <- huxtable::col_width(ht)
   # if (!is.numeric(cw) || anyNA(cw)) cw <- rep(1/ncol(ht), ncol(ht)) #cw defaults to 1/ncol
   # basic_width <- 20 * ncol(ht) # presume the 20 is in the basic excel unit
-  # w <- width(ht)
+  # w <- huxtable::width(ht)
   # if (!is.numeric(w) || is.na(w))
   #   w <- 0.5 # the default table width = 0.5 is mysterious. This will scale the
   # widths = cw * w * basic_width
@@ -234,7 +234,12 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
   hux2
 }
 
-
+.font_paths = function() {
+  unique(c(
+    systemfonts::system_fonts()$path,
+    systemfonts::registry_fonts()$path
+  ))
+}
 
 ## Saving to pdf ----
 
@@ -294,7 +299,12 @@ hux_save_as = function(hux,filename,
   lapply(matchedFiles(supported), function(x) try(unlink(x)))
 
   fonts_used = hux %>% huxtable::font() %>% as.vector() %>% unique()
-  non_local_fonts = fonts_used[!fonts_used %in% sysfonts::font_files()$family]
+  non_local_fonts = fonts_used[!fonts_used %in% systemfonts::system_fonts()$family]
+
+  out = list()
+  out$hux = hux
+  out$width = maxWidth
+  out$height = maxHeight
 
   if ("docx" %in% formats) {
     doc = officer::read_docx()
@@ -331,9 +341,13 @@ hux_save_as = function(hux,filename,
     doc <- flextable::body_add_flextable(doc, ft)
     doc <- officer::body_add_par(doc, " ")
     print(doc, target = withExt("docx"))
+    out$docx = withExt("docx")
   }
 
-  if ("xlsx" %in% formats) hux %>% huxtable::quick_xlsx(file = withExt("xlsx"),open=FALSE)
+  if ("xlsx" %in% formats) {
+    hux %>% huxtable::quick_xlsx(file = withExt("xlsx"),open=FALSE)
+    out$xlsx = withExt("xlsx")
+  }
 
   if (any(c("pdf","png","html") %in% formats)) {
 
@@ -342,11 +356,17 @@ hux_save_as = function(hux,filename,
       stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
 
     # stylesheet for google fonts
-    used_google_fonts = non_local_fonts[non_local_fonts %in% sysfonts::font_families_google()]
-    used_google_fonts = used_google_fonts %>% stringr::str_replace_all("\\s","+")
-    style_dec = paste0("<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=",used_google_fonts,"'/>", collapse = "")
+    # used_google_fonts = non_local_fonts[non_local_fonts %in% sysfonts::font_families_google()]
+    # used_google_fonts = used_google_fonts %>% stringr::str_replace_all("\\s","+")
+    # style_dec = paste0("<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=",used_google_fonts,"'/>", collapse = "")
 
-    write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
+    if ("html" %in% formats) {
+      style_dec = ""
+      webfonts = .get_web_font_option()
+      if (length(webfonts) > 0) style_dec = sprintf("<style>%s</style>",paste0(webfonts, collapse = ""))
+      write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
+      out$html = withExt("html")
+    }
 
     if (any(c("pdf","png") %in% formats)) {
 
@@ -359,10 +379,12 @@ hux_save_as = function(hux,filename,
 
         conv = html_converter(.font_paths())
 
+        tmp = c("pdf","png")[c("pdf","png") %in% formats]
+
         html_fragment_to_pdf(
           htmlFragment = html,
           outFile = filename,
-          formats = c("pdf","png")[c("pdf","png") %in% formats],
+          formats = tmp,
           maxWidthInches = maxWidth,
           maxHeightInches = maxHeight,
           xMarginInches = 0,
@@ -375,7 +397,13 @@ hux_save_as = function(hux,filename,
           grDevices::embedFonts(withExt("pdf")),
           silent=TRUE
         );
+
+        if("pdf" %in% tmp) out$pdf = withExt("pdf")
+        if("png" %in% tmp) out$png = matchedFiles("png")
+
       } else if (rlang::is_installed("webshot")) {
+
+        #TODO replace with printing with chrome?
         warning("html2pdfr (version >0.4.0) is not installed but webshot is. We'll use that but it will not respect page length constraints, there will only be 1 PNG for multiple pages, and output will be fixed width.")
 
         # get these functions without R CMD Check noticing that they might not be installed
@@ -394,6 +422,7 @@ hux_save_as = function(hux,filename,
               vheight=10,
               zoom=300/96
             )
+            out$png = matchedFiles("png")
           }
 
           if("pdf" %in% formats) {
@@ -412,6 +441,7 @@ hux_save_as = function(hux,filename,
               vwidth=maxWidth*72,
               vheight=10
             )
+            out$pdf = withExt("pdf")
           }
         } else {
           # webshot is not set up.
@@ -424,52 +454,99 @@ hux_save_as = function(hux,filename,
     }
   }
 
-  # TODO logic here is totally spurious and organic.
-  # Need a much better way that is shared between this and gg_save_as of deciding what to actually display.
-  # arguments that it should only display the format as rendered however it is
-  # currently deciding depending on what context called from in an arbitraty way.
+  return(structure(out, class="rendered_table"))
+}
 
-  if (.is_knitting()) {
-    hidetables = getOption("hide.tables",FALSE)
-    if (hidetables) {
+#' Knit a rendered_table object
+#'
+#' @param x the rendered_table
+#' @param ... not used
+#'
+#' @return nothing - used for side effects
+#' @export
+knit_print.rendered_table = function(x,...) {
+  hidetables = getOption("hide.tables",FALSE)
+  if (hidetables) {
       # e.g. knitting to a word document
-      return(knitr::asis_output(paste0("INSERT TABLE HERE: ",fs::path_file(filename),"\n\n")))
-    } else {
-      if(.is_html_output()) {
-        return(hux %>% huxtable::set_width("auto"))
-      } else if (.is_document_output() & "docx" %in% formats) {
-        # try and embed in the document
-        return(hux %>% huxtable::set_width(1))
-      } else {
-        pngs = matchedFiles("png")
-        if (length(pngs)>0) {
-          # this will be default output in many situations - a png with fallback to pdf if available.
-          return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi=300))
-        } else if (.is_latex_output() & "pdf" %in% formats) {
-          return(knitr::include_graphics(path = withExt("pdf"),auto_pdf = TRUE, dpi=300))
-        } else {
-          # just let huxtable decide
-          return(hux)
-        }
-      }
-    }
+      return(knitr::asis_output(paste0("INSERT TABLE HERE: ",as.character(x),"\n\n")))
   } else {
-    pngs = matchedFiles("png")
-    if (.is_running_in_chunk()) {
-      if (length(pngs)>0) {
-        # this will be default output in many situations - a png with fallback to pdf if available (and single page).
+    pngs = x$png
+    if(.is_html_output()) {
+      # knitting a html document
+      return(knitr::knit_print(x$hux %>% huxtable::set_width("auto")))
+    } else if (.is_document_output()) {
+      # knitting a docx document
+      # try and embed in the document but width must be scpecified with no
+      # sensible default and paging is determined by word.
+      return(knitr::knit_print(x$hux %>% huxtable::set_width(1)))
+    } else {
+      # most likely latex
+      if (.is_latex_output() & !is.null(x$pdf)) {
+        return(knitr::include_graphics(path = x$pdf))
+      } else if (length(pngs)>0) {
+        # this will be default output in many situations - a png with fallback to pdf if available.
         return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi=300))
       } else {
-        if (length(non_local_fonts) > 0) warning("These fonts used are not installed on this system and will not be rendered properly by RStudio: ",paste0(non_local_fonts,collapse = ", "))
-        return(htmltools::HTML(hux %>% huxtable::to_html()))
+        # some non standard output.
+        # just let huxtable decide what the best thing to do is.
+        return(knitr::knit_print(x$hux))
       }
-    } else {
-      # on a console most likely: display html in the viewer.
-      if (length(non_local_fonts) > 0) warning("These fonts used are not installed on this system and will not be rendered properly by RStudio: ",paste0(non_local_fonts,collapse = ", "))
-      return(htmltools::HTML(hux %>% huxtable::to_html()) %>% htmltools::html_print())
     }
   }
+}
 
+#' Convert a rendered_table object to a character
+#'
+#' @param x the rendered_table
+#' @param ... not used
+#'
+#' @return a named vector
+#' @export
+as.character.rendered_table = function(x, ...) {
+  tmp = x[!names(x) %in% c("hux","width","height")]
+  class(tmp)="list"
+  lapply(tmp, as.character)
+}
+
+#' Print a rendered_table object
+#'
+#' @param x the rendered_table
+#' @param ... not used
+#'
+#' @return nothing - used for side effects
+#' @export
+print.rendered_table = function(x,...) {
+
+  if (interactive()) {
+    v = getOption("viewer", utils::browseURL)
+    if (!is.null(x$pdf)) v(x$pdf)
+    else if (!is.null(x$png)) v(x$png)
+    else if (!is.null(x$html)) v(x$html)
+    else htmltools::html_print(htmltools::HTML(x$hux %>% huxtable::to_html()))
+  }
+
+  print(x$hux)
+
+  # if (.is_running_in_chunk()) {
+  #   # running interactively in an RMarkdown document
+  #   pngs = x$png
+  #   if (length(pngs)>0) {
+  #     for (png in x$png) {
+  #       img = png::readPNG(png)
+  #       g = grid::rasterGrob(img, interpolate=TRUE)
+  #       print(ggplot2::ggplot() +
+  #         ggplot2::annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf))
+  #     }
+  #   } else {
+  #     print(x$hux)
+  #   }
+  # } else {
+  #   v = getOption("viewer")
+  #   if (!is.null(x$pdf)) v(x$pdf)
+  #   else if (!is.null(x$png)) v(x$png)
+  #   else if (!is.null(x$html)) v(x$html)
+  #   else htmltools::HTML(x$hux %>% huxtable::to_html()) %>% htmltools::html_print()
+  # }
 }
 
 #' A sprintf alternative that handles NA values gracefully (ish)
@@ -542,6 +619,7 @@ hux_set_caption = function(hux, caption) {
 #' @param hux a huxtable
 #' @param ... stuff to insert
 #' @param fill padding
+#' @param colspan how far to span first inserted cell?
 #'
 #' @return a huxtable with row inserted at start in the same format
 #' @export
@@ -552,7 +630,7 @@ hux_insert_start = function(hux, ..., fill="", colspan = 1) {
   tmp = hux[2,]
   hux[2,] = hux[1,]
   hux[1,] = tmp
-  hux %>% huxtable:::set_colspan(1, 1, colspan)
+  hux %>% huxtable::set_colspan(1, 1, colspan)
 }
 
 #' Set a huxtable caption as a first row
@@ -655,3 +733,16 @@ data_supplement = function(..., filename="supplementary-material.xlsx", out = gg
   return(e1)
 }
 
+## Utilities ----
+
+# from rex:::escape.character
+.escape = function (x) {
+  chars <- c("*", ".", "?", "^", "+", "$", "|", "(", ")", "[",
+             "]", "{", "}", "\\")
+  .sanitize(x, chars)
+}
+
+.sanitize = function (x, chars) {
+  gsub(paste0("([\\", paste0(collapse = "\\", chars), "])"),
+       "\\\\\\1", x, perl = TRUE)
+}

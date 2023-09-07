@@ -5,7 +5,7 @@
 \title{Delete stale files in a cache}
 \usage{
 .cache_delete_stale(
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
   .stale = Inf
 )

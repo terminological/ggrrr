@@ -21,7 +21,7 @@ I expect them to be."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
       </span>
     </div>
 
@@ -118,8 +118,8 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">rowwise_mutate</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  widths <span class="op">=</span> <span class="va">Sepal.Width</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  lengths <span class="op">=</span> <span class="va">Sepal.Length</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  tmp <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>, b<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  tmp <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>, b<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ Sepal.Length <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…</span>
@@ -136,8 +136,8 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  widths <span class="op">=</span> <span class="va">Sepal.Width</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  lengths <span class="op">=</span> <span class="va">Sepal.Length</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  tmp <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>, b<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  tmp <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">1</span>, b<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rowwise: </span>
@@ -152,17 +152,13 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># As expressions are not vectorised we can use normal if ... else ... statements</span></span></span>
 <span class="r-in"><span><span class="co"># and errors can be handled and default values provided.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">rowwise_mutate</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  tmp <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fl">2.0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"error message: "</span>,<span class="va">Petal.Width</span><span class="op">)</span> <span class="kw">else</span> <span class="va">Petal.Width</span>,</span></span>
 <span class="r-in"><span>  .onerror <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">-</span><span class="va">Petal.Width</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>errors occurred (max 10 shown):</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `error message: 2.5`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `error message: 2.1`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `error message: 2.2`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `error message: 2.4`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `error message: 2.3`: evaluating tmp</span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ Sepal.Length <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…</span>
@@ -175,21 +171,15 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 <span class="r-in"><span><span class="co"># The default values</span></span></span>
 <span class="r-in"><span><span class="co"># are evaluated in the same context as the original expression, but only are</span></span></span>
 <span class="r-in"><span><span class="co"># defaults for all the columns so makes most sense when a default value is given</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">rowwise_mutate</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  tmp <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fl">2.0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"too wide petals: "</span>,<span class="va">Petal.Width</span><span class="op">)</span> <span class="kw">else</span> <span class="va">Petal.Width</span>,</span></span>
 <span class="r-in"><span>  tmp2 <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">Sepal.Width</span> <span class="op">&gt;</span> <span class="fl">4</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"too wide sepals: "</span>,<span class="va">Sepal.Width</span><span class="op">)</span> <span class="kw">else</span> <span class="va">Sepal.Width</span>,</span></span>
 <span class="r-in"><span>  .onerror <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="cn">Inf</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>errors occurred (max 10 shown):</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide sepals: 4.4`: evaluating tmp2</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide sepals: 4.1`: evaluating tmp2</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide sepals: 4.2`: evaluating tmp2</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide petals: 2.5`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide petals: 2.1`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide petals: 2.2`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide petals: 2.4`: evaluating tmp</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> `too wide petals: 2.3`: evaluating tmp</span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ Sepal.Length <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…</span>
@@ -199,7 +189,6 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ Species      <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ tmp          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ tmp2         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -214,7 +203,7 @@ are not vecotrised. This does not support [dpylr::accross] syntax.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -1,4 +1,6 @@
-
+# package depends
+# c("stats") %>% lapply(usethis::use_package)
+# TODO: make an internal function?
 
 #' The cumulative density function of a mixture of normal distributions
 #'
@@ -11,7 +13,6 @@
 #' @return the pdf of the mixture distribution.
 #' @export
 #' @examples
-#' library(tidyverse)
 #' pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
 pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 
@@ -54,7 +55,6 @@ pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 #' @export
 #'
 #' @examples
-#' library(tidyverse)
 #' qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
 qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
 

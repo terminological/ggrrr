@@ -28,18 +28,25 @@ outputter = function(directory = here::here("output"), datedFile=!datedSubdirect
   fs::dir_create(directory)
   message("directing output to: ",directory)
   return(function(filename = "", delete=FALSE) {
+
     if(datedSubdirectory) {
       directory = fs::path(directory,Sys.Date())
       fs::dir_create(directory)
     }
+
+    if (filename == "**BROWSE**") {
+      utils::browseURL(directory)
+      return(invisible(NULL))
+    }
+
     ext = fs::path_ext(filename)
     if(datedFile) filename = paste0(fs::path_ext_remove(filename),"-",Sys.Date()) %>% fs::path_ext_set(ext)
     path = fs::path(directory,filename)
     if (delete & fs::file_exists(path)) unlink(path)
+
     return(path)
   })
 }
-
 
 .this_script = function() {
   if (.is_knitting()) return(knitr::current_input(dir = TRUE))

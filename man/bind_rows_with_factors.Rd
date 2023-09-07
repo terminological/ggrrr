@@ -19,7 +19,7 @@ wobbly. This handles that particular situation by combining factor levels.
 \examples{
 library(tidyverse)
 bind_rows_with_factors(iris,
- ggplot2::diamonds \%>\% rename(Species = cut)) \%>\%
- pull(Species) \%>\%
+ ggplot2::diamonds \%>\% dplyr::rename(Species = cut)) \%>\%
+ dplyr::pull(Species) \%>\%
  levels()
 }

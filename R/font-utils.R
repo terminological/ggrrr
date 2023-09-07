@@ -1,84 +1,15 @@
 ## Fonts ----
 
-#' Downloads caches and installs a font family from google
+#' Which fonts are available on this system.
 #'
-#' This checks if the file is already downloaded and if not pull the font file from google fonts.
-#' If it does not exist it will throw an error. Once downloaded a font will be made available through
-#' `showtext` and through `systemfonts` font packages.
+#' @param family a font family name or names
 #'
-#' @param family the google font family (e.g. Roboto) as found here: https://fonts.google.com/ (case sensitive)
-#' @param ... not used
-#'
-#' @return nothing
+#' @return the font family name if it can be located or an error otherwise
 #' @export
-google_font = function(family, ...) {
-  if (!family %in% c(sysfonts::font_files()$family, showtextdb::font_installed())) {
-      # google_url = paste0("https://fonts.google.com/download?family=",family)
-      # zippath = cache_download(url=google_url, .cache=rappdirs::user_cache_dir("google-fonts"))
-      # unzippath = paste0(fs::path_ext_remove(zippath),"-unzip")
-      # fs::dir_create(unzippath)
-      # zip::unzip(zippath,exdir=unzippath)
-
-      # This is unnecessary as everything in sysfonts is available to showtext
-      # if (family %in% sysfonts::font_files()$family) {
-      #   thisfamily = family
-      #   finst = sysfonts::font_files() %>%
-      #     filter(family==thisfamily) %>%
-      #     group_by(face) %>%
-      #     filter(row_number()==1) %>%
-      #     mutate(face = stringr::str_remove_all(tolower(face),"[^a-z]")) %>%
-      #     mutate(path=paste0("file://localhost",path.expand(file.path(path,file)))) %>%
-      #     select(showtext_name = family,face,path) %>%
-      #     pivot_wider(names_from = face, values_from = path, names_glue = "{face}_url") %>%
-      #     mutate(font_ext = "ttf") %>% as.list()
-      #   showtextdb::font_install(finst)
-      # } else {
-    inst = showtextdb::google_fonts(name = family)
-    showtextdb::font_install(inst)
-    showtextdb::load_showtext_fonts()
-  }
-
-  if (!family %in% c(sysfonts::font_files()$family, showtextdb::font_installed())) {
-    stop(family, " cannot be found in sysfonts")
-  }
-
-  .maybe = function(x) if(x=="") NULL else x
-
-  if (!(family %in% c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)) &
-      (family %in% showtextdb::font_installed())) {
-    systemfonts::register_font(
-      family,
-      plain = system.file("fonts",family,"regular.ttf",package = "showtextdb"),
-      bold = system.file("fonts",family,"bold.ttf",package = "showtextdb") %>% .maybe(),
-      italic = system.file("fonts",family,"italic.ttf",package = "showtextdb") %>% .maybe(),
-      bolditalic = system.file("fonts",family,"bolditalic.ttf",package = "showtextdb") %>% .maybe()
-    )
-  }
-
-  if (!family %in% c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)) {
-    stop(family, " cannot be found in systemfonts")
-  }
-
-  return(family)
-}
-
-#' Check a font exists on the system, or list all fonts available
-#'
-#' Given a font family this checks it si locally available in both the
-#' `showtext` and `systemfonts` subsystems
-#'
-#' @param family an optional list of fonts to check for
-#'
-#' @return a list of available fonts
-#' @export
-#'
 #' @examples
 #' fonts_available(c("Arial","sdfdsfsd"))
 fonts_available = function(family = NULL) {
-  families = base::intersect(
-    c(showtextdb::font_installed(), sysfonts::font_files()$family),
-    c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)
-  )
+  families = c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)
 
   if (is.null(family)) {
     return(sort(unique(families)))
@@ -87,59 +18,60 @@ fonts_available = function(family = NULL) {
   }
 }
 
-.local_font_details = function(family, url=FALSE) {
-  face = path = NULL # remove global binding note
-  thisfamily = family
-  finst = sysfonts::font_files() %>%
-    dplyr::filter(family==thisfamily) %>%
-    dplyr::group_by(face) %>%
-    dplyr::filter(dplyr::row_number()==1) %>%
-    dplyr::mutate(face = stringr::str_remove_all(tolower(face),"[^a-z]"))
-  if (url) {
-    finst = finst %>% dplyr::mutate(path=paste0("file://localhost",path.expand(file.path(path,file))))%>%
-      dplyr::select(showtext_name = family,face,path) %>%
-      tidyr::pivot_wider(names_from = face, values_from = path, names_glue = "{face}_url") %>%
-      dplyr::mutate(font_ext = "ttf") %>%
-      as.list()
-  } else {
-    finst = finst %>% dplyr::mutate(path=path.expand(file.path(path,file))) %>%
-      dplyr::select(family,face,path) %>%
-      tidyr::pivot_wider(names_from = face, values_from = path, names_glue = "{face}") %>%
-      as.list()
-  }
-  return(finst)
-}
-
 #' Ensures a font is available.
 #'
 #' This checks to see if a font exists. If missing it will try and install from google fonts.
 #' If this is not possible it will throw an error.
 #'
-#' @param family a font family name
+#' @param family a font family name or names
+#' @param sub substitue missing fonts?
 #'
 #' @return the font family name if it can be located or an error otherwise
 #' @export
 #'
 #' @examples
 #' check_font("Roboto")
-check_font = function(family) {
-  if (!family %in% showtextdb::font_installed()) {
-    if (family %in% sysfonts::font_files()$family) {
-      finst = .local_font_details(family,url = TRUE)
-      showtextdb::font_install(finst)
-    } else {
-      family = tryCatch({
-        ggrrr::google_font(family)
-      }, error = function(e) stop("Font family not found locally or on Google fonts: ",family," try something from fonts_available()."))
-    }
+check_font = function(family, sub=TRUE) {
+
+  path = NULL
+
+  tmp = register_web_fonts(family)
+  .update_web_font_option(tmp$webfonts)
+  missing = family[family %in% tmp$unmatched]
+
+  if (!sub) {
+    if (length(tmp$unmatched) > 0) stop("missing font family/ies: ",paste0(tmp$unmatched, collapse=","))
+    return(family)
   }
-  showtextdb::load_showtext_fonts()
-  showtext::showtext_auto()
-  return(family)
+
+  paths = sapply(missing, function(x) systemfonts::match_font(x)$path)
+  substitues = dplyr::bind_rows(
+    systemfonts::system_fonts() %>% dplyr::select(path,family),
+    systemfonts::registry_fonts() %>% dplyr::select(path,family)
+  ) %>% dplyr::filter(path %in% paths) %>% dplyr::pull(family)
+
+  if (length(missing) > 0) message("substitute fonts: ",paste0(substitues,collapse=", "), " for ", paste0(missing,collapse=", "))
+
+  return(unique(c(family[!family %in% tmp$unmatched],substitues)))
+
 }
 
-.font_paths = function() {
-  unique(c(sysfonts::font_paths(), system.file("fonts", package="showtextdb")))
+#' Reset any custom webfonts
+#'
+#' @return nothing
+#' @export
+reset_fonts = function() {
+  options("ggrrr.webfonts" = list())
+  systemfonts::clear_registry()
+}
+
+.get_web_font_option = function() {
+  return(getOption("ggrrr.webfonts", default=list()))
+}
+
+.update_web_font_option = function(webfonts) {
+  options("ggrrr.webfonts" = unique(c(.get_web_font_option(), webfonts)))
+  invisible(NULL)
 }
 
 # Version of loadfonts from extrafonts that uses first font file it finds rather than failing if multiple are found
@@ -176,10 +108,10 @@ check_font = function(family) {
 #         (next)()
 #       }
 #       fd <- fontdata[fontdata$FamilyName == family, ]
-#       regular <- head(fd$afmfile[!fd$Bold & !fd$Italic],1)
-#       bold <- head(fd$afmfile[fd$Bold & !fd$Italic],1)
-#       italic <- head(fd$afmfile[!fd$Bold & fd$Italic],1)
-#       bolditalic <- head(fd$afmfile[fd$Bold & fd$Italic],1)
+#       regular <- utils::head(fd$afmfile[!fd$Bold & !fd$Italic],1)
+#       bold <- utils::head(fd$afmfile[fd$Bold & !fd$Italic],1)
+#       italic <- utils::head(fd$afmfile[!fd$Bold & fd$Italic],1)
+#       bolditalic <- utils::head(fd$afmfile[fd$Bold & fd$Italic],1)
 #       if (length(regular) == 0) {
 #         if (!quiet) {
 #           message("No regular (non-bold, non-italic) version of ",
@@ -300,3 +232,187 @@ check_font = function(family) {
 #   }
 #   return(fontdata)
 # }
+
+
+## adapted from showtextdb ----
+
+.esc = function(names) {
+  stringr::str_replace_all(names,"[[:space:]]", "+")
+}
+
+webfont_provider = list(
+  # google = function(fonts) {
+  #   sprintf(
+  #     "https://fonts.googleapis.com/css?family=%s",
+  #     paste0(sprintf(
+  #       "%s:r,b,i,bi", .esc(fonts)
+  #     ),collapse="|")
+  #   )
+  # },
+  google = function(fonts) {
+    sprintf(
+      "https://fonts.googleapis.com/css2?%s",
+      paste0(sprintf(
+        "family=%s:ital,wght@0,400;0,700;1,400;1,700", .esc(fonts)
+      ),collapse="&")
+    )
+  },
+  brick = function(fonts) {
+    sprintf(
+      "https://brick.freetls.fastly.net/%s",
+      paste0(sprintf(
+        "%s:400,400i,700,700i", .esc(fonts)
+      ),collapse="/")
+    )
+  }
+)
+
+# .unquote(c("ok","'ok'","\"ok\""))
+.unquote = function(s) {
+  stringr::str_extract(s, "^('|\")?([^'\"]*)('|\")?$", group = 2)
+}
+
+.style_to_weight = function(style) {
+  dplyr::case_when(
+    stringr::str_detect(tolower(style), stringr::fixed("bold")) ~ "700",
+    stringr::str_detect(tolower(style), stringr::fixed("regular")) ~ "400",
+    stringr::str_detect(tolower(style), stringr::fixed("normal")) ~ "400",
+    stringr::str_detect(tolower(style), stringr::fixed("thin")) ~ "100",
+    stringr::str_detect(tolower(style), stringr::fixed("extra light")) ~ "200",
+    stringr::str_detect(tolower(style), stringr::fixed("light")) ~ "300",
+    stringr::str_detect(tolower(style), stringr::fixed("book")) ~ "350",
+    stringr::str_detect(tolower(style), stringr::fixed("medium")) ~ "500",
+    stringr::str_detect(tolower(style), stringr::fixed("semi bold")) ~ "600",
+    stringr::str_detect(tolower(style), stringr::fixed("extra bold")) ~ "800",
+    stringr::str_detect(tolower(style), stringr::fixed("black")) ~ "900",
+    tolower(style) == "italic" ~ "400",
+    tolower(style) == "oblique" ~ "400",
+    TRUE ~ NA_character_)
+}
+
+.style_to_style = function(style) {
+  dplyr::case_when(
+    stringr::str_detect(tolower(style), stringr::fixed("italic")) ~ "italic",
+    stringr::str_detect(tolower(style), stringr::fixed("oblique")) ~ "italic",
+    TRUE ~ "normal")
+}
+
+#' Find fonts in webfont providers
+#'
+#' Caches, registers and constructs webfont CSS font face directives.
+#'
+#' @param fonts a set of fonts as a character vector
+#' @param services one of `r paste0("'",names(webfont_provider),"'",collapse=", ")`
+#' @param ... not used
+#'
+#' @return a list containing the following:
+#' * webfonts - a list of `svglite::font_face` directives for use in embedding
+#' into svg files using the `svglite::svglite(web_fonts=...)` option.
+#' * matched - a dataframe of fonts found in the services
+#' * unmatched - a vector of fonts not matched online.
+#'
+#' @export
+#'
+#' @examples
+#' tmp = register_web_fonts("Kings")
+#' tmp$webfonts
+#' systemfonts::registry_fonts()
+register_web_fonts = function(fonts, services = names(webfont_provider), ...) {
+  name = path = .  = NULL
+  services = match.arg(services, several.ok = TRUE)
+  deferred = fonts
+  found = tibble::tibble(name = character(),
+    family = character(), weight = character(), style = character(), url = character(),
+    format=character(), unicode_range=character(), face = character()
+  )
+  for (service in services) {
+    request_url = webfont_provider[[service]](deferred)
+    res = tryCatch({
+      ret = suppressMessages(suppressWarnings(cache_download(request_url, .stale = 7, quiet=TRUE)))
+      res = readr::read_file(ret)
+    }, error=function(e) "" )
+    matched = stringr::str_detect(res, sapply(deferred, sprintf, fmt="@font-face.*\\{[^\\}]*font-family:\\s?'%s'"))
+
+    info = stringr::str_match_all(res, "@font-face\\s?\\{([^\\}]+)\\}")[[1]][,2]
+    info = info[info != ""]
+    family = stringr::str_extract(info, "font-family:[[:space:]]*([^:;]+);",group=1) %>% .unquote()
+
+    supplied_name = names(fonts)[unlist(sapply(family, match, deferred[matched]))]
+    deferred = deferred[!matched]
+
+    style = stringr::str_extract(info, "font-style:[[:space:]]*([^:;]+);", group=1)
+    unicode_range = stringr::str_extract(info, "unicode-range:[[:space:]]*([^:;]+);", group=1)
+    weight = stringr::str_extract(info, "font-weight:[[:space:]]*([[:digit:]]+);", group=1)
+    face = paste(style, weight, sep = "")
+    face[face == "normal400"] = "plain"
+    face[face == "normal700"] = "bold"
+    face[face == "italic400"] = "italic"
+    face[face == "italic700"] = "bolditalic"
+    url = stringr::str_extract(info, "url\\(([^\\)]+)\\)", group=1) %>% stringr::str_replace("^//", "https://")
+    format = stringr::str_extract(info, "format\\(([^\\)]+)\\)", group=1) %>% .unquote()
+    format[format == "truetype"] = "ttf"
+    format[format == "opentype"] = "otf"
+    format[format == "embedded-opentype"] = "eof"
+    local = stringr::str_extract(info, "local\\(([^\\)]+)\\).*", group=1) %>% .unquote()
+
+    if(is.null(supplied_name)) supplied_name = family # ifelse(is.na(local), family, local)
+
+    # format = gsub(".*format\\(([^()]+)\\).*", "\\1", info)
+    found = found %>% dplyr::bind_rows(
+      tibble::tibble(
+        name = supplied_name, family = family, weight = weight, style=style, url = url, format=format,
+        unicode_range = unicode_range, face=face
+      )
+    )
+    if (length(deferred) == 0) break;
+  }
+  unmatched = deferred[!deferred %in% systemfonts::system_fonts()$family]
+
+  if (nrow(found) > 0) {
+    sysf = systemfonts::system_fonts() %>%
+      dplyr::mutate(
+        weight = .style_to_weight(style),
+        style = .style_to_style(style)
+      )
+    # download and cache
+    present = found %>% dplyr::select(-name) %>% dplyr::inner_join(sysf %>% dplyr::select(name,family,path,style,weight), by=c("family","style","weight"))
+    missing = found %>%
+      dplyr::anti_join(present, by="url") %>%
+      dplyr::mutate(
+        path = suppressMessages(purrr::map_chr(url, cache_download, quiet=TRUE, .progress = TRUE))
+      )
+    # register in systemfonts
+    registered = missing %>% dplyr::select(name,face,path) %>%
+      tidyr::pivot_wider(names_from = face, values_from = path) %>%
+      dplyr::mutate(
+        dplyr::across(tidyselect::everything(), ~ ifelse(is.na(.x), plain, .x) )
+      ) %>%
+      dplyr::mutate(
+        err = purrr::pmap_chr(., .f = function(...) {tryCatch(systemfonts::register_font(...) %||% "ok", error = function(e) e$message)})
+      )
+    regf = systemfonts::registry_fonts() %>%
+      dplyr::mutate(
+        weight = .style_to_weight(style),
+        style = .style_to_style(style)
+      )
+    webfonts = dplyr::bind_rows(
+        present,
+        missing %>% dplyr::semi_join(regf, by=c("path"))
+      ) %>%
+      dplyr::select(local = name, family, weight, style, format, url) %>%
+      tidyr::pivot_wider(names_from = format, values_from = url) %>%
+      purrr::pmap(.f = svglite::font_face)
+
+    return(list(
+      webfonts = webfonts,
+      matched = found,
+      unmatched = unmatched
+    ))
+
+  }
+  return(list(
+    webfonts = list(),
+    matched = found,
+    unmatched = unmatched
+  ))
+}

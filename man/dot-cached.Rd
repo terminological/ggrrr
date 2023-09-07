@@ -8,7 +8,7 @@
   .expr,
   ...,
   .nocache = getOption("cache.disable", default = FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = "cached",
   .stale = Inf
 )

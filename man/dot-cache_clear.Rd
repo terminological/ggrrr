@@ -5,7 +5,7 @@
 \title{Clear data from the passthrough cache for complex or long running operations}
 \usage{
 .cache_clear(
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
   interactive = TRUE
 )

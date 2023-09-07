@@ -4,7 +4,7 @@
 \alias{gg_simple_table}
 \title{A simple table as a ggplot patchwork object, no customisation allowed}
 \usage{
-gg_simple_table(df, pts = 8, font = "Roboto", unwrapped = FALSE)
+gg_simple_table(df, pts = 8, font = "sans", unwrapped = FALSE)
 }
 \arguments{
 \item{df}{the dataframe with the table data. Column names will become headings}
@@ -13,7 +13,7 @@ gg_simple_table(df, pts = 8, font = "Roboto", unwrapped = FALSE)
 
 \item{font}{the font family}
 
-\item{unwrapped}{- set this to TRUE if you want to add to a patchwork and use wrap_plots(p,list(table))}
+\item{unwrapped}{- set this to TRUE if you want to add to a patchwork and use patchwork::wrap_plots(p,list(table))}
 }
 \value{
 A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
@@ -22,8 +22,9 @@ A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
 A simple table as a ggplot patchwork object, no customisation allowed
 }
 \examples{
-library(tidyverse)
-gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
+if (FALSE) {
+  gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
+}
 }
 \keyword{graph}
 \keyword{layout}

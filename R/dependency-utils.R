@@ -34,7 +34,7 @@ unstable = function(pkg = "ggrrr", org="terminological") {
 #' @return boolean value
 #' @export
 is_installed = function(packageName) {
-  return(rlang::is_installed(packagename))
+  return(rlang::is_installed(packageName))
   # if (length(packageName)>1) stop("is_installed() can only check for one package at a time")
   # t=requireNamespace(packageName, quietly=TRUE)
   # return(t)
@@ -109,7 +109,7 @@ non_cran = function(name,github,force=FALSE,subdir="",...) {
 #' as.character(fn(as.raw(c(1,2,3))))
 optional_fn = function(pkg, name, alt=function(...) {message("Skipping function call as ",pkg,"::",name," not available")}) {
   if (!rlang::is_installed(pkg)) return(alt)
-  return(getFromNamespace(name, pkg))
+  return(utils::getFromNamespace(name, pkg))
 }
 
 # TODO: unload and reload a package including installation using devtools::install_local or devtools::install_github

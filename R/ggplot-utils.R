@@ -11,8 +11,12 @@
 #' @export
 #'
 #' @examples
-#' library(tidyverse)
-#' ggplot(diamonds,aes(x=carat,y=price,color=color))+geom_point()+gg_tiny_theme()
+#' if (interactive()) {
+#'   ggplot2::ggplot(ggplot2::diamonds,
+#'     ggplot2::aes(x=carat,y=price,color=color))+
+#'     ggplot2::geom_point()+
+#'     gg_tiny_theme()
+#' }
 gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
   font = ggrrr::check_font(font)
   ggplot2::theme_bw(base_size=baseSize)+
@@ -36,7 +40,7 @@ gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
       legend.justification = "left",
       legend.box.just = "left",
       # transparent background
-      # plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
+      # plot.background = ggplot2::element_rect(fill = "transparent", color = NA), # bg of the plot
       plot.background = ggplot2::element_rect(fill = "white", color = NA), # bg of the plot
       plot.tag = ggplot2::element_text(size = baseSize*1.2)
       # position plot annotation closer to plot
@@ -84,12 +88,13 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @param lineSize the default line and shape size in ggplot units
 #' @param fontSize the base font size
 #' @param font the default font name.
+#' @inheritDotParams ggplot2::theme
 #'
 #' @return nothing
 #' @export
-gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto") {
+gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto", ...) {
   font = ggrrr::check_font(font)
-  ggplot2::theme_set(ggrrr::gg_tiny_theme(fontSize, font))
+  ggplot2::theme_set(ggrrr::gg_tiny_theme(fontSize, font)+ggplot2::theme(...))
   ggrrr::gg_set_size_defaults(lineSize,fontSize*0.75,font)
 }
 
@@ -193,9 +198,9 @@ gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.waterm
 #'
 #' @examples
 #' library(tidyverse)
-#' ggplot(diamonds, aes(x=price))+
-#'   geom_density()+
-#'   scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
+#' ggplot2::ggplot(diamonds, ggplot2::aes(x=price))+
+#'   ggplot2::geom_density()+
+#'   ggplot2::scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
 breaks_log1p = function(n=5,base=10) {
   #scales::force_all(n, base)
   n_default = n
@@ -207,7 +212,7 @@ breaks_log1p = function(n=5,base=10) {
 
 #' logit scale
 #'
-#' @description it perform logit scaling with right axis formatting. To not be used directly but with ggplot (e.g. scale_y_continuous(trans = "logit") )
+#' @description it perform logit scaling with right axis formatting. To not be used directly but with ggplot (e.g. ggplot2::scale_y_continuous(trans = "logit") )
 #'
 #' @return A scales object
 #'
@@ -216,10 +221,10 @@ breaks_log1p = function(n=5,base=10) {
 #' library(ggplot2)
 #' library(tibble)
 #'
-#' tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
-#'  ggplot(aes(fold_change , pvalue)) +
-#'  geom_point() +
-#'  scale_y_continuous(trans = "logit")
+#' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
+#'  ggplot2::ggplot(aes(fold_change , pvalue)) +
+#'  ggplot2::geom_point() +
+#'  ggplot2::scale_y_continuous(trans = "logit")
 #'
 #' @export
 logit_trans <- function() {
@@ -244,13 +249,14 @@ logit_trans <- function() {
 #' @param df the dataframe with the table data. Column names will become headings
 #' @param pts text size in points
 #' @param font the font family
-#' @param unwrapped - set this to TRUE if you want to add to a patchwork and use wrap_plots(p,list(table))
+#' @param unwrapped - set this to TRUE if you want to add to a patchwork and use patchwork::wrap_plots(p,list(table))
 #' @return A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.
 #' @examples
-#' library(tidyverse)
-#' gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
-gg_simple_table = function(df, pts=8, font = "Roboto", unwrapped = FALSE) {
-  font = ggrrr::check_font(font)
+#' if (FALSE) {
+#'   gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
+#' }
+gg_simple_table = function(df, pts=8, font = "sans", unwrapped = FALSE) {
+  font = ggrrr::check_font(font, sub=TRUE)
   p = suppressWarnings(suppressMessages({
     ttheme = gridExtra::ttheme_minimal(
       base_size = pts, base_colour = "black", base_family = font,
@@ -385,7 +391,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
       x=xpos,y=ypos,vjust=vjust,hjust=hjust,label=label,
       # TODO: for some massivley obscure reason this does not work.
       # This is despite it ought to work and
-      # ggplot(mtcars, aes(x=wt, y=mpg, label=rownames(mtcars))) + geom_label(aes(family=c("Times New Roman", "Roboto")[am+1],fontface=c("bold", "italic")[am+1]))
+      # ggplot2::ggplot(mtcars, ggplot2::aes(x=wt, y=mpg, label=rownames(mtcars))) + ggplot2::geom_label(aes(family=c("Times New Roman", "Roboto")[am+1],fontface=c("bold", "italic")[am+1]))
       # Does do what it is supposed to
       family=fontName,fontface=fontFace,
       size=ggrrr::gg_label_size(fontSize)*scale), # Shrink the label to ensure the table fits the max table width
@@ -410,7 +416,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
     ggplot2::coord_fixed(ratio = table_height/table_width,xlim = c(0,1),ylim = c(0,1))+
     ggplot2::geom_segment(data = borders, mapping=ggplot2::aes(x=x,y=y,xend=xend,yend=yend,size=size), inherit.aes = FALSE)+
     ggplot2::scale_size_identity()+
-    # scale_discrete_identity(c("family","fontface"))+
+    # ggplot2::scale_discrete_identity(c("family","fontface"))+
     ggplot2::scale_x_continuous(expand = c(0,0))+
     ggplot2::scale_y_continuous(expand = c(0,0))
 
@@ -419,6 +425,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
   return(g)
 }
 
+# Standard sizes ----
 
 #' Standard image and paper sizes
 #'
@@ -444,6 +451,122 @@ std_size = list(
 
 # Outputs ----
 
+#' Find Google Chrome or Chromium in the system
+#'
+#' On Windows, this function tries to find Chrome from the registry. On macOS,
+#' it returns a hard-coded path of Chrome under \file{/Applications}. On Linux,
+#' it searches for \command{chromium-browser} and \command{google-chrome} from
+#' the system's \var{PATH} variable.
+#' @return A character string.
+.find_chrome = function() {
+  switch(
+    .Platform$OS.type,
+    windows = {
+      res = tryCatch({
+        unlist(utils::readRegistry('ChromeHTML\\shell\\open\\command', 'HCR'))
+      }, error = function(e) '')
+      res = unlist(strsplit(res, '"'))
+      res = utils::head(res[file.exists(res)], 1)
+      if (length(res) != 1) stop(
+        'Cannot find Google Chrome automatically from the Windows Registry Hive. ',
+        "Please pass the full path of chrome.exe to the 'browser' argument ",
+        "or to the environment variable 'PAGEDOWN_CHROME'."
+      )
+      res
+    },
+    unix = if (unname(Sys.info()["sysname"] == "Darwin")) {
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    } else {
+      for (i in c('google-chrome', 'chromium-browser', 'chromium', 'google-chrome-stable')) {
+        if ((res <- Sys.which(i)) != '') break
+      }
+      if (res == '') stop('Cannot find Chromium or Google Chrome')
+      res
+    },
+    stop('Your platform is not supported')
+  )
+}
+
+# tmpbad = tempfile(fileext = ".svg")
+# tmpout = tempfile(fileext = ".pdf")
+# readr::write_file("sdkljfsdlkfjsdl", tmpbad)
+# .print_svg_with_chrome(tmpbad, tmpout)
+.print_svg_with_chrome = function(svg_file, pdf_file, chrome_binary = getOption("ggrrr.chrome",default = .find_chrome())) {
+  if (!fs::file_exists(svg_file)) stop("SVG file does not exist: ",svg_file)
+  tmp_html = tempfile(fileext = ".html")
+  html=sprintf("
+<html>
+  <head>
+    <style>
+body {
+  margin: 0;
+}
+    </style>
+    <script>
+function init() {
+  const element = document.getElementById('targetsvg');
+  const positionInfo = element.getBoundingClientRect();
+  const height = positionInfo.height+1;
+  const width = positionInfo.width+1;
+  const style = document.createElement('style');
+  style.innerHTML = `@page {margin: 0; size: ${width}px ${height}px}`;
+  document.head.appendChild(style);
+}
+window.onload = init;
+    </script>
+  </head>
+  <body>
+    <img id='targetsvg' src='%s'>
+  </body>
+</html>
+",svg_file)
+  readr::write_file(html, tmp_html)
+  out = system2(
+    chrome_binary, args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdf_file),tmp_html),
+    stdout = NULL, stderr = NULL)
+  if (out != 0) {
+    stop("Unable to process SVG file: ",svg_file)
+  }
+}
+
+.print_html_with_chrome = function(html_fragment, pdf_file, css = list(), chrome_binary = getOption("ggrrr.chrome",default = .find_chrome())) {
+  tmp_html = tempfile(fileext = ".html")
+  style_dec = ""
+  if (length(css) > 0) style_dec = sprintf("<style>%s</style>",paste0(css, collapse = ""))
+  html=sprintf("
+<html>
+  <head>
+    %s
+    <style>
+body {
+  margin: 0;
+}
+    </style>
+    <script>
+function init() {
+  const element = document.getElementById('body-content');
+  const positionInfo = element.getBoundingClientRect();
+  const height = positionInfo.height+1;
+  const width = positionInfo.width+1;
+  const style = document.createElement('style');
+  style.innerHTML = `@page {margin: 0; size: ${width}px ${height}px}`;
+  document.head.appendChild(style);
+}
+window.onload = init;
+    </script>
+  </head>
+  <body><div id='body-content'>%s</div></body>
+</html>
+",style_dec,html_fragment)
+  readr::write_file(html, tmp_html)
+  out = system2(
+    chrome_binary, args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdf_file),tmp_html),
+    stdout = NULL, stderr = NULL)
+  if (out != 0) {
+    stop("Unable to process html fragment")
+  }
+}
+
 #' Save a plot to multiple formats
 #'
 #' Saves a ggplot object to disk at a set physical size. Allows specific maximum dimensions
@@ -452,13 +575,23 @@ std_size = list(
 #' publication or png for inclusion in documents, and makes sure that the outputs are
 #' near identical.
 #'
+#' For maximum cross platform reproducibility we are using the combination of
+#' `systemfonts` for font management, `svglite` to render the canonical output
+#' `rsvg` to convert that to pdf, and `pdftools` to convert pdf to bitmap formats.
+#' In some situations `rsvg` fails in which case we fall back to rendering in a
+#' headless chrome instance. This rather complicated pipeline ensures modern
+#' webfont support.
+#'
 #' @param filename base of target filename (excluding extension).
 #' @param plot a GGplot object or none
 #' @param size a standard size see `std_size`
 #' @param maxWidth maximum width in inches
 #' @param maxHeight maximum height in inches
 #' @param aspectRatio defaults to maxWidth/maxHeight
-#' @param formats some of png, pdf, Rdata
+#' @param formats some of svg, png, pdf, Rdata, ...
+#' @param web_fonts (optional) a list of `svglite::font_face` declarations.
+#'  populated automatically by `check_font()`
+#' @inheritDotParams svglite::svglite
 #'
 #' @keywords plot
 #' @return the output is an sensible default object that can be displayed given the context it is called in,
@@ -467,29 +600,34 @@ std_size = list(
 #' @export
 #' @examples
 #' library(tidyverse)
-#' p = ggplot(mtcars, aes(mpg, wt, colour=as.factor(cyl))) + geom_point()
+#' p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) + ggplot2::geom_point()
 #' p %>% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
 gg_save_as = function(plot,filename = tempfile(),
                       size = std_size$half, maxWidth = size$width, maxHeight = size$height,
                       aspectRatio=maxWidth/maxHeight,
-                      formats = c("png","pdf","Rdata")) {
+                      formats = getOption("ggrrr.formats",default = c("svg","png","pdf")),
+                      web_fonts=.get_web_font_option(),
+                      ...) {
 
 
-  if ("formatted.table"==class(plot)[[1]]) {
+  if ("formatted.table" %in% class(plot)) {
     # override width specificially for formatted tables
     maxWidth = attr(plot,"target.width")
   }
 
+  # TODO: https://svglite.r-lib.org/articles/fonts.html
+  # https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/#font-support
+
   # plot comes with an aspect ratio which is expressed as height/width
   # this is generally true if the coords_fixed (?coords_sf) has been used.
-  plotAr = tryCatch({plot$coordinates$ratio}, error = function(e) NULL)
-  if(!is.null(plotAr)) {
-    aspectRatio = 1/plotAr
-    if (maxWidth/aspectRatio > maxHeight) maxWidth = maxHeight*aspectRatio
-    if (maxHeight*aspectRatio > maxWidth) maxHeight = maxWidth/aspectRatio
-  }
-
-  # else just better to let ggplot lay it out
+  # this works but doesn;t adjust if there is a legend.
+  # plotAr = tryCatch({plot$coordinates$ratio}, error = function(e) NULL)
+  # if(!is.null(plotAr)) {
+  #   aspectRatio = 1/plotAr
+  #   if (maxWidth/aspectRatio > maxHeight) maxWidth = maxHeight*aspectRatio
+  #   if (maxHeight*aspectRatio > maxWidth) maxHeight = maxWidth/aspectRatio
+  # }
+  # just better to let ggplot lay it out
 
   dir = fs::path_dir(filename)
   if(dir==".") stop("directory not given. filename must be a full path (use here::here function).")
@@ -498,80 +636,137 @@ gg_save_as = function(plot,filename = tempfile(),
   filename = fs::path_ext_remove(filename)
   withExt = function(extn) {fs::path_ext_set(filename,extn)}
 
-  if ("Rdata" %in% formats) saveRDS(plot, withExt("Rdata"))
-
-  if ("pdf" %in% formats) {
-    if (!capabilities()["cairo"] ) {
-
-      ggplot2::ggsave(
-        withExt("pdf"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), bg = "transparent");
-      try(
-        grDevices::embedFonts(withExt("pdf")),
-        silent=TRUE
-      );
-
-    } else {
-
-      ggplot2::ggsave(
-        withExt("pdf"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), bg = "transparent",device = cairo_pdf);
-      try(
-        grDevices::embedFonts(withExt("pdf")),
-        silent=TRUE
-      );
-
-      # Cairo::CairoPDF(
-      #   file = withExt("pdf"),
-      #   width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), bg = "transparent")
-      # print(plot)
-      # dev.off()
-
-
-    }
-
+  if ("Rdata" %in% formats) {
+    saveRDS(plot, withExt("Rdata"))
+    out$rds = withExt("Rdata")
   }
 
-  if ("png" %in% formats) {
-    op = showtext::showtext_opts(dpi=300)
-    if (!capabilities()["cairo"] ) {
-      ggplot2::ggsave(
-        withExt("png"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent", device = grDevices::png, res=300);
-    } else {
-      ggplot2::ggsave(
-        withExt("png"),
-        plot, width = min(maxWidth,maxHeight*aspectRatio), height = min(maxHeight,maxWidth/aspectRatio), units="in", dpi=300, bg = "transparent", device = grDevices::png, type="cairo", res=300);
-      # Cairo::CairoPNG(
-      #   file = withExt("png"),
-      #   width = min(maxWidth,maxHeight*aspectRatio)*300, height = min(maxHeight,maxWidth/aspectRatio)*300, dpi=300, bg = "transparent")
-      # print(plot)
-      # dev.off()
-    }
-    showtext::showtext_opts(op)
-  }
+  out = list()
+  out$plot = plot
+  out$width = min(maxWidth,maxHeight*aspectRatio)
+  out$height = min(maxHeight,maxWidth/aspectRatio)
 
-  if (.is_knitting()) {
-    hidefigs = getOption("hide.figures",FALSE)
-    if (hidefigs) {
-      return(knitr::asis_output(paste0("INSERT FIGURE HERE: ",fs::path_file(filename),"\n\n")))
-    } else {
-      if (.is_html_output() & "png" %in% formats) {
-        return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = fs::path_ext_set(filename,"png"), mime = "image/png"))))
-      } else {
-        return(knitr::include_graphics(path = fs::path_ext_set(filename,formats[1]),auto_pdf = TRUE))
-      }
-    }
+  if ("svg" %in% formats) {
+    svg_loc = withExt("svg")
+    out$svg = withExt("svg")
   } else {
-    if ("png" %in% formats) {
-      if (.is_html_output()) {
-        return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = fs::path_ext_set(filename,"png"), mime = "image/png"))))
-      } else {
-        return(knitr::include_graphics(path = fs::path_ext_set(filename,"png"),auto_pdf = TRUE, dpi=300))
-      }
+    svg_loc = tempfile(fileext = ".svg")
+  }
+
+  ggplot2::ggsave(
+    svg_loc,
+    plot,
+    width = out$width,
+    height = out$height,
+    bg = "transparent", device = svglite::svglite, web_fonts=web_fonts, ...);
+
+  if (any(c("pdf","jpg","png","tiff") %in% formats)) {
+    if ("pdf" %in% formats) {
+      pdf_loc = withExt("pdf")
+      out$pdf = withExt("pdf")
     } else {
-      return(plot)
+      pdf_loc = tempfile(fileext = ".pdf")
     }
+
+    tryCatch(
+      rsvg::rsvg_pdf(svg_loc, pdf_loc),
+      error = function(e) .print_svg_with_chrome(svg_loc, pdf_loc)
+    )
+
+    if ("png" %in% formats) {
+      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
+      out$png = withExt("png")
+    }
+
+    if ("jpg" %in% formats) {
+      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
+      out$jpg = withExt("jpg")
+    }
+
+    if ("tiff" %in% formats) {
+      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
+      out$tiff = withExt("tiff")
+    }
+
+  }
+
+  return(structure(out, class="rendered_plot"))
+}
+
+#' Print a rendered_plot object
+#'
+#' @param x the rendered_plot
+#' @param ... not used
+#'
+#' @return nothing - used for side effects
+#' @export
+print.rendered_plot = function(x,...) {
+
+  if (interactive()) {
+
+    # open the pdf or png in a viewer to check dimensions
+    v = getOption("viewer", utils::browseURL)
+    if (!is.null(x$pdf)) v(x$pdf)
+    else if (!is.null(x$png)) v(x$png)
+    else if (!is.null(x$svg)) v(x$svg)
+    else {
+      # this will generally open in a viewer and will output pdf by default
+      # grDevices::dev.new(width=x$width,height=x$height,unit="in",noRStudioGD = TRUE)
+      print(x$plot)
+    }
+
+    if (.is_running_in_chunk()) {
+      # this runs when a
+      grDevices::dev.new(width=x$width,height=x$height,unit="in")
+      print(x$plot)
+    }
+
+  } else {
+    print(as.character(x))
+  }
+
+
+  # if (.is_running_in_chunk()) {
+    # grDevices::dev.new(width=x$width,height=x$height,unit="in",noRStudioGD = TRUE)
+    # print(x$plot)
+  # }
+}
+
+#' Convert a rendered_plot object to a character
+#'
+#' @param x the rendered_plot
+#' @param ... not used
+#'
+#' @return a named vector
+#' @export
+as.character.rendered_plot = function(x, ...) {
+  tmp = x[!names(x) %in% c("plot","width","height")]
+  unlist(tmp)
+}
+
+#' Knit a rendered_plot object
+#'
+#' @param x the rendered_plot
+#' @param ... not used
+#'
+#' @importFrom knitr knit_print
+#'
+#' @return nothing - used for side effects
+#' @export
+knit_print.rendered_plot  = function(x,...) {
+  # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
+  if (.is_html_output()) {
+    if (!is.null(x$png)) {
+      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
+      # return(knitr::include_graphics(path = x$png, dpi=300))
+    } else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
+    else return(knitr::knit_print(x$plot, ...))
+    # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
+  } else if (.is_latex_output()) {
+    if (!is.null(x$pdf)) return(knitr::include_graphics(path = x$pdf))
+    else if (!is.null(x$png)) return(knitr::include_graphics(path = x$png,auto_pdf = TRUE, dpi=300))
+    else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
+    else return(knitr::knit_print(x$plot, ...))
   }
 }
 
@@ -586,12 +781,12 @@ gg_save_as = function(plot,filename = tempfile(),
 # #extrafont::loadfonts()
 #
 # set.seed(123)
-# hist(rnorm(1000), breaks = 30, col = "steelblue", border = "white",
+# graphics::hist(stats::rnorm(1000), breaks = 30, col = "steelblue", border = "white",
 #      main = "", xlab = "", ylab = "")
-# title("Histogram of Normal Random Numbers \u00B2 \u2074 \u2081 \u00B1 \u2463", family = "Roboto", cex.main = 2)
-# # title(ylab = "Frequency₂", family = "Arial", cex.lab = 2)
-# title(ylab = latex2exp::TeX("FiO_2"), family = "Arial", cex.lab = 2)
-# text(2, 70, latex2exp::TeX("FiO_2 = 1000 \u2014 \u2074 \u2082 \u00B1"), family = "bell", cex = 2.5)
+# rlang::title("Histogram of Normal Random Numbers \u00B2 \u2074 \u2081 \u00B1 \u2463", family = "Roboto", cex.main = 2)
+# # rlang::title(ylab = "Frequency₂", family = "Arial", cex.lab = 2)
+# rlang::title(ylab = latex2exp::TeX("FiO_2"), family = "Arial", cex.lab = 2)
+# graphics::text(2, 70, latex2exp::TeX("FiO_2 = 1000 \u2014 \u2074 \u2082 \u00B1"), family = "bell", cex = 2.5)
 
 # These work when using extrafonts, but there are other issues with extrafonts in compatibility with
 # certain google ttf I think. extrafonts also only supports pdf.
@@ -667,7 +862,7 @@ gg_save_as = function(plot,filename = tempfile(),
 #'
 #' @param .palette the palette for the major groupings, either as a function e.g. 'scales::viridis_pal', or as a manual set of colors e.g. 'c("#FF0000","#00FF00","#0000FF")'. if a function can be either discrete or continuous palette.
 #' @param subclasses a vector containing the count of the subcategories, e.g. c(2,3,4) defines 3 major categories and a total of 9 sub-categories
-#' @param ... additional options to be passed to the major palette function, e.g. 'option="magma"', or to 'discrete_scale()', e.g. 'alpha=0.5'
+#' @param ... additional options to be passed to the major palette function, e.g. 'option="magma"', or to 'ggplot2::discrete_scale()', e.g. 'alpha=0.5'
 #' @param undefined If the number of sub-categories in the data is longer than defined in 'subclasses', the extra categories are assumed to be an set of "other" categories, which will be coloured using this base colour
 #' @param lighten The factor by which to lighten the colour at each step of the subgrouping. If left blank this will calculate a fraction based on the number of levels of the subgroup.
 #' Otherwise if, e.g. 0.5 the first sub category will be the full saturation, the second 0.5 saturation, the third 0.25 saturation, the fourth 0.125 and so on.
@@ -681,25 +876,25 @@ gg_save_as = function(plot,filename = tempfile(),
 #' library(tidyverse)
 #'
 #' # prep some data:
-#' data = diamonds %>%
-#'   mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
-#'   group_by(color,cut,color_cut) %>%
-#'   count() %>%
-#'   ungroup() %>%
-#'   mutate(color_cut = ordered(color_cut))
+#' data = ggplot2::diamonds %>%
+#'   dplyr::mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
+#'   dplyr::group_by(color,cut,color_cut) %>%
+#'   dplyr::count() %>%
+#'   dplyr::ungroup() %>%
+#'   dplyr::mutate(color_cut = ordered(color_cut))
 #'
 #' # work out the number of subgroups for each group:
 #' subgroups = data %>%
-#'   select(color,cut) %>%
-#'   distinct %>%
-#'   group_by(color) %>%
-#'   count() %>%
-#'   pull(n)
+#'   dplyr::select(color,cut) %>%
+#'   dplyr::distinct() %>%
+#'   dplyr::group_by(color) %>%
+#'   dplyr::count() %>%
+#'   dplyr::pull(n)
 #'
 #' # plot as a horizontal stacked bar chart using color brewer as the main
 #' # colour axis. N.b. having enough different colours here is important
-#' ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
-#'   geom_bar(stat="identity",orientation = "y")+
+#' ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
+#'   ggplot2::geom_bar(stat="identity",orientation = "y")+
 #'   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
 #'     palette="Accent", subclasses = subgroups)+
 #'   ggrrr::scale_colour_subtype(subclasses=subgroups)+
@@ -723,7 +918,7 @@ scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", l
 #' @param subclass_colour the colour for sub group divisions
 #' @param na.value missing value colour
 #' @param aesthetics this only really makes sense for color scales.
-#' @param ... passed on to discrete_scale()
+#' @param ... passed on to ggplot2::discrete_scale()
 #'
 #' @return a ggplot scale
 #' @export
@@ -732,25 +927,25 @@ scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", l
 #' library(tidyverse)
 #'
 #' # prep some data:
-#' data = diamonds %>%
-#'   mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
-#'   group_by(color,cut,color_cut) %>%
-#'   count() %>%
-#'   ungroup() %>%
-#'   mutate(color_cut = ordered(color_cut))
+#' data = ggplot2::diamonds %>%
+#'   dplyr::mutate(color_cut = sprintf("%s (%s)",color,cut)) %>%
+#'   dplyr::group_by(color,cut,color_cut) %>%
+#'   dplyr::count() %>%
+#'   dplyr::ungroup() %>%
+#'   dplyr::mutate(color_cut = ordered(color_cut))
 #'
 #' # work out the number of subgroups for each group:
 #' subgroups = data %>%
-#'   select(color,cut) %>%
-#'   distinct %>%
-#'   group_by(color) %>%
-#'   count() %>%
-#'   pull(n)
+#'   dplyr::select(color,cut) %>%
+#'   dplyr::distinct() %>%
+#'   dplyr::group_by(color) %>%
+#'   dplyr::count() %>%
+#'   dplyr::pull(n)
 #'
 #' # plot as a horizontal stacked bar chart using color brewer as the main
 #' # colour axis. N.b. having enough different colours here is important
-#' ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
-#'   geom_bar(stat="identity",orientation = "y")+
+#' ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
+#'   ggplot2::geom_bar(stat="identity",orientation = "y")+
 #'   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
 #'     palette="Accent", subclasses = subgroups)+
 #'   ggrrr::scale_colour_subtype(subclasses=subgroups)+

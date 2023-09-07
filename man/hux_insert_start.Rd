@@ -12,6 +12,8 @@ hux_insert_start(hux, ..., fill = "", colspan = 1)
 \item{...}{stuff to insert}
 
 \item{fill}{padding}
+
+\item{colspan}{how far to span first inserted cell?}
 }
 \value{
 a huxtable with row inserted at start in the same format

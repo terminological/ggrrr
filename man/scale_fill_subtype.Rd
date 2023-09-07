@@ -19,7 +19,7 @@ scale_fill_subtype(
 
 \item{subclasses}{a vector containing the count of the subcategories, e.g. c(2,3,4) defines 3 major categories and a total of 9 sub-categories}
 
-\item{...}{additional options to be passed to the major palette function, e.g. 'option="magma"', or to 'discrete_scale()', e.g. 'alpha=0.5'}
+\item{...}{additional options to be passed to the major palette function, e.g. 'option="magma"', or to 'ggplot2::discrete_scale()', e.g. 'alpha=0.5'}
 
 \item{undefined}{If the number of sub-categories in the data is longer than defined in 'subclasses', the extra categories are assumed to be an set of "other" categories, which will be coloured using this base colour}
 
@@ -43,25 +43,25 @@ lightened for each of the subcategories.
 library(tidyverse)
 
 # prep some data:
-data = diamonds \%>\%
-  mutate(color_cut = sprintf("\%s (\%s)",color,cut)) \%>\%
-  group_by(color,cut,color_cut) \%>\%
-  count() \%>\%
-  ungroup() \%>\%
-  mutate(color_cut = ordered(color_cut))
+data = ggplot2::diamonds \%>\%
+  dplyr::mutate(color_cut = sprintf("\%s (\%s)",color,cut)) \%>\%
+  dplyr::group_by(color,cut,color_cut) \%>\%
+  dplyr::count() \%>\%
+  dplyr::ungroup() \%>\%
+  dplyr::mutate(color_cut = ordered(color_cut))
 
 # work out the number of subgroups for each group:
 subgroups = data \%>\%
-  select(color,cut) \%>\%
-  distinct \%>\%
-  group_by(color) \%>\%
-  count() \%>\%
-  pull(n)
+  dplyr::select(color,cut) \%>\%
+  dplyr::distinct() \%>\%
+  dplyr::group_by(color) \%>\%
+  dplyr::count() \%>\%
+  dplyr::pull(n)
 
 # plot as a horizontal stacked bar chart using color brewer as the main
 # colour axis. N.b. having enough different colours here is important
-ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
-  geom_bar(stat="identity",orientation = "y")+
+ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
+  ggplot2::geom_bar(stat="identity",orientation = "y")+
   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
     palette="Accent", subclasses = subgroups)+
   ggrrr::scale_colour_subtype(subclasses=subgroups)+

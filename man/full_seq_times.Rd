@@ -30,6 +30,7 @@ a complete set of timepoints on the same scale as the original but with potentia
 Generate a full regular timepoint sequence
 }
 \examples{
-times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
-tmp = full_seq_times(times)
+# DEPRECATED
+# times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
+# tmp = full_seq_times(times)
 }

@@ -4,6 +4,7 @@
 
 # .check_font("Helvetica")
 .check_font = function(family) {
+  path = NULL
   match = systemfonts::match_font(family)
   family2 = systemfonts::system_fonts() %>% dplyr::filter(path == match$path) %>% dplyr::pull(family) %>% unique()
   if(length(family2) == 0) stop("No suitable font substitute for: ",family)
@@ -126,7 +127,7 @@
 # Convert a dataframe to a huxtable with nested rows and columns.
 .hux_tidy = function(tidyDf, rowGroupVars, colGroupVars, missing="\u2014", na="\u2014", displayRedundantColumnNames = FALSE, ...) {
 
-  name = .y = .x = value = rows = NULL  # remove global binding note
+  name = .y = .x = value = rows = .order = NULL  # remove global binding note
   rowGroupVars = .as_symbol_list(rowGroupVars)
   colGroupVars = .as_symbol_list(colGroupVars)
 
@@ -288,3 +289,20 @@
   t2[headers,col] = ""
   return(t2)
 }
+
+
+
+# # TODO: a knitr engine for a long format table
+# # Probably needs a longformat -> huxtable converter also.
+# .knitr_engine = function(options) {
+#   content = options$code
+#   # parse content into data frame
+#   #
+#   #
+#   out = "whatever output"
+#   # this is for text output... how to return a hux object and have it
+#   # rendered by knitr?
+#   knitr::engine_output(options, content, out)
+# }
+#
+# knitr::knit_engines$set(tidy_table = .knitr_engine)

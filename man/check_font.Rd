@@ -4,10 +4,12 @@
 \alias{check_font}
 \title{Ensures a font is available.}
 \usage{
-check_font(family)
+check_font(family, sub = TRUE)
 }
 \arguments{
-\item{family}{a font family name}
+\item{family}{a font family name or names}
+
+\item{sub}{substitue missing fonts?}
 }
 \value{
 the font family name if it can be located or an error otherwise

@@ -4,7 +4,7 @@
 \alias{intersecting_group_by}
 \title{Create a dataframe with groups mathing a range of predicates}
 \usage{
-intersecting_group_by(.data, ...)
+intersecting_group_by(.data, ..., .colname)
 }
 \arguments{
 \item{.data}{a data frame}

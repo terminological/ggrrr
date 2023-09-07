@@ -18,7 +18,7 @@ makes sure it is reused."><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ makes sure it is reused.</p>
 <span>  <span class="va">url</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .nocache <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"cache.disable"</span>, default <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  .cache <span class="op">=</span> <span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageName.html" class="external-link">packageName</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  .cache <span class="op">=</span> <span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/packageName.html" class="external-link">packageName</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  .stale <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  .extn <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -97,7 +97,45 @@ makes sure it is reused.</p>
 
 
 <dt>...</dt>
-<dd><p>ignored</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">utils::download.file</a></code></p><dl><dt><code>destfile</code></dt>
+<dd><p>a character string (or vector, see the <code>url</code>
+    argument) with the file path where the downloaded file is to be
+    saved.  Tilde-expansion is performed.</p></dd>
+
+    <dt><code>method</code></dt>
+<dd><p>Method to be used for downloading files.  Current
+    download methods are <code>"internal"</code>, <code>"libcurl"</code>,
+    <code>"wget"</code>, <code>"curl"</code> and <code>"wininet"</code> (Windows
+    only), and there is a value <code>"auto"</code>: see ‘Details’ and
+    ‘Note’.</p>
+<p>The method can also be set through the option
+    <code>"download.file.method"</code>: see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a>()</code>.</p></dd>
+
+    <dt><code>quiet</code></dt>
+<dd><p>If <code>TRUE</code>, suppress status messages (if any), and
+    the progress bar.</p></dd>
+
+    <dt><code>mode</code></dt>
+<dd><p>character.  The mode with which to write the file.  Useful
+    values are <code>"w"</code>, <code>"wb"</code> (binary), <code>"a"</code> (append) and
+    <code>"ab"</code>.  Not used for methods <code>"wget"</code> and <code>"curl"</code>.
+    See also ‘Details’, notably about using <code>"wb"</code> for Windows.</p></dd>
+
+    <dt><code>cacheOK</code></dt>
+<dd><p>logical.  Is a server-side cached value acceptable?</p></dd>
+
+    <dt><code>extra</code></dt>
+<dd><p>character vector of additional command-line arguments for
+    the <code>"wget"</code> and <code>"curl"</code> methods.</p></dd>
+
+    <dt><code>headers</code></dt>
+<dd><p>named character vector of additional HTTP headers to
+    use in HTTP[S] requests.  It is ignored for non-HTTP[S] URLs.  The
+    <code>User-Agent</code> header taken from the <code>HTTPUserAgent</code> option
+    (see <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></code>) is automatically used as the first header.</p></dd>
+
+  
+</dl></dd>
 
 
 <dt>.nocache</dt>
@@ -135,7 +173,7 @@ makes sure it is reused.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

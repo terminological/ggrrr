@@ -24,6 +24,7 @@ a sequence of numeric time points as the number of periods since day zero
 Using a day_zero and a unit specification or a full sequence of dates (see 'full_seq_dates()')
 }
 \examples{
-times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
-dates = time_to_date(times)
+# DEPRECATED
+# times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
+# dates = time_to_date(times)
 }

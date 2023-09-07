@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9017
+Version: 0.0.0.9018
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -40,28 +40,27 @@ Imports:
     rstudioapi,
     stringr,
     tidyselect,
-    usethis,
-    yaml,
-    zip,
-    sysfonts,
     systemfonts,
-    showtext,
-    base64enc,
     scales,
-    showtextdb,
     functional,
     colorspace,
-    lubridate
+    svglite,
+    pdftools,
+    rsvg,
+    utils,
+    stats,
+    graphics,
+    grDevices,
+    knitr,
+    base64enc
 Suggests: 
     tidyverse,
     rmarkdown,
-    knitr,
     gt,
     rJava,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
-URL: https://terminological.github.io/ggrrr/index.html,
-	https://github.com/terminological/ggrrr
+URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr
 BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3

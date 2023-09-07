@@ -24,7 +24,7 @@ scale_colour_subtype(
 
 \item{aesthetics}{this only really makes sense for color scales.}
 
-\item{...}{passed on to discrete_scale()}
+\item{...}{passed on to ggplot2::discrete_scale()}
 }
 \value{
 a ggplot scale
@@ -36,25 +36,25 @@ This is intended to combine with 'scale_fill_subtype' when we want to divide maj
 library(tidyverse)
 
 # prep some data:
-data = diamonds \%>\%
-  mutate(color_cut = sprintf("\%s (\%s)",color,cut)) \%>\%
-  group_by(color,cut,color_cut) \%>\%
-  count() \%>\%
-  ungroup() \%>\%
-  mutate(color_cut = ordered(color_cut))
+data = ggplot2::diamonds \%>\%
+  dplyr::mutate(color_cut = sprintf("\%s (\%s)",color,cut)) \%>\%
+  dplyr::group_by(color,cut,color_cut) \%>\%
+  dplyr::count() \%>\%
+  dplyr::ungroup() \%>\%
+  dplyr::mutate(color_cut = ordered(color_cut))
 
 # work out the number of subgroups for each group:
 subgroups = data \%>\%
-  select(color,cut) \%>\%
-  distinct \%>\%
-  group_by(color) \%>\%
-  count() \%>\%
-  pull(n)
+  dplyr::select(color,cut) \%>\%
+  dplyr::distinct() \%>\%
+  dplyr::group_by(color) \%>\%
+  dplyr::count() \%>\%
+  dplyr::pull(n)
 
 # plot as a horizontal stacked bar chart using color brewer as the main
 # colour axis. N.b. having enough different colours here is important
-ggplot(data, aes(y=1,x=n, fill=color_cut, color=color_cut))+
-  geom_bar(stat="identity",orientation = "y")+
+ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
+  ggplot2::geom_bar(stat="identity",orientation = "y")+
   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
     palette="Accent", subclasses = subgroups)+
   ggrrr::scale_colour_subtype(subclasses=subgroups)+

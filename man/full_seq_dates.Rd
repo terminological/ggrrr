@@ -22,5 +22,5 @@ a vector of dates for complete between the minimum and maximum of dates, on the 
 Convert a vector of observation dates to a ordered sequence of every day in the time series
 }
 \examples{
-full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")
+# full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")
 }

@@ -24,6 +24,5 @@ the value of the yth quantile
 A quantile function for a mixture of normal distributions
 }
 \examples{
-library(tidyverse)
 qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
 }

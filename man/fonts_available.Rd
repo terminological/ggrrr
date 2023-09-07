@@ -2,19 +2,18 @@
 % Please edit documentation in R/font-utils.R
 \name{fonts_available}
 \alias{fonts_available}
-\title{Check a font exists on the system, or list all fonts available}
+\title{Which fonts are available on this system.}
 \usage{
 fonts_available(family = NULL)
 }
 \arguments{
-\item{family}{an optional list of fonts to check for}
+\item{family}{a font family name or names}
 }
 \value{
-a list of available fonts
+the font family name if it can be located or an error otherwise
 }
 \description{
-Given a font family this checks it si locally available in both the
-`showtext` and `systemfonts` subsystems
+Which fonts are available on this system.
 }
 \examples{
 fonts_available(c("Arial","sdfdsfsd"))

@@ -14,7 +14,6 @@
   if (!fs::file_exists(new_file)) {
     fs::file_move(file, new_file)
   } else {
-    browser()
     .move_safe(file = new_file)
     fs::file_move(file, new_file)
   }
@@ -57,7 +56,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
     dplyr::mutate(function_name = list(ls(envir = asNamespace(package)))) %>%
     tidyr::unnest(function_name) %>%
     dplyr::mutate( f = purrr::map2(function_name, package, function(f,p) {
-      tryCatch(getFromNamespace(f,p), error = function(e) {function(){}})
+      tryCatch(utils::getFromNamespace(f,p), error = function(e) {function(){}})
     })) %>%
     dplyr::mutate( generic = .isGeneric(f)) %>%
     dplyr::select(-f)
@@ -67,7 +66,7 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
 
   packageMap2 = packageMap %>% dplyr::group_by(function_name) %>%
     dplyr::mutate(package = ordered(package,levels = c("base",packages))) %>%
-    dplyr::arrange(desc(generic),package) %>%
+    dplyr::arrange(dplyr::desc(generic),package) %>%
     dplyr::filter(dplyr::row_number()==1) %>%
     dplyr::filter(package != "base") %>%
     dplyr::filter(!function_name %in% theseFunctions) %>%
@@ -82,7 +81,8 @@ fix_unqualified_functions = function(rDirectories = c(here::here("R"),here::here
 
     if (length(functions) > 0) {
       functionRegex = paste0(lapply(functions, .escape),collapse = "|")
-      functionRegex = paste0("([^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
+      # TODO: does not match function as first position on start of line
+      functionRegex = paste0("(^|[^:a-zA-Z0-9\\._])(",functionRegex,")\\(")
       replacement = paste0("\\1",pkg,"::\\2(")
       # c = files$content.old[[1]]
       for (i in 1:nrow(files)) {

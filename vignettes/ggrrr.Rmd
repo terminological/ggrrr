@@ -18,8 +18,8 @@ library(tidyverse)
 
 ```{r setup}
 # library(tidyverse)
-library(ggrrr)
-# devtools::load_all("~/Git/ggrrr")
+# library(ggrrr)
+devtools::load_all("~/Git/ggrrr")
 here::i_am("vignettes/ggrrr.Rmd")
 ```
 
@@ -54,10 +54,10 @@ ggrrr::gg_pedantic(font = "Roboto")
 
 # Create a graph and save it to a png and pdf with near exact matches in output layout and to fit in a third A4 page
 plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
-plot %>% gg_save_as(out2("diamonds1"), size = std_size$third)
+tmp = plot %>% gg_save_as(out2("diamonds1"), size = std_size$third)
 
-message("Files were saved as: \n",out2("diamonds1"),".png\n",out2("diamonds1"),".pdf")
-
+message("Files were saved as: \n",tmp$png,"\n",tmp$pdf)
+tmp
 ```
 
 # Tabular data in ggplots

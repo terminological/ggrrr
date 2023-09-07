@@ -29,6 +29,28 @@ as_vars = function(tidyselect, data=NULL) {
   lapply(names(res), as.symbol)
 }
 
+#' Convert multivariate formula to list of univariate formulae
+#'
+#' @param formula a formula of the type y ~ x1 + x2 + x3 + ....
+#'
+#' @return a list of formulae of the type y ~ x1, y ~ x2, y ~ x3, ....
+#' @export
+#' @examples
+#' univariate_from_multivariate(y ~ x1 + x2 + x3)
+#' univariate_from_multivariate(~ x1 + x2 + x3)
+univariate_from_multivariate = function(formula) {
+  tmp = stats::terms(formula)
+  rhs = rlang::f_rhs(formula) %>% all.vars()
+  lhs = rlang::f_lhs(formula)
+  if (!is.null(lhs)) {
+    lapply(rhs, function(x) stats::as.formula(sprintf("`%s` ~ `%s`",rlang::as_label(lhs),x)))
+  } else {
+    lhs = rhs[[1]]
+    rhs = rhs[-1]
+    lapply(rhs, function(x) stats::as.formula(sprintf("~ `%s` + `%s`",lhs,x)))
+  }
+}
+
 # .parse_formulae(iris, ~ Species + Petal.Width + Missing, a ~ b+Sepal.Width)
 # .parse_formulae(iris, Species ~ Petal.Width + Missing, a ~ b+Sepal.Width, side="lhs")
 # .parse_formulae(iris, list(Species ~ Petal.Width + Missing, a ~ b+Sepal.Width), side="rhs")
@@ -113,10 +135,10 @@ as_vars = function(tidyselect, data=NULL) {
 # .parse_unique(iris, c(Sepal.Width ~ Species + Sepal.Length, Sepal.Width ~ Species + Petal.Length))
 # .parse_unique(iris, list(Sepal.Width ~ Species + Sepal.Length, Sepal.Width ~ Species + Petal.Length))
 # .parse_unique(iris, list(Sepal.Width ~ Species + Sepal.Length, Sepal.Width ~ Species + Petal.Length), .side="all")
-# .parse_unique(iris, everything())
-# .parse_unique(iris %>% group_by(Species), everything(), .side="both")
-# .parse_unique(iris %>% group_by(Species), vars(Sepal.Width,Sepal.Length), .side="rhs")
-# .parse_unique(iris %>% group_by(Species), vars(Sepal.Width,Sepal.Length), .side="lhs")
+# .parse_unique(iris, tidyselect::everything())
+# .parse_unique(iris %>% dplyr::group_by(Species), tidyselect::everything(), .side="both")
+# .parse_unique(iris %>% dplyr::group_by(Species), dplyr::vars(Sepal.Width,Sepal.Length), .side="rhs")
+# .parse_unique(iris %>% dplyr::group_by(Species), dplyr::vars(Sepal.Width,Sepal.Length), .side="lhs")
 .parse_unique = function(df, ..., .side = "rhs") {
   predictorVars = list()
   if (.is_character_list(...)) {
@@ -188,7 +210,7 @@ as_vars = function(tidyselect, data=NULL) {
 # .is_character_list(c("a","b","c"))
 # .is_character_list(list("a","b","c"))
 # .is_character_list(a~b,"b","c") # no
-# .is_character_list(everything())
+# .is_character_list(tidyselect::everything())
 # .is_character_list(colnames(iris))
 .is_character_list = function(...) {
   out = tryCatch({
@@ -199,4 +221,56 @@ as_vars = function(tidyselect, data=NULL) {
     FALSE
   })
   return(out)
+}
+
+
+# .pair_apply(diamonds, chi = ~ stats::chisq.test(.x,.y), .cols = tidyselect::where(is.factor)) %>% dplyr::mutate(pvalue = purrr::map_dbl(chi, ~.x$p.value))
+# .pair_apply(diamonds, chi = chisq.test, .cols = tidyselect::where(is.factor)) %>% dplyr::mutate(pvalue = purrr::map_dbl(chi, ~.x$p.value))
+# .pair_apply(diamonds, chi = ~ stats::chisq.test(.x,.y)$p.value, method = ~ "chisq", .cols = tidyselect::where(is.factor))
+# .pair_apply(diamonds, error = ~ stop("error in cols"), .cols_x = tidyselect::where(is.factor),.cols_y = tidyselect::where(is.numeric))
+# iris %>% dplyr::group_by(Species) %>% .pair_apply(cor = cor, method = ~ "chisq", .cols = tidyselect::where(is.numeric))
+.pair_apply = function(df, ..., .cols = tidyselect::everything(), .cols_x = NULL, .cols_y = NULL, .diagonal=FALSE) {
+  .cols = rlang::enexpr(.cols)
+  .cols_x = rlang::enexpr(.cols_x)
+  .cols_y = rlang::enexpr(.cols_y)
+  if (dplyr::is.grouped_df(df)) return(df %>% dplyr::group_modify(function(d,g,...) .pair_apply(d, ...), ..., .cols=!!.cols, .cols_x=!!.cols_x, .cols_y=!!.cols_y))
+  if (is.null(.cols_x)) .cols_x = .cols
+  if (is.null(.cols_y)) .cols_y = .cols
+  dfx = df %>% dplyr::select(!!.cols_x)
+  dfy = df %>% dplyr::select(!!.cols_y)
+  dots = rlang::list2(...)
+
+  err2 = character()
+  out2 = dplyr::bind_rows(
+    lapply(colnames(dfx), function(xcol) {
+      x = dplyr::pull(dfx,xcol)
+      dplyr::bind_rows(
+        lapply(colnames(dfy), function(ycol) {
+          if (.diagonal || xcol != ycol) {
+            y = dplyr::pull(dfy,ycol)
+            out = tibble::tibble(var1 = xcol, var2 = ycol)
+            for (name in names(dots)) {
+              fn = purrr::as_mapper(dots[[name]])
+              res = try(fn(x, y), silent = TRUE)
+              if (inherits(res, "try-error")) {
+                reason = attr(res,"condition")$message
+                err2 <<- c(err2,reason)
+                res = NA
+              }
+              if (is.atomic(res)) {
+                out = out %>% dplyr::mutate(!!name := res)
+              } else {
+                out = out %>% dplyr::mutate(!!name := list(res))
+              }
+            }
+            return(out)
+          } else {
+            return(NULL)
+          }
+        })
+      )
+    })
+  )
+  if (length(err2) > 0) warning(unique(err2))
+  return(out2)
 }

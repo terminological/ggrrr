@@ -24,12 +24,12 @@
   .expr,
   ...,
   .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = "cached",
   .stale = Inf)
 {
 
-  # .expr2 = enquo(.expr)
+  # .expr2 = rlang::enquo(.expr)
   hash = rlang::list2(...)
   code = deparse(substitute(.expr))
   md5code = .md5obj(code)
@@ -81,7 +81,7 @@
 #'
 #' @return nothing. called for side effects.
 .cache_delete_stale = function(
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
   .stale = Inf
 ) {
@@ -119,7 +119,7 @@
 #'
 #' @return nothing. called for side effects
 .cache_clear = function (
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
   interactive = TRUE
 ) {
@@ -151,7 +151,7 @@
 #' makes sure it is reused.
 #'
 #' @param url the url to download
-#' @param ... ignored
+#' @inheritDotParams utils::download.file
 #' @param .nocache if set to TRUE all caching is disabled
 #' @param .cache the location of the downloaded files
 #' @param .stale how long to leave this file before replacing it.
@@ -162,7 +162,7 @@
   url,
   ...,
   .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
   .stale = Inf,
   .extn = NULL
 ) {
@@ -192,7 +192,7 @@
     #assign(path, obj, envir=.arear.cache)
   } else {
     message("downloading item: ",qualifier)
-    utils::download.file(url,path)
+    utils::download.file(url,path, ...)
     return(path)
   }
 

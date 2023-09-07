@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
       </span>
     </div>
 
@@ -111,58 +111,26 @@ if missing this will be derived from the data itself.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-01-01"</span>,<span class="st">"2020-02-01"</span>,<span class="st">"2020-01-15"</span>,<span class="st">"2020-02-03"</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fs</span> <span class="op">=</span> <span class="fu"><a href="full_seq_dates.html">full_seq_dates</a></span><span class="op">(</span><span class="va">dates</span>, <span class="st">"2 days"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dates</span> <span class="op">-</span> <span class="fu">cut_date</span><span class="op">(</span><span class="va">dates</span>, <span class="va">fs</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time differences in days</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0  1  0 NA NA</span>
-<span class="r-in"><span><span class="fu">cut_date</span><span class="op">(</span><span class="va">dates</span>,<span class="va">fs</span>,<span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 01 Jan — 02 Jan 31 Jan — 01 Feb 15 Jan — 16 Jan &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Levels: 01 Jan — 02 Jan &lt; 03 Jan — 04 Jan &lt; ... &lt; 31 Jan — 01 Feb</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># dates = as.Date(c("2020-01-01","2020-02-01","2020-01-15","2020-02-03",NA))</span></span></span>
+<span class="r-in"><span><span class="co"># fs = full_seq_dates(dates, "2 days")</span></span></span>
+<span class="r-in"><span><span class="co"># dates - cut_date(dates, fs)</span></span></span>
+<span class="r-in"><span><span class="co"># cut_date(dates,fs,TRUE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A weekly set of dates:</span></span></span>
-<span class="r-in"><span><span class="va">dates2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>,max<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fl">7</span></span></span>
+<span class="r-in"><span><span class="co"># dates2 = Sys.Date() + floor(stats::runif(50,max=10))*7</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># in this specific situation the final date is not truncated because the</span></span></span>
 <span class="r-in"><span><span class="co"># input data is seen as an exact match for the whole output period.</span></span></span>
-<span class="r-in"><span><span class="fu">cut_date</span><span class="op">(</span><span class="va">dates2</span>, fmt <span class="op">=</span> <span class="st">"%d/%b"</span>, factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 18/Jan — 24/Jan 21/Dec — 27/Dec 07/Dec — 13/Dec 30/Nov — 06/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] 11/Jan — 17/Jan 30/Nov — 06/Dec 28/Dec — 03/Jan 23/Nov — 29/Nov</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] 25/Jan — 31/Jan 04/Jan — 10/Jan 18/Jan — 24/Jan 28/Dec — 03/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 21/Dec — 27/Dec 14/Dec — 20/Dec 21/Dec — 27/Dec 28/Dec — 03/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] 28/Dec — 03/Jan 23/Nov — 29/Nov 14/Dec — 20/Dec 14/Dec — 20/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] 28/Dec — 03/Jan 21/Dec — 27/Dec 28/Dec — 03/Jan 14/Dec — 20/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] 23/Nov — 29/Nov 14/Dec — 20/Dec 18/Jan — 24/Jan 14/Dec — 20/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] 30/Nov — 06/Dec 21/Dec — 27/Dec 04/Jan — 10/Jan 04/Jan — 10/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] 11/Jan — 17/Jan 23/Nov — 29/Nov 18/Jan — 24/Jan 30/Nov — 06/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 07/Dec — 13/Dec 07/Dec — 13/Dec 23/Nov — 29/Nov 14/Dec — 20/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] 18/Jan — 24/Jan 04/Jan — 10/Jan 23/Nov — 29/Nov 28/Dec — 03/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45] 28/Dec — 03/Jan 30/Nov — 06/Dec 14/Dec — 20/Dec 25/Jan — 31/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] 28/Dec — 03/Jan 21/Dec — 27/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Levels: 23/Nov — 29/Nov &lt; 30/Nov — 06/Dec &lt; ... &lt; 25/Jan — 31/Jan</span>
+<span class="r-in"><span><span class="co"># cut_date(dates2, fmt = "%d/%b", factor = TRUE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if the input dates don't line up with the output dates</span></span></span>
 <span class="r-in"><span><span class="co"># there may be incomplete coverage of the first and last category.</span></span></span>
 <span class="r-in"><span><span class="co"># where the cutting results in short periods. In this</span></span></span>
 <span class="r-in"><span><span class="co"># instance the first and last periods are truncated to prevent them</span></span></span>
 <span class="r-in"><span><span class="co"># being counted as complete when they are in fact potentially missing a few days worth of data:</span></span></span>
-<span class="r-in"><span><span class="fu">cut_date</span><span class="op">(</span><span class="va">dates2</span>, fmt <span class="op">=</span> <span class="st">"%d/%b"</span>, factor <span class="op">=</span> <span class="cn">TRUE</span>, period <span class="op">=</span> <span class="st">"-2 weeks"</span>, anchor<span class="op">=</span><span class="st">"sun"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] &lt;NA&gt;            19/Dec — 01/Jan 05/Dec — 18/Dec &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] 02/Jan — 15/Jan &lt;NA&gt;            19/Dec — 01/Jan &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] &lt;NA&gt;            02/Jan — 15/Jan &lt;NA&gt;            19/Dec — 01/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 19/Dec — 01/Jan 05/Dec — 18/Dec 19/Dec — 01/Jan 19/Dec — 01/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] 19/Dec — 01/Jan &lt;NA&gt;            05/Dec — 18/Dec 05/Dec — 18/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] 19/Dec — 01/Jan 19/Dec — 01/Jan 19/Dec — 01/Jan 05/Dec — 18/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] &lt;NA&gt;            05/Dec — 18/Dec &lt;NA&gt;            05/Dec — 18/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] &lt;NA&gt;            19/Dec — 01/Jan 02/Jan — 15/Jan 02/Jan — 15/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] 02/Jan — 15/Jan &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 05/Dec — 18/Dec 05/Dec — 18/Dec &lt;NA&gt;            05/Dec — 18/Dec</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] &lt;NA&gt;            02/Jan — 15/Jan &lt;NA&gt;            19/Dec — 01/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45] 19/Dec — 01/Jan &lt;NA&gt;            05/Dec — 18/Dec &lt;NA&gt;           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] 19/Dec — 01/Jan 19/Dec — 01/Jan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Levels: 05/Dec — 18/Dec &lt; 19/Dec — 01/Jan &lt; 02/Jan — 15/Jan</span>
+<span class="r-in"><span><span class="co"># cut_date(dates2, fmt = "%d/%b", factor = TRUE, period = "-2 weeks", anchor="sun")</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -177,7 +145,7 @@ if missing this will be derived from the data itself.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

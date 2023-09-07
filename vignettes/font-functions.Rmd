@@ -1,13 +1,15 @@
 ---
-title: 'Font functions'
-output: rmarkdown::html_vignette
+title: 'Font functions' 
+output: rmarkdown::html_vignette 
 vignette: >
-  %\VignetteIndexEntry{Font functions}
+  %\VignetteIndexEntry{Font functions} 
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-There are quite a few systems for font management in R. A key part of our work is trying to make graphs and tables cross platform reproducible, and consistent. This means
-dealing with fonts across different platforms.
+
+There are quite a few systems for font management in R. A key part of our work
+is trying to make graphs and tables cross platform reproducible, and consistent.
+This means dealing with fonts across different platforms.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -16,32 +18,45 @@ library(ggrrr)
 
 ## Transparently ensure a font is available
 
-Instead of specifying a font family as a character in a call to ggplot, we can use a `check_font()` call which tries to find the font on your system and if not available downloads it from google fonts and registers it with `sysfonts` and `systemfonts`, returning the family name. 
+Instead of specifying a font family as a character in a call to ggplot, we can
+use a `check_font()` call which tries to find the font on your system and if not
+available downloads it from Google fonts or Brick and registers it with `systemfonts`,
+returning the family name. 
 
-This also sets ggplot to use showtext as the font provider.
+ggplot rendering uses `systemfonts` and attempts
+to make the output portable for use by embedding webfonts into the svg outputs.
+if the `sub` option is `TRUE`, `check_font()` will guess an alternative. 
 
-```{r cars}
-check_font("Roboto")
+```{r}
+check_font("Helvetica",sub = TRUE)
 ```
 
 ## Check what fonts are available
 
-Find out what fonts `ggrrr` can find on this system. 
+Find out what fonts `ggrrr` can find on this system.
 
 ```{r}
 # list all available fonts
-fonts_available()
+tmp = fonts_available()
 
-# Check if specific fonts are available
+# Check if specific fonts are available. Returns
 fonts_available(c("Roboto","Arial","Helvetica"))
 ```
 
-# Download a font from google
+# Download a font from webfont providers
 
-Downloads and installs the font into both `sysfonts` and `systemfonts` packages. This is generally used internally by `check_font`.
+Checks if a local font is available. If not downloads and installs the font and
+registers in the `systemfonts` packages. Currently supported are `google` and 
+`brick`
 
 ```{r}
-google_font("Roboto")
-```
+# clears any registered fonts
+reset_fonts()
 
+# if the fonts is named the names are used for the family on this system
+tmp = register_web_fonts(fonts = c("MyKings" = "Kings"), services = "google")
+
+tmp$webfonts
+systemfonts::registry_fonts()
+```
 

@@ -35,8 +35,7 @@
 
 * fix anomalous dependencies
 
-# future work
+# ggrrr 0.0.0.9017
 
-* BUG: Showtext font handling has limited support for UTF8 unicode characters.
-* TODO: cache status function? memory cache layer
-* TODO: unzip a download?
+* big tidy up of rendering pipelines
+* remove showtext etc in favour of svglite

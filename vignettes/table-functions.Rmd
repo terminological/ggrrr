@@ -26,10 +26,15 @@ simpleTable = tibble(
   Type = c("apples","pears","bananas"),
   Quantity = c(21,34,15)
 )
-
-simpleTable %>% hux_default_layout() %>% hux_save_as(out("t1"), std_size$third)
+.is_running_in_chunk()
+tmp = simpleTable %>% hux_default_layout() %>% hux_save_as(out("t1"), std_size$third)
+tmp
 ```
 
+```{r}
+
+tmp
+```
 
 ```{r}
 summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,clarity) %>% summarise(

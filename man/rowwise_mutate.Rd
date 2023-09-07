@@ -30,33 +30,37 @@ I expect them to be.
 iris \%>\% rowwise_mutate(
   widths = Sepal.Width+max(Petal.Width),
   lengths = Sepal.Length+max(Petal.Length),
-  tmp = tibble(a=1, b=2)) \%>\%
-glimpse()
+  tmp = tibble::tibble(a=1, b=2)) \%>\%
+dplyr::glimpse()
 
 # This is different to standard dplyr behaviour when the additional tibble
 # column is considered. standard dplyr rowwise does something unexpected:
 iris \%>\% dplyr::rowwise() \%>\% dplyr::mutate(
   widths = Sepal.Width+max(Petal.Width),
   lengths = Sepal.Length+max(Petal.Length),
-  tmp = tibble(a=1, b=2)) \%>\%
-glimpse()
+  tmp = tibble::tibble(a=1, b=2)) \%>\%
+dplyr::glimpse()
 
 # As expressions are not vectorised we can use normal if ... else ... statements
 # and errors can be handled and default values provided.
+suppressWarnings(
 iris \%>\% rowwise_mutate(
   tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
   .onerror = function(e) -Petal.Width
 ) \%>\%
-glimpse()
+dplyr::glimpse()
+)
 
 # The default values
 # are evaluated in the same context as the original expression, but only are
 # defaults for all the columns so makes most sense when a default value is given
+
+suppressWarnings(
 iris \%>\% rowwise_mutate(
   tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
   tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
   .onerror = function(e) Inf
 ) \%>\%
-glimpse()
-
+dplyr::glimpse()
+)
 }
