@@ -12,6 +12,7 @@ compute and cache the result.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(ggrrr)
 
 ```
 
@@ -48,7 +49,7 @@ for (i in 1:10) {
   quantCutOff = 0.95
   start = Sys.time()
   
-  fit = ggrrr::cached({
+  fit = cached({
     
     expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
     glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
@@ -67,7 +68,7 @@ A change in the code (in this example a trivial change in a variable name) will 
 do not trigger recalculation.
 
 ```{r}
-fit = ggrrr::cached({
+fit = cached({
   expensiveDiamonds2 = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
   glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds2 )
 }, diamonds, quantCutOff )
@@ -78,7 +79,7 @@ fit = ggrrr::cached({
 If you want to defeat the caching for a one off execution the `.nocache` option achieves that.
 
 ```{r}
-fit = ggrrr::cached({
+fit = cached({
   expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
   glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
 }, diamonds, quantCutOff, .nocache = TRUE )
@@ -91,7 +92,7 @@ You might want to cache interim results while developing (for speed) and disable
 ```{r}
 oldopt = options(cache.disable = TRUE)
 
-fit = ggrrr::cached({
+fit = cached({
   expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
   glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
 }, diamonds, quantCutOff)
@@ -105,7 +106,7 @@ In general items can be left in the cache, and they will get removed when it is 
 A manual flush of the cache can be done like this. Usually the interactive option will be omitted if run at the command line
 
 ```{r}
-ggrrr::cache_clear(interactive = FALSE)
+cache_clear(interactive = FALSE)
 ```
 
 ## Caching multiple types of data
@@ -115,19 +116,19 @@ If the items follow a naming convention then deleting items from the cache can t
 
 ```{r}
 
-fit = ggrrr::cached({
+fit = cached({
   expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
   glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
 }, diamonds, quantCutOff, .prefix = "diamonds")
 
-fit2 = ggrrr::cached({
+fit2 = cached({
   fastCars = mtcars %>% mutate(fast = hp>quantile(hp,quantCutOff))
   glm(fast ~ mpg+cyl+disp+drat+wt+gear, family = binomial(link='logit'), data=fastCars )
 }, mtcars, quantCutOff, .prefix = "cars")
 
-ggrrr::cache_clear(.prefix = "cars", interactive = FALSE)
+cache_clear(.prefix = "cars", interactive = FALSE)
 
-ggrrr::cache_clear(.prefix = "diamonds", interactive = FALSE)
+cache_clear(.prefix = "diamonds", interactive = FALSE)
 
 ```
 
@@ -141,20 +142,20 @@ N.b. as cache_clear uses regex it is probably best to avoid full stop characters
 
 oldopts = options(cache.item.prefix = "stage-1")
 
-fit = ggrrr::cached({
+fit = cached({
   expensiveDiamonds = diamonds %>% mutate(expensive = price>quantile(price,quantCutOff))
   glm(expensive ~ carat+cut+color+clarity+depth+table, family = binomial(link='logit'), data=expensiveDiamonds )
 }, diamonds, quantCutOff)
 
 options(cache.item.prefix = "stage-2")
 
-fit2 = ggrrr::cached({
+fit2 = cached({
   fastCars = mtcars %>% mutate(fast = hp>quantile(hp,quantCutOff))
   glm(fast ~ mpg+cyl+disp+drat+wt+gear, family = binomial(link='logit'), data=fastCars )
 }, mtcars, quantCutOff)
 
-ggrrr::cache_clear(.prefix = "stage-1", interactive = FALSE)
-ggrrr::cache_clear(.prefix = "stage-2", interactive = FALSE)
+cache_clear(.prefix = "stage-1", interactive = FALSE)
+cache_clear(.prefix = "stage-2", interactive = FALSE)
 
 options(oldopts)
 ```
@@ -164,7 +165,7 @@ options(oldopts)
 Getting a file from the internet and locally caching. This does not check for remote changes. as before forcing the re-download can be achieved with .nocache.
 
 ```{r}
-file = ggrrr::cache_download(
+file = cache_download(
   "https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv",
   .extn = "csv"
 )
@@ -181,7 +182,7 @@ it may end up unexpectedly using old data.
 
 ```{r}
 # number of days before reloading
-file = ggrrr::cache_download(
+file = cache_download(
   "https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv",
   .stale = 1,
   .extn = "csv"

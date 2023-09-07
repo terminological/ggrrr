@@ -12,6 +12,7 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(ggrrr)
 out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
 ```
 
@@ -42,7 +43,7 @@ summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,
 
 
 
-table = summary %>% .hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
+table = summary %>% hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
 table
 ```
 

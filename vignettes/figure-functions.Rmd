@@ -15,10 +15,8 @@ knitr::opts_chunk$set(
 
 library(tidyverse)
 library(patchwork)
-```
-
-```{r setup}
 library(ggrrr)
+
 out = outputter(normalizePath(tempdir(), mustWork = FALSE),datedFile = FALSE,datedSubdirectory = FALSE)
 ```
 
