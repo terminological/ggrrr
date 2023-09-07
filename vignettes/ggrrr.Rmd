@@ -17,10 +17,8 @@ library(tidyverse)
 ```
 
 ```{r setup}
-# library(tidyverse)
-# library(ggrrr)
-devtools::load_all("~/Git/ggrrr")
-here::i_am("vignettes/ggrrr.Rmd")
+library(ggrrr)
+# here::i_am("vignettes/ggrrr.Rmd")
 ```
 
 # File output
@@ -30,8 +28,8 @@ determining where an output file when you may want date versioning.
 ```{r}
 
 # an output directory in the current project with date versioning in the filename itself
-out = outputter(here::here("output"))
-out("figure1.png")
+# out = outputter(here::here("output"))
+# out("figure1.png")
 
 # an output directory in a temp directory which has versioned subdirectories
 out2 = outputter(normalizePath(tempdir(), mustWork = FALSE),datedSubdirectory = TRUE)

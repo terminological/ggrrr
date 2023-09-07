@@ -12,7 +12,7 @@ compute and cache the result.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-# devtools::load_all("~/Git/ggrrr")
+
 ```
 
 Setting the caching location should be transparent. The default directory is the user cache directory, but in an analysis project a specific

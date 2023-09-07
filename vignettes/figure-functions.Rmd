@@ -108,7 +108,7 @@ laying these tables out is tricky, and is worth looking at the `ggpp` package fo
 A more complex tabular layout can be achieved which auto scales text to fit the specific dimensions provided.
 
 ```{r}
-# devtools::load_all("~/Git/ggrrr")
+
 # tableExample %>% as.long_format_table(fontName = "Times New Roman",fontSize = 12) %>% glimpse()
 # tablePlot = tableExample %>% gg_formatted_table(tableWidthInches = 4,font = "Roboto",fontSize = 8)
 # tablePlot %>% gg_save_as(tempfile(),maxWidth = 4)
