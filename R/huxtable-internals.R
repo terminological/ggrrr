@@ -4,6 +4,8 @@
 
 # .check_font("Helvetica")
 .check_font = function(family) {
+  f = tryCatch(get("check_font", mode="function", envir = rlang::env_parent()), error = function(e) NULL)
+  if (!is.null(f)) return(f(family))
   path = NULL
   match = systemfonts::match_font(family)
   family2 = systemfonts::system_fonts() %>% dplyr::filter(path == match$path) %>% dplyr::pull(family) %>% unique()
