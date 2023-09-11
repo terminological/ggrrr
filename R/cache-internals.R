@@ -18,6 +18,7 @@
 #' @param .nocache an option to defeat the caching which can be set globally as options("cache.disable"=TRUE)
 #' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("cache.stale")
+#' @keywords internal
 #'
 #' @return the output of .expr which will usually be a value
 .cached = function (
@@ -45,11 +46,7 @@
   path = paste0(.cache,paste(.prefix,md5code,md5params,sep = "-"),".rda")
 
   if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
+
   .cache_delete_stale(.cache = .cache, .prefix = .prefix, .stale = .stale)
 
   if (file.exists(path)) {
@@ -67,6 +64,7 @@
   return(obj)
 }
 
+
 #' Delete stale files in a cache
 #'
 #' Staleness is determined by the number of days from 2am on the current day in the current time-zone.
@@ -80,6 +78,7 @@
 #' @param .stale the length of time in days to keep cached data before considering it as stale.
 #'
 #' @return nothing. called for side effects.
+#' @keywords internal
 .cache_delete_stale = function(
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
@@ -100,16 +99,7 @@
     ) %>%
     dplyr::pull(path) %>%
     unlink()
-    # purrr::pwalk(function(path, ...) {
-    #   # tmp = rlang::list2(...)
-    #   message("deleting: ", path)
-    #   unlink(path)
-    # })
 }
-
-# TODO:
-# download and execute code e.g. unzip + read file
-# generally filesystem abstraction functions from ukcovidtools
 
 #' Clear data from the passthrough cache for complex or long running operations
 #'
@@ -118,6 +108,7 @@
 #' @param interactive suppress `are you sure?` warning with a FALSE value (defaults to TRUE)
 #'
 #' @return nothing. called for side effects
+#' @keywords internal
 .cache_clear = function (
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
@@ -158,6 +149,7 @@
 #' @param .extn the file name extension
 #'
 #' @return the path to the downloaded file
+#' @keywords internal
 .cache_download = function(
   url,
   ...,
@@ -179,11 +171,7 @@
   path = normalizePath(paste0(.cache,fname), mustWork = FALSE)
 
   if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
+
   .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
 
   if (file.exists(path)) {

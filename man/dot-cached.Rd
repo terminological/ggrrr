@@ -33,3 +33,4 @@ the output of .expr which will usually be a value
 executes expr and saves the output as an RDS file indexed by has of code in expr
 and the hash of input variables (which should contain any variable inputs)
 }
+\keyword{internal}

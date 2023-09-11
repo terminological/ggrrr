@@ -18,7 +18,7 @@ If this is not possible it will throw an error."><!-- mathjax --><script src="ht
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9019</span>
       </span>
     </div>
 
@@ -80,17 +80,13 @@ If this is not possible it will throw an error.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_font</span><span class="op">(</span><span class="va">family</span>, sub <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_font</span><span class="op">(</span><span class="va">family</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>family</dt>
 <dd><p>a font family name or names</p></dd>
-
-
-<dt>sub</dt>
-<dd><p>substitue missing fonts?</p></dd>
 
 </dl></div>
     <div id="value">
@@ -102,8 +98,9 @@ If this is not possible it will throw an error.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">check_font</span><span class="op">(</span><span class="st">"Roboto"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Roboto"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">check_font</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Arial"</span>,<span class="st">"Kings"</span>,<span class="st">"EB Garamond"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Roboto         Arial         Kings   EB Garamond </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      "Roboto"       "Arial"       "Kings" "EB Garamond" </span>
 </code></pre></div>
     </div>
   </div>

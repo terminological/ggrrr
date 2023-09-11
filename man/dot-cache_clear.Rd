@@ -23,3 +23,4 @@ nothing. called for side effects
 \description{
 Clear data from the passthrough cache for complex or long running operations
 }
+\keyword{internal}

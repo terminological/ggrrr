@@ -4,10 +4,12 @@
 \alias{knit_print.rendered_plot}
 \title{Knit a rendered_plot object}
 \usage{
-\method{knit_print}{rendered_plot}(x, ...)
+\method{knit_print}{rendered_plot}(x, options, ...)
 }
 \arguments{
 \item{x}{the rendered_plot}
+
+\item{options}{the chunk options}
 
 \item{...}{not used}
 }

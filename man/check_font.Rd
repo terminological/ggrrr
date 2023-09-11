@@ -4,12 +4,10 @@
 \alias{check_font}
 \title{Ensures a font is available.}
 \usage{
-check_font(family, sub = TRUE)
+check_font(family)
 }
 \arguments{
 \item{family}{a font family name or names}
-
-\item{sub}{substitue missing fonts?}
 }
 \value{
 the font family name if it can be located or an error otherwise
@@ -19,5 +17,5 @@ This checks to see if a font exists. If missing it will try and install from goo
 If this is not possible it will throw an error.
 }
 \examples{
-check_font("Roboto")
+check_font(c("Roboto","Arial","Kings","EB Garamond"))
 }

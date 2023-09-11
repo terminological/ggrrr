@@ -28,7 +28,7 @@ to make the output portable for use by embedding webfonts into the svg outputs.
 if the `sub` option is `TRUE`, `check_font()` will guess an alternative. 
 
 ```{r}
-check_font("Helvetica",sub = TRUE)
+check_font("Helvetica")
 ```
 
 ## Check what fonts are available
@@ -54,9 +54,8 @@ registers in the `systemfonts` packages. Currently supported are `google` and
 reset_fonts()
 
 # if the fonts is named the names are used for the family on this system
-tmp = register_web_fonts(fonts = c("MyKings" = "Kings"), services = "google")
+check_font(c("Roboto","Arial","Kings","EB Garamond"))
 
-tmp$webfonts
 systemfonts::registry_fonts()
 ```
 

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9019</span>
       </span>
     </div>
 
@@ -139,7 +139,7 @@ changes thsi might not be picked up.</p>
 <span>  <span class="va">quantCutOff</span> <span class="op">=</span> <span class="fl">0.95</span></span>
 <span>  <span class="va">start</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>    </span>
 <span>    <span class="va">expensiveDiamonds</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds</span> <span class="op">)</span></span>
@@ -150,27 +150,27 @@ changes thsi might not be picked up.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"iteration:"</span>,<span class="va">i</span>,<span class="st">" duration: "</span>,<span class="va">duration</span>,<span class="st">"\n"</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 1  duration:  1.080441</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 2  duration:  0.09388947</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 3  duration:  0.1524208</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 4  duration:  0.09137321</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 5  duration:  0.08970547</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 6  duration:  0.09141111</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 7  duration:  0.08937383</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 8  duration:  0.09415317</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 9  duration:  0.08959699</span></span></code></pre>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
-<pre><code><span><span class="co">## iteration: 10  duration:  0.1513712</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 1  duration:  1.086471</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 2  duration:  0.09396315</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 3  duration:  0.1533675</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 4  duration:  0.08974266</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 5  duration:  0.09182978</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 6  duration:  0.09435844</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 7  duration:  0.08839273</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 8  duration:  0.09331417</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 9  duration:  0.09267735</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## iteration: 10  duration:  0.153136</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="re-caching-when-code-changes">Re-caching when code changes<a class="anchor" aria-label="anchor" href="#re-caching-when-code-changes"></a>
@@ -179,11 +179,11 @@ changes thsi might not be picked up.</p>
 name) will result in the item being re-cached. White space changes do
 not trigger recalculation.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">expensiveDiamonds2</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds2</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">diamonds</span>, <span class="va">quantCutOff</span> <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## using cached item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## using cached item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="forcing-execution-of-cached-item">Forcing execution of cached item<a class="anchor" aria-label="anchor" href="#forcing-execution-of-cached-item"></a>
@@ -191,11 +191,11 @@ not trigger recalculation.</p>
 <p>If you want to defeat the caching for a one off execution the
 <code>.nocache</code> option achieves that.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">expensiveDiamonds</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">diamonds</span>, <span class="va">quantCutOff</span>, .nocache <span class="op">=</span> <span class="cn">TRUE</span> <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -206,11 +206,11 @@ and disable the cache completely during final analysis.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">oldopt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>cache.disable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">expensiveDiamonds</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">diamonds</span>, <span class="va">quantCutOff</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/cached-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">oldopt</span><span class="op">)</span></span></code></pre></div>
@@ -223,7 +223,7 @@ when it is determined that they are stale. A manual flush of the cache
 can be done like this. Usually the interactive option will be omitted if
 run at the command line</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="caching-multiple-types-of-data">Caching multiple types of data<a class="anchor" aria-label="anchor" href="#caching-multiple-types-of-data"></a>
@@ -233,25 +233,25 @@ items in the cache if you are manually inspecting it. If the items
 follow a naming convention then deleting items from the cache can then
 be done on a type by type basis.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">expensiveDiamonds</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">diamonds</span>, <span class="va">quantCutOff</span>, .prefix <span class="op">=</span> <span class="st">"diamonds"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/diamonds-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/diamonds-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fastCars</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>fast <span class="op">=</span> <span class="va">hp</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">hp</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">fast</span> <span class="op">~</span> <span class="va">mpg</span><span class="op">+</span><span class="va">cyl</span><span class="op">+</span><span class="va">disp</span><span class="op">+</span><span class="va">drat</span><span class="op">+</span><span class="va">wt</span><span class="op">+</span><span class="va">gear</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">fastCars</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">mtcars</span>, <span class="va">quantCutOff</span>, .prefix <span class="op">=</span> <span class="st">"cars"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/cars-4d33d39f25b44f2dd0e3f1c284e46470-d80edaedd01c0689a508e11d7fa6c365.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/cars-4d33d39f25b44f2dd0e3f1c284e46470-d80edaedd01c0689a508e11d7fa6c365.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: algorithm did not converge</span></span>
 <span></span>
 <span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"cars"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"cars"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"diamonds"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"diamonds"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="caching-data-in-multiple-stages-of-analysis">Caching data in multiple stages of analysis<a class="anchor" aria-label="anchor" href="#caching-data-in-multiple-stages-of-analysis"></a>
@@ -263,26 +263,26 @@ characters in the prefix.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">oldopts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>cache.item.prefix <span class="op">=</span> <span class="st">"stage-1"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">expensiveDiamonds</span> <span class="op">=</span> <span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>expensive <span class="op">=</span> <span class="va">price</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">price</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">expensive</span> <span class="op">~</span> <span class="va">carat</span><span class="op">+</span><span class="va">cut</span><span class="op">+</span><span class="va">color</span><span class="op">+</span><span class="va">clarity</span><span class="op">+</span><span class="va">depth</span><span class="op">+</span><span class="va">table</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">expensiveDiamonds</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">diamonds</span>, <span class="va">quantCutOff</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/stage-1-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/stage-1-4d33d39f25b44f2dd0e3f1c284e46470-c6e03ac8f53dbecd19a32787db92df7a.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>cache.item.prefix <span class="op">=</span> <span class="st">"stage-2"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit2</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">fit2</span> <span class="op">=</span> <span class="fu"><a href="../reference/cached.html">cached</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fastCars</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>fast <span class="op">=</span> <span class="va">hp</span><span class="op">&gt;</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">hp</span>,<span class="va">quantCutOff</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">fast</span> <span class="op">~</span> <span class="va">mpg</span><span class="op">+</span><span class="va">cyl</span><span class="op">+</span><span class="va">disp</span><span class="op">+</span><span class="va">drat</span><span class="op">+</span><span class="va">wt</span><span class="op">+</span><span class="va">gear</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">'logit'</span><span class="op">)</span>, data<span class="op">=</span><span class="va">fastCars</span> <span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">mtcars</span>, <span class="va">quantCutOff</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## caching item: /tmp/RtmpDPcCBs/stage-2-4d33d39f25b44f2dd0e3f1c284e46470-d80edaedd01c0689a508e11d7fa6c365.rda</span></span></code></pre>
+<pre><code><span><span class="co">## caching item: /tmp/RtmpmrduiB/stage-2-4d33d39f25b44f2dd0e3f1c284e46470-d80edaedd01c0689a508e11d7fa6c365.rda</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: glm.fit: algorithm did not converge</span></span>
 <span></span>
 <span><span class="co">## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"stage-1"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"stage-2"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"stage-1"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/cache_clear.html">cache_clear</a></span><span class="op">(</span>.prefix <span class="op">=</span> <span class="st">"stage-2"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">oldopts</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -293,7 +293,7 @@ characters in the prefix.</p>
 check for remote changes. as before forcing the re-download can be
 achieved with .nocache.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">file</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_download.html">cache_download</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">file</span> <span class="op">=</span> <span class="fu"><a href="../reference/cache_download.html">cache_download</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv"</span>,</span>
 <span>  .extn <span class="op">=</span> <span class="st">"csv"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -313,7 +313,7 @@ that analysis does not run over this time point otherwise it may end up
 unexpectedly using old data.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># number of days before reloading</span></span>
-<span><span class="va">file</span> <span class="op">=</span> <span class="fu">ggrrr</span><span class="fu">::</span><span class="fu"><a href="../reference/cache_download.html">cache_download</a></span><span class="op">(</span></span>
+<span><span class="va">file</span> <span class="op">=</span> <span class="fu"><a href="../reference/cache_download.html">cache_download</a></span><span class="op">(</span></span>
 <span>  <span class="st">"https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv"</span>,</span>
 <span>  .stale <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  .extn <span class="op">=</span> <span class="st">"csv"</span></span>

@@ -7,10 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup}
+# Setting the dev to ragg_png is important
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev = "ragg_png"
 )
 
 library(tidyverse)
@@ -27,8 +30,8 @@ out = outputter(normalizePath(tempdir(), mustWork = FALSE),datedFile = FALSE,dat
 ```{r}
 
 ggrrr::gg_pedantic()
-
-plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello \u2014 world")+labs(tag = "A")+xlab("Carat\u2082")+ylab("price\u2265")
+plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+
+  geom_point()+annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+labs(tag = "A")+xlab("Carat\u2082")+ylab("price\u2265")
 plot
 ```
 

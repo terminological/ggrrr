@@ -12,7 +12,6 @@ gg_save_as(
   maxHeight = size$height,
   aspectRatio = maxWidth/maxHeight,
   formats = getOption("ggrrr.formats", default = c("svg", "png", "pdf")),
-  web_fonts = .get_web_font_option(),
   ...
 )
 }
@@ -30,9 +29,6 @@ gg_save_as(
 \item{aspectRatio}{defaults to maxWidth/maxHeight}
 
 \item{formats}{some of svg, png, pdf, Rdata, ...}
-
-\item{web_fonts}{(optional) a list of `svglite::font_face` declarations.
-populated automatically by `check_font()`}
 
 \item{...}{
   Arguments passed on to \code{\link[svglite:svglite]{svglite::svglite}}
@@ -56,6 +52,12 @@ package, strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
+    \item{\code{web_fonts}}{A list containing web fonts to use in the SVG. The fonts
+will still need to be available locally on the computer running the code,
+but viewers of the final SVG will not need the font if specified as a web
+font. Web fonts can either be specified using \code{\link[svglite:font_face]{font_face()}} or given as a
+single string in which case they are taken to be URL's for an \verb{@import}
+directive to e.g. Google Fonts.}
     \item{\code{id}}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have
 an id tag and a warning will be thrown.}
@@ -100,7 +102,19 @@ webfont support.
 }
 \examples{
 library(tidyverse)
+gg_pedantic( )
 p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) + ggplot2::geom_point()
-p \%>\% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
+# p \%>\% gg_save_as(filename="~/tmp/plot_example",maxWidth=4,maxHeight=4)
+p \%>\% gg_save_as(filename=tempfile())
+
+plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+  ggplot2::theme_minimal(base_family="Roboto")+
+  ggplot2::geom_point()+
+  ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+  ggplot2::labs(tag = "A")+
+  ggplot2::xlab("Carat\u2082")+
+  ggplot2::ylab("price\u2265")
+# plot \%>\% gg_save_as(filename="~/tmp/plot_example_2")
+plot \%>\% gg_save_as(filename=tempfile())
 }
 \keyword{plot}

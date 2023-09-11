@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9019</span>
       </span>
     </div>
 
@@ -120,8 +120,9 @@ the output portable for use by embedding webfonts into the svg outputs.
 if the <code>sub</code> option is <code>TRUE</code>,
 <code><a href="../reference/check_font.html">check_font()</a></code> will guess an alternative.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span>,sub <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Helvetica"</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         Helvetica         Helvetica </span></span>
+<span><span class="co">##       "Helvetica" "Helvetica-plain"</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="check-what-fonts-are-available">Check what fonts are available<a class="anchor" aria-label="anchor" href="#check-what-fonts-are-available"></a>
@@ -146,26 +147,14 @@ Currently supported are <code>google</code> and <code>brick</code></p>
 <span><span class="fu"><a href="../reference/reset_fonts.html">reset_fonts</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># if the fonts is named the names are used for the family on this system</span></span>
-<span><span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="../reference/register_web_fonts.html">register_web_fonts</a></span><span class="op">(</span>fonts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MyKings"</span> <span class="op">=</span> <span class="st">"Kings"</span><span class="op">)</span>, services <span class="op">=</span> <span class="st">"google"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">tmp</span><span class="op">$</span><span class="va">webfonts</span></span></code></pre></div>
-<pre><code><span><span class="co">## [[1]]</span></span>
-<span><span class="co">##     @font-face {</span></span>
-<span><span class="co">##       font-family: "Kings";</span></span>
-<span><span class="co">##       src: local("MyKings"),</span></span>
-<span><span class="co">##            url("https://fonts.gstatic.com/s/kings/v7/8AtnGsK4O5CYXU_I.ttf") format("truetype");</span></span>
-<span><span class="co">##       font-weight: 400;</span></span>
-<span><span class="co">##       font-style: normal;</span></span>
-<span><span class="co">##     }</span></span></code></pre>
+<span><span class="fu"><a href="../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Arial"</span>,<span class="st">"Kings"</span>,<span class="st">"EB Garamond"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        Roboto         Arial         Kings   EB Garamond </span></span>
+<span><span class="co">##      "Roboto"       "Arial"       "Kings" "EB Garamond"</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/register_font.html" class="external-link">registry_fonts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 4 × 7</span></span></span>
-<span><span class="co">##   path                                 index family style weight italic features</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> /home/vp22681/.cache/ggrrr-download…     0 MyKin… Regu… normal FALSE  <span style="color: #949494;">&lt;int&gt;</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> /home/vp22681/.cache/ggrrr-download…     0 MyKin… Bold  bold   FALSE  <span style="color: #949494;">&lt;int&gt;</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> /home/vp22681/.cache/ggrrr-download…     0 MyKin… Ital… normal TRUE   <span style="color: #949494;">&lt;int&gt;</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> /home/vp22681/.cache/ggrrr-download…     0 MyKin… Bold… bold   TRUE   <span style="color: #949494;">&lt;int&gt;</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 0 × 7</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 7 variables: path &lt;chr&gt;, index &lt;int&gt;, family &lt;chr&gt;, style &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   weight &lt;ord&gt;, italic &lt;lgl&gt;, features &lt;list&gt;</span></span></span></code></pre>
 </div>
   </div>
 

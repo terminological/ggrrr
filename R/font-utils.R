@@ -4,15 +4,15 @@
 #'
 #' @param family a font family name or names
 #'
-#' @return the font family name if it can be located or an error otherwise
+#' @return the font family name if it can be located or an empty list otherwise
 #' @export
 #' @examples
 #' fonts_available(c("Arial","sdfdsfsd"))
-fonts_available = function(family = NULL) {
+fonts_available = function(family) {
   families = c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)
 
-  if (is.null(family)) {
-    return(sort(unique(families)))
+  if (rlang::is_missing(family)) {
+    return(unique(families))
   } else {
     return(family[family %in% families])
   }
@@ -24,221 +24,250 @@ fonts_available = function(family = NULL) {
 #' If this is not possible it will throw an error.
 #'
 #' @param family a font family name or names
-#' @param sub substitue missing fonts?
 #'
 #' @return the font family name if it can be located or an error otherwise
 #' @export
 #'
 #' @examples
-#' check_font("Roboto")
-check_font = function(family, sub=TRUE) {
+#' check_font(c("Roboto","Arial","Kings","EB Garamond"))
+check_font = function(family) {
 
   path = NULL
 
-  tmp = register_web_fonts(family)
-  .update_web_font_option(tmp$webfonts)
-  missing = family[family %in% tmp$unmatched]
+  .find_and_download_web_fonts(family)
+  .register_web_fonts_with_systemfont()
+  .import_systemfont_to_extrafont(family)
 
-  if (!sub) {
-    if (length(tmp$unmatched) > 0) stop("missing font family/ies: ",paste0(tmp$unmatched, collapse=","))
-    return(family)
+  sub = .substitute_fonts(family)
+
+  switched = dplyr::setdiff(sub,c(family,"sans","serif","monotype"))
+  if (length(switched) > 0) {
+    .find_and_download_web_fonts(switched)
+    .import_systemfont_to_extrafont(sub)
   }
 
-  paths = sapply(missing, function(x) systemfonts::match_font(x)$path)
-  substitues = dplyr::bind_rows(
-    systemfonts::system_fonts() %>% dplyr::select(path,family),
-    systemfonts::registry_fonts() %>% dplyr::select(path,family)
-  ) %>% dplyr::filter(path %in% paths) %>% dplyr::pull(family)
-
-  if (length(missing) > 0) message("substitute fonts: ",paste0(substitues,collapse=", "), " for ", paste0(missing,collapse=", "))
-
-  return(unique(c(family[!family %in% tmp$unmatched],substitues)))
+  return(sub)
 
 }
 
-#' Reset any custom webfonts
+
+
+
+#' Reset any custom fonts
 #'
 #' @return nothing
 #' @export
 reset_fonts = function() {
   options("ggrrr.webfonts" = list())
   systemfonts::clear_registry()
+  .reset_webfont_catalogue()
 }
 
-.get_web_font_option = function() {
-  return(getOption("ggrrr.webfonts", default=list()))
+.cache_loc = function(filename) {
+  fs::dir_create(fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"fonts"))
+  fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"fonts",fs::path_sanitize(filename))
 }
 
-.update_web_font_option = function(webfonts) {
-  options("ggrrr.webfonts" = unique(c(.get_web_font_option(), webfonts)))
-  invisible(NULL)
+.font_loc = function(filename) {
+  if (.Platform$OS.type == "unix") {
+    if(grepl("^darwin", R.version$os)) {
+      # mac
+      dir = fs::path_home_r("Library/Fonts")
+    } else {
+      # linux
+      dir = fs::path_home_r(".fonts")
+    }
+  } else {
+    # windows
+    dir = fs::path(Sys.getenv("LOCALAPPDATA"),"Microsoft/Windows/Fonts")
+  }
+  fs::dir_create(dir)
+  fs::path(dir,fs::path_sanitize(filename))
 }
 
-# Version of loadfonts from extrafonts that uses first font file it finds rather than failing if multiple are found
-#
-# @param device The output device. Can be "pdf" (the default), "postscript", or "win".
-# @param quiet If FALSE, print a status message as each font is registered. If TRUE, don't print.
-#
-# @return nothing. called for side effects
-# @export
-# loadfonts = function (device = "pdf", quiet = FALSE) {
-#   fontdata <- extrafont::fonttable()
-#   if (device == "pdf") {
-#     cfonts <- names(grDevices::pdfFonts())
-#     ffname <- "pdfFonts"
-#   }
-#   else if (device == "postscript") {
-#     cfonts <- names(grDevices::postscriptFonts())
-#     ffname <- "postscriptFonts"
-#   }
-#   else if (device == "win") {
-#     cfonts <- names(grDevices::windowsFonts())
-#     ffname <- "windowsFonts"
-#   }
-#   else {
-#     stop("Unknown device: ", device)
-#   }
-#   fontfunc <- match.fun(ffname)
-#   if (device %in% c("pdf", "postscript")) {
-#     for (family in unique(fontdata$FamilyName)) {
-#       if (family %in% cfonts) {
-#         if (!quiet)
-#           message(family, " already registered with ",
-#                   ffname, "().")
-#         (next)()
-#       }
-#       fd <- fontdata[fontdata$FamilyName == family, ]
-#       regular <- utils::head(fd$afmfile[!fd$Bold & !fd$Italic],1)
-#       bold <- utils::head(fd$afmfile[fd$Bold & !fd$Italic],1)
-#       italic <- utils::head(fd$afmfile[!fd$Bold & fd$Italic],1)
-#       bolditalic <- utils::head(fd$afmfile[fd$Bold & fd$Italic],1)
-#       if (length(regular) == 0) {
-#         if (!quiet) {
-#           message("No regular (non-bold, non-italic) version of ",
-#                   family, ". Skipping setup for this font.")
-#         }
-#         (next)()
-#       }
-#       if (length(bold) == 0)
-#         bold <- regular
-#       if (length(italic) == 0)
-#         italic <- regular
-#       if (length(bolditalic) == 0)
-#         bolditalic <- bold
-#       if (!is.na(fd$afmsymfile[1]) && fd$afmsymfile[1] !=
-#           "" && all(fd$afmsymfile[1] == fd$afmsymfile)) {
-#         symbol <- fd$afmsymfile[1]
-#       }
-#       else {
-#         symbol <- NULL
-#       }
-#       if (!quiet)
-#         message("Registering font with R using ", ffname,
-#                 "(): ", family)
-#       args <- list()
-#       args[[family]] <- grDevices::Type1Font(family, metrics = file.path(metrics_path(), c(regular, bold, italic, bolditalic, symbol)))
-#       do.call(fontfunc, args)
-#     }
-#   }
-#   else if (device == "win") {
-#     for (family in unique(fontdata$FamilyName)) {
-#       if (family %in% cfonts) {
-#         if (!quiet)
-#           message(family, " already registered with ",
-#                   ffname, "().")
-#         (next)()
-#       }
-#       fd <- fontdata[fontdata$FamilyName == family, ]
-#       if (!quiet)
-#         message("Registering font with R using ", ffname,
-#                 "(): ", family)
-#       args <- list()
-#       args[[family]] <- grDevices::windowsFont(family)
-#       do.call(fontfunc, args)
-#     }
-#   }
-# }
-#
-# metrics_path = function() {
-#   file.path(system.file(package = "extrafontdb"),"metrics")
-# }
-#
-# ttf_import = function (paths = NULL, recursive = TRUE, pattern = NULL, family)
-# {
-#   if (is.null(paths))
-#     paths <- ttf_find_default_path()
-#   ttfiles <- normalizePath(list.files(paths, pattern = "\\.ttf$",
-#                                       full.names = TRUE, recursive = recursive, ignore.case = TRUE))
-#   if (!is.null(pattern)) {
-#     matchfiles <- grepl(pattern, basename(ttfiles))
-#     ttfiles <- ttfiles[matchfiles]
-#   }
-#   message("Scanning ttf files in ", paste(paths, collapse = ", "),
-#           " ...")
-#   fontmap <- ttf_extract(ttfiles,family)
-#   fontmap <- fontmap[!is.na(fontmap$FontName), ]
-#   message("Found FontName for ", nrow(fontmap), " fonts.")
-#   afmdata <- extrafont:::afm_scan_files()
-#   fontdata <- merge(fontmap, afmdata)
-#   if (nrow(fontdata) > 0) {
-#     fontdata$package <- NA
-#     fonttable_add(fontdata)
-#   }
-# }
-#
-# ttf_extract = function (ttfiles, family = "Unknown")
-# {
-#   message("Extracting .afm files from .ttf files...")
-#   fontdata <- data.frame(fontfile = ttfiles, FontName = "",
-#                          stringsAsFactors = FALSE)
-#   outfiles <- file.path(metrics_path(), sub("\\.ttf$", "",
-#                                             basename(ttfiles), ignore.case = TRUE))
-#   dir.create(file.path(tempdir(), "fonts"), showWarnings = FALSE)
-#   tmpfiles <- file.path(tempdir(), "fonts", sub("\\.ttf$",
-#                                                 "", basename(ttfiles), ignore.case = TRUE))
-#   ttf2pt1 <- Rttf2pt1::which_ttf2pt1()
-#   if (.Platform$OS.type == "windows")
-#     args <- c("-a", "-G", "fAe")
-#   else args <- c("-a", "-GfAe")
-#   for (i in seq_along(ttfiles)) {
-#     message(ttfiles[i], appendLF = FALSE)
-#     ret <- system2(enc2native(ttf2pt1), c(args, shQuote(ttfiles[i]),
-#                                           shQuote(tmpfiles[i])), stdout = TRUE, stderr = TRUE)
-#     fontnameidx <- grepl("^FontName ", ret)
-#     if (sum(fontnameidx) == 0) {
-#       fontname <- family
-#     }
-#     else if (sum(fontnameidx) == 1) {
-#       fontname <- sub("^FontName ", "", ret[fontnameidx])
-#     }
-#     else if (sum(fontnameidx) > 1) {
-#       warning("More than one FontName found for ", ttfiles[i])
-#     }
-#     if (fontname == "" || fontname == "Unknown") {
-#       fontdata$FontName[i] <- NA
-#       message(" : No FontName. Skipping.")
-#     }
-#     else if (fontname %in% extrafont::fonttable()$FontName) {
-#       fontdata$FontName[i] <- NA
-#       message(" : ", fontname, " already registered in fonts database. Skipping.")
-#     }
-#     else {
-#       fontdata$FontName[i] <- fontname
-#       extrafont:::gzcopy_exclude(paste(tmpfiles[i], ".afm", sep = ""),
-#                      paste(outfiles[i], ".afm.gz", sep = ""), delete = TRUE,
-#                      exclusions = c("^Characters"))
-#       message(" => ", paste(outfiles[i], sep = ""))
-#     }
-#   }
-#   return(fontdata)
-# }
+## webfont catalogue ----
+
+.webfont_catalogue = new.env()
 
 
-## adapted from showtextdb ----
+#' @noRd
+#' @examples
+#' .search_webfont_services(c("Roboto","EB Garamond"))
+.search_webfont_services = function(fonts, services = names(webfont_provider), ...) {
+
+  font_family = NULL
+
+  services = match.arg(services, several.ok = TRUE)
+  deferred = fonts[!.check_webfont_catalogue(fonts)]
+
+  out = .empty_webfont_catalogue()
+
+  for (service in services) {
+    request_url = webfont_provider[[service]](deferred)
+    response_df = .parse_css(request_url)
+    out = dplyr::bind_rows(out,response_df)
+    deferred = deferred[!deferred %in% response_df$font_family]
+    if (length(deferred)==0) break;
+  }
+
+  .add_webfont_catalogue(out)
+  out = .get_webfont_catalogue() %>% dplyr::filter(font_family %in% fonts)
+
+  return(out)
+}
+
+#' @noRd
+#' @examples
+#' .get_webfont_catalogue()
+#' .webfont_catalogue
+.get_webfont_catalogue = function() {
+  if (!exists("x",envir=.webfont_catalogue)) {
+    if (fs::file_exists(.cache_loc("webfonts.csv"))) {
+      tmp =  readr::read_csv(.cache_loc("webfonts.csv"),col_types = readr::cols(.default = readr::col_character()))
+      assign("x", tmp, envir=.webfont_catalogue)
+    } else {
+      assign("x", .empty_webfont_catalogue(), envir=.webfont_catalogue)
+    }
+  }
+  return(get("x", envir = .webfont_catalogue))
+}
+
+.empty_webfont_catalogue = function() {
+  tibble::tibble(
+    font_family = character(),
+    font_style = character(),
+    font_weight = character(),
+    url = character(),
+    local = character(),
+    format = character(),
+    unicode_range = character()
+  )
+}
+
+.add_webfont_catalogue = function(css_df) {
+  tmp = dplyr::distinct(dplyr::bind_rows(
+    .get_webfont_catalogue(),
+    css_df
+  ))
+  assign("x", tmp, envir=.webfont_catalogue)
+  readr::write_csv(
+    tmp,
+    file = .cache_loc("webfonts.csv"))
+}
+
+.reset_webfont_catalogue = function() {
+  fs::file_delete(.cache_loc("webfonts.csv"))
+  assign("x", .empty_webfont_catalogue(), envir=.webfont_catalogue)
+}
+
+## check catalogues ----
+
+#' @noRd
+#' @examples
+#' .check_webfont_catalogue(c("Roboto","Times New Roman"))
+.check_webfont_catalogue = function(family) {
+  families = .get_webfont_catalogue()$font_family
+  tmp = family %in% families
+  names(tmp) = family
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' .check_systemfonts(c("Roboto","Times New Roman"))
+.check_systemfonts = function(family, valid_ps = FALSE) {
+  families = .all_system_fonts(valid_ps = valid_ps)$family
+  tmp = family %in% families
+  names(tmp) = family
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' .check_postscript_font(c("Roboto","Times New Roman"))
+.check_postscript_font = function(family) {
+  tmp = family %in% names(grDevices::postscriptFonts())
+  names(tmp) = family
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' .check_pdf_font(c("Roboto","Times New Roman"))
+.check_pdf_font = function(family) {
+  tmp = family %in% names(grDevices::pdfFonts())
+  names(tmp) = family
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' .check_extrafonts(c("Roboto","Arial","Kings","EB Garamond"))
+.check_extrafonts = function(family) {
+  tmp = family %in% extrafont::fonts()
+  names(tmp) = family
+  return(tmp)
+}
+
+## format conversion utilities ---
 
 .esc = function(names) {
   stringr::str_replace_all(names,"[[:space:]]", "+")
 }
+
+# .unquote(c("ok","'ok'","\"ok\""))
+.unquote = function(s) {
+  stringr::str_extract(s, "^('|\")?([^'\"]*)('|\")?$", group = 2)
+}
+
+.style_to_css_weight = function(style) {
+  dplyr::case_when(
+    stringr::str_detect(tolower(style), stringr::fixed("bold")) ~ "700",
+    stringr::str_detect(tolower(style), stringr::fixed("12")) ~ "700",
+    stringr::str_detect(tolower(style), stringr::fixed("regular")) ~ "400",
+    stringr::str_detect(tolower(style), stringr::fixed("normal")) ~ "400",
+    stringr::str_detect(tolower(style), stringr::fixed("08")) ~ "400",
+    stringr::str_detect(tolower(style), stringr::fixed("thin")) ~ "100",
+    stringr::str_detect(tolower(style), stringr::fixed("extra light")) ~ "200",
+    stringr::str_detect(tolower(style), stringr::fixed("light")) ~ "300",
+    stringr::str_detect(tolower(style), stringr::fixed("book")) ~ "350",
+    stringr::str_detect(tolower(style), stringr::fixed("medium")) ~ "500",
+    stringr::str_detect(tolower(style), stringr::fixed("semi bold")) ~ "600",
+    stringr::str_detect(tolower(style), stringr::fixed("extra bold")) ~ "800",
+    stringr::str_detect(tolower(style), stringr::fixed("black")) ~ "900",
+    tolower(style) == "italic" ~ "400",
+    tolower(style) == "oblique" ~ "400",
+    TRUE ~ NA_character_)
+}
+
+.style_to_css_style = function(style) {
+  dplyr::case_when(
+    stringr::str_detect(tolower(style), stringr::fixed("italic")) ~ "italic",
+    stringr::str_detect(tolower(style), stringr::fixed("oblique")) ~ "italic",
+    TRUE ~ "normal")
+}
+
+.style_to_ps_face = function(style = NULL, css_weight=.style_to_css_weight(style), css_style=.style_to_css_style(style)) {
+  dplyr::case_when(
+    css_weight == "400" & css_style == "normal" ~ "plain",
+    css_weight == "700" & css_style == "normal" ~ "bold",
+    css_weight == "400" & css_style == "italic" ~ "italic",
+    css_weight == "700" & css_style == "italic" ~ "bolditalic",
+    TRUE ~ NA_character_
+  ) %>% factor(levels=c("plain", "bold", "italic", "bolditalic"))
+}
+
+.css_format_to_extn = function(format) {
+  dplyr::case_when(
+    format == "truetype" ~ "ttf",
+    format == "opentype" ~ "otf",
+    format == "embedded-opentype" ~ "eof",
+    TRUE ~ format
+  )
+}
+
+# Webfonts ----
+## adapted from showtextdb ----
 
 webfont_provider = list(
   # google = function(fonts) {
@@ -267,152 +296,510 @@ webfont_provider = list(
   }
 )
 
-# .unquote(c("ok","'ok'","\"ok\""))
-.unquote = function(s) {
-  stringr::str_extract(s, "^('|\")?([^'\"]*)('|\")?$", group = 2)
-}
-
-.style_to_weight = function(style) {
-  dplyr::case_when(
-    stringr::str_detect(tolower(style), stringr::fixed("bold")) ~ "700",
-    stringr::str_detect(tolower(style), stringr::fixed("regular")) ~ "400",
-    stringr::str_detect(tolower(style), stringr::fixed("normal")) ~ "400",
-    stringr::str_detect(tolower(style), stringr::fixed("thin")) ~ "100",
-    stringr::str_detect(tolower(style), stringr::fixed("extra light")) ~ "200",
-    stringr::str_detect(tolower(style), stringr::fixed("light")) ~ "300",
-    stringr::str_detect(tolower(style), stringr::fixed("book")) ~ "350",
-    stringr::str_detect(tolower(style), stringr::fixed("medium")) ~ "500",
-    stringr::str_detect(tolower(style), stringr::fixed("semi bold")) ~ "600",
-    stringr::str_detect(tolower(style), stringr::fixed("extra bold")) ~ "800",
-    stringr::str_detect(tolower(style), stringr::fixed("black")) ~ "900",
-    tolower(style) == "italic" ~ "400",
-    tolower(style) == "oblique" ~ "400",
-    TRUE ~ NA_character_)
-}
-
-.style_to_style = function(style) {
-  dplyr::case_when(
-    stringr::str_detect(tolower(style), stringr::fixed("italic")) ~ "italic",
-    stringr::str_detect(tolower(style), stringr::fixed("oblique")) ~ "italic",
-    TRUE ~ "normal")
-}
-
-#' Find fonts in webfont providers
-#'
-#' Caches, registers and constructs webfont CSS font face directives.
-#'
-#' @param fonts a set of fonts as a character vector
-#' @param services one of `r paste0("'",names(webfont_provider),"'",collapse=", ")`
-#' @param ... not used
-#'
-#' @return a list containing the following:
-#' * webfonts - a list of `svglite::font_face` directives for use in embedding
-#' into svg files using the `svglite::svglite(web_fonts=...)` option.
-#' * matched - a dataframe of fonts found in the services
-#' * unmatched - a vector of fonts not matched online.
-#'
-#' @export
-#'
+#' @noRd
 #' @examples
-#' tmp = register_web_fonts("Kings")
-#' tmp$webfonts
-#' systemfonts::registry_fonts()
-register_web_fonts = function(fonts, services = names(webfont_provider), ...) {
-  name = path = .  = NULL
-  services = match.arg(services, several.ok = TRUE)
-  deferred = fonts
-  found = tibble::tibble(name = character(),
-    family = character(), weight = character(), style = character(), url = character(),
-    format=character(), unicode_range=character(), face = character()
-  )
-  for (service in services) {
-    request_url = webfont_provider[[service]](deferred)
-    res = tryCatch({
-      ret = suppressMessages(suppressWarnings(cache_download(request_url, .stale = 7, quiet=TRUE)))
-      res = readr::read_file(ret)
-    }, error=function(e) "" )
-    matched = stringr::str_detect(res, sapply(deferred, sprintf, fmt="@font-face.*\\{[^\\}]*font-family:\\s?'%s'"))
+#' url = webfont_provider$google("Kings")
+#' .parse_css(url)
+.parse_css = function(request_url) {
 
-    info = stringr::str_match_all(res, "@font-face\\s?\\{([^\\}]+)\\}")[[1]][,2]
-    info = info[info != ""]
-    family = stringr::str_extract(info, "font-family:[[:space:]]*([^:;]+);",group=1) %>% .unquote()
+  res = tryCatch({
+    ret = suppressMessages(suppressWarnings(ggrrr::cache_download(request_url, .stale = 7, quiet=TRUE, .extn="css")))
+    res = readr::read_file(ret)
+  }, error=function(e) "" )
 
-    supplied_name = names(fonts)[unlist(sapply(family, match, deferred[matched]))]
-    deferred = deferred[!matched]
+  info = stringr::str_match_all(res, "@font-face\\s?\\{([^\\}]+)\\}")[[1]][,2]
+  info = info[info != ""]
 
-    style = stringr::str_extract(info, "font-style:[[:space:]]*([^:;]+);", group=1)
+  tmp = tibble::tibble(
+    font_family = stringr::str_extract(info, "font-family:[[:space:]]*([^:;]+);",group=1) %>% .unquote(),
+    font_style = stringr::str_extract(info, "font-style:[[:space:]]*([^:;]+);", group=1),
+    font_weight = stringr::str_extract(info, "font-weight:[[:space:]]*([[:digit:]]+);", group=1),
+    url = stringr::str_extract(info, "url\\(([^\\)]+)\\)", group=1) %>% stringr::str_replace("^//", "https://"),
+    format = stringr::str_extract(info, "format\\(([^\\)]+)\\)", group=1) %>% .unquote(),
+    local = stringr::str_extract(info, "local\\(([^\\)]+)\\).*", group=1) %>% .unquote(),
     unicode_range = stringr::str_extract(info, "unicode-range:[[:space:]]*([^:;]+);", group=1)
-    weight = stringr::str_extract(info, "font-weight:[[:space:]]*([[:digit:]]+);", group=1)
-    face = paste(style, weight, sep = "")
-    face[face == "normal400"] = "plain"
-    face[face == "normal700"] = "bold"
-    face[face == "italic400"] = "italic"
-    face[face == "italic700"] = "bolditalic"
-    url = stringr::str_extract(info, "url\\(([^\\)]+)\\)", group=1) %>% stringr::str_replace("^//", "https://")
-    format = stringr::str_extract(info, "format\\(([^\\)]+)\\)", group=1) %>% .unquote()
-    format[format == "truetype"] = "ttf"
-    format[format == "opentype"] = "otf"
-    format[format == "embedded-opentype"] = "eof"
-    local = stringr::str_extract(info, "local\\(([^\\)]+)\\).*", group=1) %>% .unquote()
+  )
 
-    if(is.null(supplied_name)) supplied_name = family # ifelse(is.na(local), family, local)
-
-    # format = gsub(".*format\\(([^()]+)\\).*", "\\1", info)
-    found = found %>% dplyr::bind_rows(
-      tibble::tibble(
-        name = supplied_name, family = family, weight = weight, style=style, url = url, format=format,
-        unicode_range = unicode_range, face=face
-      )
-    )
-    if (length(deferred) == 0) break;
-  }
-  unmatched = deferred[!deferred %in% systemfonts::system_fonts()$family]
-
-  if (nrow(found) > 0) {
-    sysf = systemfonts::system_fonts() %>%
-      dplyr::mutate(
-        weight = .style_to_weight(style),
-        style = .style_to_style(style)
-      )
-    # download and cache
-    present = found %>% dplyr::select(-name) %>% dplyr::inner_join(sysf %>% dplyr::select(name,family,path,style,weight), by=c("family","style","weight"))
-    missing = found %>%
-      dplyr::anti_join(present, by="url") %>%
-      dplyr::mutate(
-        path = suppressMessages(purrr::map_chr(url, cache_download, quiet=TRUE, .progress = TRUE))
-      )
-    # register in systemfonts
-    registered = missing %>% dplyr::select(name,face,path) %>%
-      tidyr::pivot_wider(names_from = face, values_from = path) %>%
-      dplyr::mutate(
-        dplyr::across(tidyselect::everything(), ~ ifelse(is.na(.x), plain, .x) )
-      ) %>%
-      dplyr::mutate(
-        err = purrr::pmap_chr(., .f = function(...) {tryCatch(systemfonts::register_font(...) %||% "ok", error = function(e) e$message)})
-      )
-    regf = systemfonts::registry_fonts() %>%
-      dplyr::mutate(
-        weight = .style_to_weight(style),
-        style = .style_to_style(style)
-      )
-    webfonts = dplyr::bind_rows(
-        present,
-        missing %>% dplyr::semi_join(regf, by=c("path"))
-      ) %>%
-      dplyr::select(local = name, family, weight, style, format, url) %>%
-      tidyr::pivot_wider(names_from = format, values_from = url) %>%
-      purrr::pmap(.f = svglite::font_face)
-
-    return(list(
-      webfonts = webfonts,
-      matched = found,
-      unmatched = unmatched
-    ))
-
-  }
-  return(list(
-    webfonts = list(),
-    matched = found,
-    unmatched = unmatched
-  ))
+  return(tmp)
 }
+
+
+
+#' @noRd
+#' @examples
+#' tmp = .search_webfont_services(c("Roboto","EB Garamond")) %>% dplyr::mutate(
+#'    face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
+#'    extn = .css_format_to_extn(format),
+#'    locn = .cache_loc(sprintf("%s-%s.%s",font_family, face, extn))
+#' )
+#' tmp %>% dplyr::mutate(ttf = purrr::map2_chr(url, locn, ~ .get_web_ttf(.x,.y), .progress="Downloading fonts"))
+.get_web_ttf = function(url, ttf) {
+  if (fs::file_exists(ttf)) return(ttf)
+  #TODO: consider purrr:safely
+  try({download.file(url,destfile = ttf,quiet = TRUE)},silent = TRUE)
+  if (fs::file_exists(ttf)) return(ttf)
+  return(NA_character_)
+}
+
+#' @noRd
+#' @examples
+#' .get_font_face(c("Roboto", "EB Garamond", "Kings"))
+#'
+.get_font_face = function(fonts) {
+
+  font_family = font_weight = font_style = family = ps_face = url_type = . = NULL
+
+  tmp = .get_webfont_catalogue() %>% dplyr::filter(font_family %in% fonts) %>% dplyr::mutate(ps_face = .style_to_ps_face(css_weight = font_weight, css_style = font_style))
+  tmp2 = .all_system_fonts() %>% dplyr::filter(family %in% fonts & !is.na(ps_face)) %>% dplyr::select(family, ps_face, source) %>% dplyr::distinct()
+  tmp3 = tmp %>% dplyr::left_join(tmp2, by=c("font_family" = "family","ps_face"))
+  tmp4 = tmp3 %>% dplyr::mutate(
+      local = dplyr::if_else(is.na(source), local,font_family),
+      url_type = .css_format_to_extn(format)
+    ) %>%
+    dplyr::select(family = font_family, style = font_style, weight = font_weight, local, url_type, url) %>%
+    # dplyr::group_by(family, style, weight, local, url_type) %>%
+    # dplyr::arrange(dplyr::desc(source)) %>%
+    # dplyr::filter(dplyr::row_number() == 1) %>%
+    # dplyr::ungroup() %>%
+    # dplyr::select(-source) %>%
+    dplyr::distinct() %>%
+    tidyr::pivot_wider(names_from = url_type, values_from = url, values_fn = dplyr::first)
+  tmp5 = tmp4 %>% dplyr::filter(!is.na(local)) %>% dplyr::mutate(font_face = purrr::pmap(., svglite::font_face))
+  tmp6 = tmp4 %>% dplyr::filter(is.na(local)) %>% dplyr::select(-local) %>% dplyr::mutate(font_face = purrr::pmap(., svglite::font_face))
+  return(c(tmp5$font_face,tmp6$font_face))
+}
+
+# Worfkflow ----
+
+#' @noRd
+#' @examples
+#' tmp = .find_and_download_web_fonts("Kings")
+#' tmp
+#'
+.find_and_download_web_fonts = function(fonts, services = names(webfont_provider), ...) {
+
+  name = path = .  = font_family = font_weight = font_style = face = extn = locn = NULL
+
+  services = match.arg(services, several.ok = TRUE)
+
+  webfonts = .search_webfont_services(fonts, services)
+  missing_webfonts = webfonts %>% filter(!.check_systemfonts(font_family))
+
+  # download any new fonts.
+  tmp = missing_webfonts %>% dplyr::mutate(
+          face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
+          extn = .css_format_to_extn(format),
+          locn = .font_loc(sprintf("%s-%s.%s",font_family, face, extn))
+        ) %>% dplyr::mutate(
+          ttf = purrr::map2_chr(url, locn, ~ .get_web_ttf(.x,.y), .progress="Downloading fonts")
+        )
+
+  #TODO: what woudl happen if we rebuild systemfonts cache at this point?
+  # e.g. systemfonts::reset_font_cache()
+  # systemfonts::system_fonts()
+  # it might prevent the webfonts and need for chrome and maybe rsvg can work
+  # if the font is actually installed. Maybe.
+
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' tmp = .find_and_download_web_fonts("Kings")
+#' .register_web_fonts_with_systemfont(tmp)
+.register_web_fonts_with_systemfont = function(webfonts = .get_webfont_catalogue()) {
+
+  font_weight = font_style = font_family = face = extn = ttf = font_family = TRUE
+
+  unregistered_with_systemfonts = webfonts %>% dplyr::anti_join(.all_system_fonts(valid_ps=FALSE), by=c("font_family"="family"))
+
+  # register any newly downloaded fonts with systemfonts
+  tmp2 = unregistered_with_systemfonts  %>% dplyr::mutate(
+    face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
+    extn = .css_format_to_extn(format),
+    ttf = .font_loc(sprintf("%s-%s.%s",font_family, face, extn))
+  ) %>% dplyr::select(
+      name = font_family, face, ttf
+    ) %>% tidyr::pivot_wider(
+      names_from = face, values_from = ttf
+    )
+
+  outcome = tmp2 %>% purrr::pwalk( purrr::safely(systemfonts::register_font), .progress = "Registering fonts with systemfonts" )
+
+  matched = webfonts %>%
+    dplyr::left_join(.all_system_fonts(valid_ps=FALSE), by=c("font_family"="family")) %>%
+    dplyr::mutate(family = font_family)
+
+  #TODO: there can be a mismatch here due to the fact that systemfonts will
+  # reuse plain face for bold and bolditalic if not given.
+
+  return(matched)
+
+}
+
+
+#' @noRd
+#' @examples
+#' .import_systemfont_to_extrafont("Courier New")
+#'
+.import_systemfont_to_extrafont = function(family = .all_system_fonts(ttf_only = TRUE)$family) {
+
+  path = name = ttf_files = NULL
+
+  localfonts = unique(.all_system_fonts(ttf_only = TRUE)$family)
+  # check what is locally available in systemfonts but not registered with grDevices
+  toadd = .extrafont_missing(dplyr::intersect(family,localfonts))
+  tmp = toadd %>%
+    dplyr::select(ttf_files = path, family = name) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(family) %>%
+    dplyr::summarise(ttf_files = list(ttf_files))
+  tmp %>%
+    purrr::pwalk(purrr::safely(.extrafont_ttf_import))
+  suppressMessages(extrafont::loadfonts())
+}
+
+.import_systemfont_to_grdevices = function(family = .all_system_fonts(valid_ps = TRUE)$family) {
+
+  localfonts = unique(.all_system_fonts(valid_ps = TRUE)$family)
+  # check what is locally available in systemfonts but not registered with grDevices
+  toadd = .grdevices_missing(dplyr::intersect(family,localfonts))
+
+  tmp3 = .register_ttf(toadd$name, toadd$plain, toadd$bold, toadd$italic, toadd$bolditalic)
+
+}
+
+
+# systemfonts fonts ----
+
+#' @noRd
+#' @examples
+#' .all_system_fonts() %>% dplyr::pull(family) %>% unique()
+.all_system_fonts = function(valid_ps = FALSE, ttf_only = valid_ps) {
+
+  weight = style = css_weight = css_style = path = ps_face = type = family =
+    monospace = name = NULL
+
+  tmp = dplyr::bind_rows(
+    systemfonts::registry_fonts() %>% dplyr::mutate(weight = as.character(weight), source = "registry"),
+    systemfonts::system_fonts() %>% dplyr::mutate(weight = as.character(weight), source = "system")
+  ) %>% dplyr::mutate(
+    source = factor(source, levels=c("registry","system")),
+    css_weight = .style_to_css_weight(style),
+    css_style = .style_to_css_style(style),
+    ps_face = .style_to_ps_face(style, css_weight, css_style),
+    type = fs::path_ext(path)
+  )
+  if (ttf_only) tmp = tmp %>% dplyr::filter(!is.na(ps_face) & type=="ttf")
+  if (valid_ps) {
+    tmp = tmp %>% dplyr::group_by(family, monospace, ps_face) %>%
+      dplyr::arrange(monospace, name) %>%
+      dplyr::filter(dplyr::row_number()==1) %>%
+      dplyr::group_by(family) %>%
+      dplyr::filter(dplyr::n() == 4) %>%
+      dplyr::ungroup()
+  }
+  return(tmp)
+}
+
+#' @noRd
+#' @examples
+#' .substitute_fonts(c("Roboto","Arial","Kings"))
+.substitute_fonts = function(family) {
+
+  path = NULL
+
+  tmp = tibble::tibble(
+    family = family,
+    path = sapply(family, function(x) systemfonts::match_font(x)$path)
+  ) %>% dplyr::inner_join(
+    .all_system_fonts(valid_ps = FALSE) %>% dplyr::select(sub=family,path), by="path"
+  ) %>% dplyr::select(family, sub) %>%
+    dplyr::distinct()
+  names(tmp$sub) = tmp$family
+  return(tmp$sub)
+}
+
+# extrafont fonts ----
+
+
+#' @noRd
+#' @examples
+#' .extrafont_missing("EB Garamond")
+.extrafont_missing = function(family) {
+
+  path = ps_face = name = NULL
+
+  tmp = family
+
+  installed = extrafont::fonttable()$FamilyName
+  to_install = family[!family %in% installed]
+
+  installable = .all_system_fonts(ttf_only=TRUE) %>%
+    dplyr::filter(family %in% to_install) %>%
+    dplyr::filter(fs::path_ext(path) == "ttf") %>%
+    dplyr::select(name=family,path,ps_face) %>%
+    dplyr::group_by(name,ps_face) %>%
+    dplyr::filter(dplyr::row_number() == 1) %>%
+    dplyr::ungroup()
+
+
+  # uninstallable = dplyr::setdiff(to_install,installable$family)
+
+  return(installable)
+
+}
+
+
+.extrafont_ttf_import = function(ttf_files, family) {
+
+  weight = fontname = familyname = fullname = italicangle = NULL
+
+  if (length(ttf_files) == 0) return(NULL)
+  # TODO: write afm gzipped here:
+  # extrafont:::metrics_path()
+  metrics_path = optional_fn("extrafont","metrics_path")
+  ttf_extract = optional_fn("extrafont","ttf_extract")
+  fonttable_add = optional_fn("extrafont","fonttable_add")
+
+  fontmap <- suppressMessages(ttf_extract(ttf_files))
+  afmfiles = fs::path(metrics_path(), fs::path_file(fontmap$fontfile) %>% fs::path_ext_set("afm.gz"))
+  lapply(afmfiles, purrr::safely(.set_afm_meta), familyname=family)
+  fontdata = .get_afm_meta(afmfiles)
+  fontdata = fontdata %>% mutate(
+    Bold = stringr::str_detect(weight, "Bold") | stringr::str_detect(fontname, "Bold|12"),
+    Italic = stringr::str_detect(weight, "Italic|Oblique") | stringr::str_detect(fontname, "Italic|Oblique"),
+    Symbol = stringr::str_detect(familyname, "Symbol"),
+    afmfile = fs::path_file(afmfiles),
+    fontfile = ttf_files,
+    afmsymfile = NA
+  ) %>% dplyr::rename(
+    FamilyName = familyname,
+    FontName = fontname,
+    FullName = fullname
+  ) %>% select(c(-weight,-italicangle))
+
+  # then continue as before
+  # fontmap <- fontmap[!is.na(fontmap$FontName), ]
+  # # message("Found FontName for ", nrow(fontmap), " fonts.")
+  # afmdata <- extrafont:::afm_scan_files()
+  #
+  # fontdata <- afmdata %>% dplyr::filter(afmfile %in% afmfiles)
+
+  if (nrow(fontdata) > 0) {
+    fontdata$package <- NA
+    suppressMessages(fonttable_add(fontdata))
+  }
+  return(NULL)
+}
+
+# grDevices fonts ----
+
+#' @noRd
+#' @examples
+#' .grdevices_missing("Courier New")
+#'
+.grdevices_missing = function(family) {
+
+  path = ps_face = NULL
+
+  tmp = family
+
+  both_present = family[.check_postscript_font(family) & .check_pdf_font(family)]
+
+  to_install = dplyr::setdiff(tmp, both_present)
+
+  installable = .all_system_fonts(valid_ps = TRUE) %>%
+      dplyr::filter(family %in% to_install) %>%
+      dplyr::select(name=family,path,ps_face) %>%
+      tidyr::pivot_wider(names_from=ps_face, values_from=path) %>%
+      dplyr::ungroup()
+
+  if (nrow(installable) == 0) {
+    installable = installable %>% dplyr::mutate(
+      plain = character(),
+      italic = character(),
+      bold = character(),
+      bolditalic = character()
+    )
+  }
+
+  # uninstallable = dplyr::setdiff(to_install,installable$family)
+
+  return(installable)
+
+}
+
+#' @noRd
+#' @examples
+#' library(magrittr)
+#' toadd = .grdevices_missing(.all_system_fonts()$family)
+#' # toadd = .grdevices_missing(sample(.all_system_fonts()$family,5))
+#' # toadd = .grdevices_missing("Courier New")
+#' tmp = .register_ttf(toadd$name, toadd$plain, toadd$bold, toadd$italic, toadd$bolditalic)
+#' tmp$status
+.register_ttf = function(name, plain, bold = plain, italic = plain, bolditalic = plain, ...) {
+  # https://github.com/sjewo/extrafont/blob/master/R/truetype.r
+
+  face = registered_pdf = registered_ps = ttf = loc = afm = files = missing_afm = type1 = NULL
+
+  tmp = tibble::tibble(
+    name = name,
+    plain = plain,
+    bold = bold,
+    italic = italic,
+    bolditalic = bolditalic
+  ) %>% dplyr::mutate(
+    registered_pdf  = .check_pdf_font(name),
+    registered_ps  = .check_postscript_font(name)
+  ) %>% tidyr::pivot_longer(
+    cols = c(plain, bold, italic, bolditalic),
+    names_to = "face", values_to = "ttf"
+  ) %>% dplyr::mutate(
+    loc = .cache_loc(sprintf("%s-%s.afm",name,face)),
+    afm = dplyr::if_else(
+      !registered_pdf | !registered_ps,
+      purrr::map2_chr(ttf, loc, ~ .exec_ttf2afm(.x, .y), .progress = "Converting TTF to AFM"),
+      NA_character_
+    )
+  ) %>% dplyr::select(
+    -loc
+  )
+
+  tmp = tmp %>% tidyr::nest(
+    files = c(face,ttf,afm)
+  ) %>% dplyr::mutate(
+    missing_afm = purrr::map_lgl(files, ~ any(is.na(.x$afm)))
+  ) %>% dplyr::mutate(
+    type1 = dplyr::if_else(
+      !missing_afm,
+      purrr::map2(name, files, ~Type1Font(.x, .y$afm)),
+      list(NULL)
+    )
+  )
+
+
+
+  tmp2 = tmp %>% dplyr::filter(!registered_ps & !missing_afm) %>%
+    dplyr::select(name,type1)
+  arg2 = tmp2$type1
+  names(arg2) = tmp2$name
+  message(tmp2$name)
+  browser()
+
+  try({
+    suppressMessages(do.call(grDevices::postscriptFonts, args = arg2))
+  })
+
+  tmp3 = tmp %>% dplyr::filter(!registered_pdf & !missing_afm) %>%
+    dplyr::select(name,type1)
+  arg3 = tmp3$type1
+  names(arg3) = tmp3$name
+  message(tmp3$name)
+  browser()
+
+  try({
+    suppressMessages(do.call(grDevices::pdfFonts, args = arg3))
+  })
+
+  tmp = tmp %>% dplyr::mutate(
+    new_registered_pdf  = .check_pdf_font(name),
+    new_registered_ps  = .check_postscript_font(name)
+  )
+
+  tmp = tmp %>% dplyr::mutate(
+    status = dplyr::case_when(
+      is.null(.ttf2afm_binary) ~ "SKIP: no binary for ttf2afm",
+      registered_pdf & registered_ps ~ sprintf("SKIP: %s already registered",name),
+      missing_afm ~ sprintf("SKIP: conversion failed for the font %s",name),
+      new_registered_pdf & new_registered_ps ~ sprintf("OK: registered %s for ps and pdf",name),
+      new_registered_ps ~ sprintf("OK: registered %s for ps",name),
+      new_registered_pdf ~ sprintf("OK: registered %s for pdf",name),
+      TRUE ~ sprintf("FAIL: unable to register %s",name)
+    )
+  )
+
+  return(tmp)
+
+}
+
+#' @noRd
+#' @examples
+#' .ttf2afm_binary()
+.ttf2afm_binary = function() {
+  tmp = getOption("ggrrr.ttf2afm", default = Sys.which("ttf2afm"))
+  if (tmp == "") return(NULL)
+  return(enc2native(tmp))
+}
+
+#  ttf2afm /Library/Fonts/Impact.ttf /out/path/Impact
+
+#' @noRd
+#' @examples
+#' ttf = systemfonts::system_fonts() %>% dplyr::filter(family == "Roboto") %>% dplyr::pull(path) %>% utils::head(1)
+#' afm = fs::path(tempdir(),fs::path_file(ttf)) %>% fs::path_ext_set("afm")
+#' converted_afm = .exec_ttf2afm(ttf, afm, overwrite=TRUE)
+#' tmp = readr::read_lines(converted_afm)
+.exec_ttf2afm = function(ttf, afm =fs::path_ext_set(ttf,"afm"), binary = .ttf2afm_binary(), overwrite=FALSE, family=NULL) {
+
+  #TODO: fall back to Rttf2pt1 when no binary
+  if (fs::file_exists(afm) && !overwrite) return(afm)
+  fs::dir_create(fs::path_dir(afm))
+  if (is.null(binary)) return(NA_character_)
+  tmp = suppressWarnings(system2(
+    binary,
+    c(shQuote(ttf), "-o", shQuote(afm)),
+    stdout = NULL, stderr = NULL,timeout = 1))
+  if (tmp != 0) fs::file_delete(afm)
+  if (!fs::file_exists(afm)) return(NA_character_)
+
+  if (is.null(family)) {
+    tmp = .get_afm_meta(afm)
+    family = tmp$familyname
+  }
+
+  .set_afm_meta(afm, familyname = family)
+
+  return(afm)
+}
+
+#' @noRd
+#' @examples
+#' ttf = systemfonts::system_fonts() %>% dplyr::filter(family == "Carlito") %>% dplyr::pull(path) %>% utils::head(1)
+#' afm = fs::path(tempdir(),fs::path_file(ttf)) %>% fs::path_ext_set("afm")
+#' converted_afm = .exec_ttf2afm(ttf, afm, overwrite=TRUE)
+#' .get_afm_meta(converted_afm)
+#' .get_afm_meta(fs::dir_ls(extrafont:::metrics_path(),glob = "*.afm.gz"))
+.get_afm_meta = function(afm) {
+  tmp = readr::read_lines(afm, progress = FALSE)
+  tibble::tibble(
+    fontname = stringr::str_remove(tmp[stringr::str_starts(tmp,"FontName ")],"FontName "),
+    fullname = stringr::str_remove(tmp[stringr::str_starts(tmp,"FullName ")],"FullName "),
+    familyname = stringr::str_remove(tmp[stringr::str_starts(tmp,"FamilyName ")],"FamilyName "),
+    weight = stringr::str_remove(tmp[stringr::str_starts(tmp,"Weight ")],"Weight "),
+    italicangle = stringr::str_remove(tmp[stringr::str_starts(tmp,"ItalicAngle ")],"ItalicAngle ")
+  )
+}
+
+#' @noRd
+#' @examples
+#' .set_afm_meta(converted_afm, familyname="NEW")
+#' .get_afm_meta(converted_afm)
+.set_afm_meta = function(afm, fontname = NULL, fullname = NULL, familyname = NULL, weight = NULL, italicangle = NULL) {
+  if (!fs::file_exists(afm)) return(NA_character_)
+  tmp = readr::read_lines(afm)
+  # strip brackets
+  # tmp = stringr::str_replace_all(tmp, "\\(|\\)", "")
+  # tmp = stringr::str_replace_all(tmp, "^(Version [^;]*);.*$", "\\1")
+  tmp = tmp[!stringr::str_starts(tmp,"Notice ")]
+  tmp = tmp[!stringr::str_starts(tmp,"Version ")]
+
+  if (!is.null(fontname)) tmp[stringr::str_starts(tmp,"FontName ")] = sprintf("FontName %s",fontname)
+  if (!is.null(fullname)) tmp[stringr::str_starts(tmp,"FullName ")] = sprintf("FullName %s",fullname)
+  if (!is.null(familyname)) tmp[stringr::str_starts(tmp,"FamilyName ")] = sprintf("FamilyName %s",familyname)
+  if (!is.null(weight)) tmp[stringr::str_starts(tmp,"Weight ")] = sprintf("Weight %s",weight)
+  if (!is.null(italicangle)) tmp[stringr::str_starts(tmp,"ItalicAngle ")] = sprintf("ItalicAngle %s",italicangle)
+  readr::write_lines(tmp,file = afm,append = FALSE)
+  return(afm)
+}
+

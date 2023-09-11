@@ -2,7 +2,7 @@
 % Please edit documentation in R/font-utils.R
 \name{reset_fonts}
 \alias{reset_fonts}
-\title{Reset any custom webfonts}
+\title{Reset any custom fonts}
 \usage{
 reset_fonts()
 }
@@ -10,5 +10,5 @@ reset_fonts()
 nothing
 }
 \description{
-Reset any custom webfonts
+Reset any custom fonts
 }

@@ -27,3 +27,4 @@ The time is configurable and option(cache.time_day_starts = 0) would be midnight
 Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
 it may end up using old data.
 }
+\keyword{internal}

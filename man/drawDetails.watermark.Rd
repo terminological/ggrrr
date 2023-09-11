@@ -3,13 +3,12 @@
 \name{drawDetails.watermark}
 \alias{drawDetails.watermark}
 \title{Internal function for drawing watermark on ggplots}
-\usage{
-drawDetails.watermark(x, rot = 45, ...)
-}
 \arguments{
 \item{x}{the grob}
 
 \item{rot}{degrees of rotation}
+
+\item{alpha}{the transparency}
 
 \item{...}{ignored}
 }

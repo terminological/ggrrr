@@ -4,13 +4,13 @@
 \alias{fonts_available}
 \title{Which fonts are available on this system.}
 \usage{
-fonts_available(family = NULL)
+fonts_available(family)
 }
 \arguments{
 \item{family}{a font family name or names}
 }
 \value{
-the font family name if it can be located or an error otherwise
+the font family name if it can be located or an empty list otherwise
 }
 \description{
 Which fonts are available on this system.

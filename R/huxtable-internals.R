@@ -13,6 +13,16 @@
   return(family2[[1]])
 }
 
+# Fonts and colours from plot ----
+
+#' @noRd
+#' @examples
+#' .hux_used_fonts(iris %>% hux_default_layout(defaultFont="Roboto"))
+.hux_used_fonts = function(hux) {
+  tmp2 = attributes(hux)
+  return(unique(as.vector(tmp2$font)))
+}
+
 # A tidy article theme for huxtables
 .hux_default_layout = function(hux, defaultFontSize=8, defaultFont = "Roboto", headerRows = 1) {
   defaultFont = .check_font(defaultFont)

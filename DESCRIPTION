@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9018
+Version: 0.0.0.9019
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -41,26 +41,30 @@ Imports:
     stringr,
     tidyselect,
     systemfonts,
+    extrafont,
     scales,
     functional,
     colorspace,
     svglite,
-    pdftools,
     rsvg,
     utils,
     stats,
     graphics,
     grDevices,
     knitr,
-    base64enc
+    base64enc,
+    ragg
 Suggests: 
     tidyverse,
     rmarkdown,
     gt,
     rJava,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    Rttf2pt1 (>= 1.3.12)
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
 URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr
 BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3
+SystemRequirements: Google Chrome or other Chromium-based browser.
+    chromium: chromium (rpm) or chromium-browser (deb)

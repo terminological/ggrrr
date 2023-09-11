@@ -156,18 +156,23 @@ gg_resize_legend = .gg_resize_legend
 # does this need to be global to work or is package scope ok?
 
 #' Internal function for drawing watermark on ggplots
+#'
 #' @param x the grob
 #' @param rot degrees of rotation
+#' @param alpha the transparency
 #' @param ... ignored
 #'
 #' @return a grid object
-#' @export drawDetails.watermark
-drawDetails.watermark = function(x, rot = 45, ...){
+#' @importFrom grid drawDetails
+#' @name drawDetails.watermark
+NULL
+
+drawDetails.watermark <<- function(x, rot = 45, alpha = 0.1, ...){
   cex <- min(
     grid::convertX(grid::unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(grid::unit(1,"grobwidth", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE),
     grid::convertY(grid::unit(0.9,"npc"), "mm", valueOnly=TRUE) / grid::convertUnit(grid::unit(1,"grobheight", grid::textGrob(x$lab, rot=rot)), "mm",valueOnly=TRUE)
   )
-  return(grid::grid.text(x$lab,  rot=rot, gp=grid::gpar(cex = cex, col="black", fontface = "bold", alpha = 0.05)))
+  return(grid::grid.text(x$lab,  rot=rot, gp=grid::gpar(cex = cex, col="black", fontface = "bold", alpha = alpha)))
 }
 
 #' Add in a watermark to plots
@@ -256,7 +261,7 @@ logit_trans <- function() {
 #'   gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
 #' }
 gg_simple_table = function(df, pts=8, font = "sans", unwrapped = FALSE) {
-  font = ggrrr::check_font(font, sub=TRUE)
+  font = ggrrr::check_font(font)
   p = suppressWarnings(suppressMessages({
     ttheme = gridExtra::ttheme_minimal(
       base_size = pts, base_colour = "black", base_family = font,
@@ -463,6 +468,7 @@ std_size = list(
     .Platform$OS.type,
     windows = {
       res = tryCatch({
+        # unlist(utils::readRegistry('MSEdgeHTM\shell\open\command', 'HCR'))
         unlist(utils::readRegistry('ChromeHTML\\shell\\open\\command', 'HCR'))
       }, error = function(e) '')
       res = unlist(strsplit(res, '"'))
@@ -522,7 +528,9 @@ window.onload = init;
 ",svg_file)
   readr::write_file(html, tmp_html)
   out = system2(
-    chrome_binary, args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdf_file),tmp_html),
+    chrome_binary,
+    # args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdf_file), tmp_html),
+    args=c("--headless", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdf_file), tmp_html),
     stdout = NULL, stderr = NULL)
   if (out != 0) {
     stop("Unable to process SVG file: ",svg_file)
@@ -589,8 +597,6 @@ window.onload = init;
 #' @param maxHeight maximum height in inches
 #' @param aspectRatio defaults to maxWidth/maxHeight
 #' @param formats some of svg, png, pdf, Rdata, ...
-#' @param web_fonts (optional) a list of `svglite::font_face` declarations.
-#'  populated automatically by `check_font()`
 #' @inheritDotParams svglite::svglite
 #'
 #' @keywords plot
@@ -600,15 +606,28 @@ window.onload = init;
 #' @export
 #' @examples
 #' library(tidyverse)
+#' gg_pedantic( )
 #' p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) + ggplot2::geom_point()
-#' p %>% gg_save_as(filename=tempfile(),maxWidth=4,maxHeight=4)
+#' # p %>% gg_save_as(filename="~/tmp/plot_example",maxWidth=4,maxHeight=4)
+#' p %>% gg_save_as(filename=tempfile())
+#'
+#' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+#'   ggplot2::theme_minimal(base_family="Roboto")+
+#'   ggplot2::geom_point()+
+#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+#'   ggplot2::labs(tag = "A")+
+#'   ggplot2::xlab("Carat\u2082")+
+#'   ggplot2::ylab("price\u2265")
+#' # plot %>% gg_save_as(filename="~/tmp/plot_example_2")
+#' plot %>% gg_save_as(filename=tempfile())
 gg_save_as = function(plot,filename = tempfile(),
                       size = std_size$half, maxWidth = size$width, maxHeight = size$height,
                       aspectRatio=maxWidth/maxHeight,
                       formats = getOption("ggrrr.formats",default = c("svg","png","pdf")),
-                      web_fonts=.get_web_font_option(),
                       ...) {
 
+  fonts = .gg_used_fonts(plot)
+  web_fonts = .get_font_face(fonts)
 
   if ("formatted.table" %in% class(plot)) {
     # override width specificially for formatted tables
@@ -629,10 +648,14 @@ gg_save_as = function(plot,filename = tempfile(),
   # }
   # just better to let ggplot lay it out
 
+  filename = fs::path_expand_r(filename)
   dir = fs::path_dir(filename)
-  if(dir==".") stop("directory not given. filename must be a full path (use here::here function).")
-  if(fs::path_ext(filename) %in% c("png","pdf","Rdata")) formats = fs::path_ext(filename)
-  if (!dir.exists(dir)) dir.create(dir,recursive = TRUE)
+  if(!fs::is_absolute_path(dir)) {
+    dir = fs::path_abs(dir,getwd())
+    filename = fs::path_abs(filename,getwd())
+  }
+  if(fs::path_ext(filename) %in% c("svg","png","pdf","jpg","tiff","Rdata")) formats = fs::path_ext(filename)
+  fs::dir_create(dir)
   filename = fs::path_ext_remove(filename)
   withExt = function(extn) {fs::path_ext_set(filename,extn)}
 
@@ -660,35 +683,76 @@ gg_save_as = function(plot,filename = tempfile(),
     height = out$height,
     bg = "transparent", device = svglite::svglite, web_fonts=web_fonts, ...);
 
-  if (any(c("pdf","jpg","png","tiff") %in% formats)) {
+  # if (any(c("pdf","jpg","png","tiff") %in% formats)) {
     if ("pdf" %in% formats) {
       pdf_loc = withExt("pdf")
       out$pdf = withExt("pdf")
-    } else {
-      pdf_loc = tempfile(fileext = ".pdf")
+    # } else {
+    #   pdf_loc = tempfile(fileext = ".pdf")
+    # }
+
+      tryCatch({
+
+        if (any(fonts %in% systemfonts::registry_fonts()$family)) stop("webfonts required")
+
+        rsvg::rsvg_pdf(svg_loc, pdf_loc) #, css = web_fonts)
+
+        # ggplot2::ggsave(
+        #   pdf_loc,
+        #   plot,
+        #   width = out$width,
+        #   height = out$height,
+        #   bg = "transparent", device = grDevices::cairo_pdf, ...);
+
+        #TODO: svg2pdf via V8? https://github.com/yWorks/svg2pdf.js/tree/master
+
+        extrafont::embed_fonts(pdf_loc)
+        },
+        error = function(e) {
+          message("chrome fallback: ",e$message)
+          .print_svg_with_chrome(svg_loc, pdf_loc)
+          extrafont::embed_fonts(pdf_loc)
+        }
+
+      )
     }
 
-    tryCatch(
-      rsvg::rsvg_pdf(svg_loc, pdf_loc),
-      error = function(e) .print_svg_with_chrome(svg_loc, pdf_loc)
-    )
+
 
     if ("png" %in% formats) {
-      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
+      ggplot2::ggsave(
+        withExt("png"),
+        plot,
+        width = out$width,
+        height = out$height,
+        bg = "transparent", device = ragg::agg_png, dpi = 300, ...);
+      #suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
       out$png = withExt("png")
     }
 
     if ("jpg" %in% formats) {
-      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
+      ggplot2::ggsave(
+        withExt("jpg"),
+        plot,
+        width = out$width,
+        height = out$height,
+        bg = "transparent", device = ragg::agg_jpeg, dpi = 300, ...);
+      # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
       out$jpg = withExt("jpg")
     }
 
     if ("tiff" %in% formats) {
-      suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
+      ggplot2::ggsave(
+        withExt("tiff"),
+        plot,
+        width = out$width,
+        height = out$height,
+        bg = "transparent", device = ragg::agg_tiff, dpi = 300, ...);
+      # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
       out$tiff = withExt("tiff")
     }
 
-  }
+  #}
 
   return(structure(out, class="rendered_plot"))
 }
@@ -704,11 +768,17 @@ print.rendered_plot = function(x,...) {
 
   if (interactive()) {
 
+    mktmp = function(file) {
+      tmp = tempfile()
+      fs::file_copy(file, tmp)
+      return(tmp)
+    }
+
     # open the pdf or png in a viewer to check dimensions
     v = getOption("viewer", utils::browseURL)
-    if (!is.null(x$pdf)) v(x$pdf)
-    else if (!is.null(x$png)) v(x$png)
-    else if (!is.null(x$svg)) v(x$svg)
+    if (!is.null(x$png)) v(mktmp(x$png))
+    else if (!is.null(x$svg)) v(mktmp(x$svg))
+    else if (!is.null(x$pdf)) utils::browseURL(x$pdf)
     else {
       # this will generally open in a viewer and will output pdf by default
       # grDevices::dev.new(width=x$width,height=x$height,unit="in",noRStudioGD = TRUE)
@@ -747,26 +817,36 @@ as.character.rendered_plot = function(x, ...) {
 #' Knit a rendered_plot object
 #'
 #' @param x the rendered_plot
+#' @param options the chunk options
 #' @param ... not used
 #'
 #' @importFrom knitr knit_print
 #'
 #' @return nothing - used for side effects
 #' @export
-knit_print.rendered_plot  = function(x,...) {
+knit_print.rendered_plot  = function(x, options, ...) {
   # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
+  options$width = x$width
+  options$height = x$height
   if (.is_html_output()) {
     if (!is.null(x$png)) {
       return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
       # return(knitr::include_graphics(path = x$png, dpi=300))
-    } else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
-    else return(knitr::knit_print(x$plot, ...))
+    } else if (!is.null(x$svg)) {
+      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$svg, mime = "image/svg+xml"))))
+      # N.B. don't technically need to encode: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
+      # return(knitr::include_graphics(path = x$svg))
+    } else {
+      return(knitr::knit_print(x$plot, options, ...))
+    }
     # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
   } else if (.is_latex_output()) {
     if (!is.null(x$pdf)) return(knitr::include_graphics(path = x$pdf))
     else if (!is.null(x$png)) return(knitr::include_graphics(path = x$png,auto_pdf = TRUE, dpi=300))
-    else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
-    else return(knitr::knit_print(x$plot, ...))
+    # else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
+    else return(knitr::knit_print(x$plot, options, ...))
+  } else {
+    return(knitr::knit_print(x$plot, options, ...))
   }
 }
 

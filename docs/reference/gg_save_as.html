@@ -21,7 +21,7 @@ near identical."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9019</span>
       </span>
     </div>
 
@@ -94,7 +94,6 @@ near identical.</p>
 <span>  maxHeight <span class="op">=</span> <span class="va">size</span><span class="op">$</span><span class="va">height</span>,</span>
 <span>  aspectRatio <span class="op">=</span> <span class="va">maxWidth</span><span class="op">/</span><span class="va">maxHeight</span>,</span>
 <span>  formats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"ggrrr.formats"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"svg"</span>, <span class="st">"png"</span>, <span class="st">"pdf"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  web_fonts <span class="op">=</span> <span class="fu">.get_web_font_option</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -129,11 +128,6 @@ near identical.</p>
 <dd><p>some of svg, png, pdf, Rdata, ...</p></dd>
 
 
-<dt>web_fonts</dt>
-<dd><p>(optional) a list of `svglite::font_face` declarations.
-populated automatically by `check_font()`</p></dd>
-
-
 <dt>...</dt>
 <dd><p>Arguments passed on to <code><a href="https://svglite.r-lib.org/reference/svglite.html" class="external-link">svglite::svglite</a></code></p><dl><dt><code>height,width</code></dt>
 <dd><p>Height and width in inches.</p></dd>
@@ -165,6 +159,14 @@ package, strings containing a path to a font file, or a list containing
 <code>name</code> and <code>file</code> elements with <code>name</code> indicating
 the font alias in the SVG output and <code>file</code> the path to a
 font file.</p></dd>
+
+    <dt><code>web_fonts</code></dt>
+<dd><p>A list containing web fonts to use in the SVG. The fonts
+will still need to be available locally on the computer running the code,
+but viewers of the final SVG will not need the font if specified as a web
+font. Web fonts can either be specified using <code><a href="https://svglite.r-lib.org/reference/font_face.html" class="external-link">font_face()</a></code> or given as a
+single string in which case they are taken to be URL's for an <code>@import</code>
+directive to e.g. Google Fonts.</p></dd>
 
     <dt><code>id</code></dt>
 <dd><p>A character vector of ids to assign to the generated SVG's. If
@@ -221,12 +223,28 @@ webfont support.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="gg_pedantic.html">gg_pedantic</a></span><span class="op">(</span> <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">wt</span>, colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">cyl</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">gg_save_as</span><span class="op">(</span>filename<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,maxWidth<span class="op">=</span><span class="fl">4</span>,maxHeight<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                    svg                                    pdf </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpmG4naq/file4b35437e8007.svg" "/tmp/RtmpmG4naq/file4b35437e8007.pdf" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                    png </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpmG4naq/file4b35437e8007.png" </span>
+<span class="r-in"><span><span class="co"># p %&gt;% gg_save_as(filename="~/tmp/plot_example",maxWidth=4,maxHeight=4)</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">gg_save_as</span><span class="op">(</span>filename<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                     svg                                     pdf </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpX8l0Zz/file60b717f264503.svg" "/tmp/RtmpX8l0Zz/file60b717f264503.pdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                     png </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpX8l0Zz/file60b717f264503.png" </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">plot</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">carat</span>,y<span class="op">=</span><span class="va">price</span>,color <span class="op">=</span> <span class="va">color</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_family<span class="op">=</span><span class="st">"Roboto"</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"label"</span>,x<span class="op">=</span><span class="fl">2</span>,y<span class="op">=</span><span class="fl">10000</span>,label<span class="op">=</span><span class="st">"Hello \u2014 world"</span>, family<span class="op">=</span><span class="st">"Kings"</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>tag <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Carat\u2082"</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"price\u2265"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># plot %&gt;% gg_save_as(filename="~/tmp/plot_example_2")</span></span></span>
+<span class="r-in"><span><span class="va">plot</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">gg_save_as</span><span class="op">(</span>filename<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                     svg                                     pdf </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpX8l0Zz/file60b7164e620a8.svg" "/tmp/RtmpX8l0Zz/file60b7164e620a8.pdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                     png </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "/tmp/RtmpX8l0Zz/file60b7164e620a8.png" </span>
 </code></pre></div>
     </div>
   </div>

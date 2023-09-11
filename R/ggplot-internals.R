@@ -93,3 +93,38 @@
                    legend.box.margin = ggplot2::margin())
   ))
 }
+
+
+# Fonts and colours from plot ----
+
+#' @noRd
+#' @examples
+#' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+#'   ggplot2::theme_minimal(base_family="Roboto")+
+#'   ggplot2::geom_point()+
+#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+#'   ggplot2::labs(tag = "A")+
+#'   ggplot2::xlab("Carat\u2082")+
+#'   ggplot2::ylab("price\u2265")
+#' .gg_used_fonts(plot)
+.gg_used_fonts = function(plot) {
+  theme = purrr::possibly(~.x$theme$text$family)(plot)
+  geoms = plot$layers %>% purrr::map(purrr::possibly(~ .x$computed_geom_params$family)) %>% purrr::list_c()
+  return(c(theme,geoms))
+}
+
+#' @noRd
+#'
+.gg_scale_consistent = function(plot, aes = c("fill","color"), scale = c("fill","color"), ... ) {
+  aes = match.arg(aes)
+  scale = match.arg(scale)
+  # get the palette
+  tmp = ggplot_build(plot)
+  fill = tmp$plot$scales$scales %>% purrr::discard(~ !aes %in% .x$aesthetics) %>% `[[`(1)
+  man = fill$palette.cache
+  names(man) = fill$range$range
+  if (scale == "fill")
+    return(scale_fill_manual(values = man, ...))
+  else
+    return(scale_color_manual(values = man, ...))
+}

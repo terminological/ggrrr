@@ -362,7 +362,8 @@ hux_save_as = function(hux,filename,
 
     if ("html" %in% formats) {
       style_dec = ""
-      webfonts = .get_web_font_option()
+      fonts = .hux_used_fonts(hux)
+      webfonts = .get_font_face(fonts)
       if (length(webfonts) > 0) style_dec = sprintf("<style>%s</style>",paste0(webfonts, collapse = ""))
       write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
       out$html = withExt("html")

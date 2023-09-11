@@ -264,6 +264,16 @@ rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
 
 }
 
+
+#' Reuse tidy-select syntax outside of a tidy-select function
+#'
+#' @param tidyselect a tidyselect syntax which will be evaluated in context by looking for a call in the call stack that includes a dataframe as the first argument
+#' @param data (optional) a specific dataframe with which to evaluate the tidyselect
+#'
+#' @return a list of symbols resulting from the evaluation of the tidyselect in the context of the current call stack (or a provided data frame)
+#' @export
+as_vars = .as_vars
+
 ## Data manipulation helpers ----
 
 #' Expand a data vector to the full range

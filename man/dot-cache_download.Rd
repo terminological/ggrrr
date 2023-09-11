@@ -62,3 +62,4 @@ the path to the downloaded file
 This function copies a remote file to a local cache once and
 makes sure it is reused.
 }
+\keyword{internal}
