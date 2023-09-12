@@ -509,12 +509,12 @@ webfont_provider = list(
           face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
           extn = .css_format_to_extn(format),
           locn = .cache_loc(sprintf("%s-%s.%s",font_family, face, extn)),
-          local = ifelse(face == "plain", .font_loc(sprintf("%s.%s",font_family, face, extn)), NA_character_),
+          local = ifelse(face == "plain", .font_loc(sprintf("%s.%s",font_family, extn)), NA_character_),
         ) %>% dplyr::mutate(
           ttf = purrr::map2_chr(url, locn, ~ .get_web_ttf(.x,.y), .progress="Downloading fonts")
         )
 
-  tmp %>% dplyr::filter(!is.na(local)) %>% purrr::pwalk(.f = function(locn, local, ...) fs::file_copy(locn, local))
+  tmp %>% dplyr::filter(!is.na(local)) %>% purrr::pwalk(.f = function(locn, local, ...) if(!fs::exists(local)) fs::file_copy(locn, local))
 
   #TODO: what would happen if we rebuild systemfonts cache at this point?
   systemfonts::reset_font_cache()
