@@ -109,22 +109,35 @@ fonts_available = function(family) {
 #' }
 check_font = function(family) {
 
-  path = NULL
+  if (.Platform$OS.type == "windows") {
 
-  .find_and_download_web_fonts(family)
-  .register_web_fonts_with_systemfont()
-  .import_systemfont_to_extrafont(family)
+    # No easy way to use webfonts in windows.
+    # we restrict ourselves to the fonts available on the system
+    # up to the user to install more fonts if they can
 
-  sub = .substitute_fonts(family)
-
-  switched = dplyr::setdiff(sub,c(family,"sans","serif","monotype"))
-  if (length(switched) > 0) {
-    .find_and_download_web_fonts(switched)
+    sub = .substitute_fonts(family)
     .import_systemfont_to_extrafont(sub)
+    return(sub)
+
+  } else {
+
+    path = NULL
+
+    .find_and_download_web_fonts(family)
+    .register_web_fonts_with_systemfont()
+    .import_systemfont_to_extrafont(family)
+
+    sub = .substitute_fonts(family)
+
+    switched = dplyr::setdiff(sub,c(family,"sans","serif","monotype"))
+    if (length(switched) > 0) {
+      .find_and_download_web_fonts(switched)
+      .import_systemfont_to_extrafont(sub)
+    }
+
+    return(sub)
+
   }
-
-  return(sub)
-
 }
 
 
@@ -260,6 +273,8 @@ rebuild_fonts = function() {
     unicode_range = character()
   )
 }
+
+
 
 .add_webfont_catalogue = function(css_df) {
   tmp = dplyr::distinct(dplyr::bind_rows(
@@ -572,7 +587,12 @@ webfont_provider = list(
 
   path = name = ttf_files = NULL
 
-  localfonts = unique(.all_system_fonts(ttf_only = TRUE)$family)
+  if (.Platform$OS.type == "windows") {
+    # nly core system fonts available
+    localfonts = unique(.all_system_fonts(ttf_only = TRUE) %>% dplyr::filter(source == "system") %>% dplyr::pull(family))
+  } else {
+    localfonts = unique(.all_system_fonts(ttf_only = TRUE) %>% dplyr::pull(family))
+  }
   # check what is locally available in systemfonts but not registered with grDevices
   toadd = .extrafont_missing(dplyr::intersect(family,localfonts))
   tmp = toadd %>%
@@ -582,6 +602,12 @@ webfont_provider = list(
     dplyr::summarise(ttf_files = list(ttf_files))
   tmp %>%
     purrr::pwalk(purrr::safely(.extrafont_ttf_import), .progress = "Importing to extrafonts")
+
+  # Determine whether extrafont needs to be loaded to account for new fonts.
+
+  # registered = names(grDevices::pdfFonts())
+  # new = dplyr::setdiff(tmp$family, registered)
+  # if (length(new) > 0)
 
   suppressMessages(extrafont::loadfonts())
 }

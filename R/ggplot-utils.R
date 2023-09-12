@@ -94,12 +94,15 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @export
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto", ...) {
 
+  suppressMessages(extrafont::loadfonts())
+
   font = ggrrr::check_font(font)
   ggplot2::theme_set(ggrrr::gg_tiny_theme(fontSize, font)+ggplot2::theme(...))
   ggrrr::gg_set_size_defaults(lineSize,fontSize*0.75,font)
 
   if (is.null(knitr::opts_chunk$get("dev")))
     knitr::opts_chunk$set(dev = "ragg_png")
+
 }
 
 #' Convert a label size from points to ggplot units
@@ -231,9 +234,9 @@ breaks_log1p = function(n=5,base=10) {
 #' library(tibble)
 #'
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
-#'  ggplot2::ggplot(aes(fold_change , pvalue)) +
-#'  ggplot2::geom_point() +
-#'  ggplot2::scale_y_continuous(trans = "logit")
+#'   ggplot2::ggplot(aes(fold_change , pvalue)) +
+#'   ggplot2::geom_point() +
+#'   ggplot2::scale_y_continuous(trans = "logit")
 #'
 #' @export
 logit_trans <- function() {
@@ -616,12 +619,13 @@ window.onload = init;
 #' p %>% gg_save_as(filename=tempfile())
 #'
 #' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
-#'   ggplot2::theme_minimal(base_family="Roboto")+
+#'   ggplot2::theme_minimal(base_family=check_font("Roboto"))+
 #'   ggplot2::geom_point()+
-#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family=check_font("Kings"))+
 #'   ggplot2::labs(tag = "A")+
 #'   ggplot2::xlab("Carat\u2082")+
 #'   ggplot2::ylab("price\u2265")
+#'
 #' # plot %>% gg_save_as(filename="~/tmp/plot_example_2")
 #' res = plot %>% gg_save_as(filename=tempfile(), formats=c("png","ps"))
 #' as.character(res)
@@ -835,7 +839,12 @@ print.rendered_plot = function(x,...) {
 #' @export
 as.character.rendered_plot = function(x, ...) {
   tmp = x[!names(x) %in% c("plot","width","height")]
-  unlist(tmp)
+  out = sprintf("a ggplot with %d outputs:", length(tmp))
+  if (length(tmp) > 0) {
+    class(tmp)="list"
+    out = c(out,sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse=", ")))
+  }
+  return(out)
 }
 
 #' Knit a rendered_plot object

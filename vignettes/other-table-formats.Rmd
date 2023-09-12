@@ -12,7 +12,6 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggrrr)
-library(gt)
 out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALSE)
 ```
 
@@ -21,30 +20,16 @@ out = outputter(tempdir(check = TRUE),datedFile = FALSE,datedSubdirectory = FALS
 This is a wrapper 
 
 ```{r}
-
-# gtcars_8 =
-#   gtcars %>%
-#   group_by(ctry_origin) %>%
-#   slice_head(n = 2) %>%
-#   ungroup() %>%
-#   filter(ctry_origin != "United Kingdom") %>%
-#   group_by(ctry_origin) %>%
-#   gt()
-
-
-
-```
-
-
-```{r}
-summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,clarity) %>% summarise(
-  `average size (carat)` = sprintf("%1.2f [%1.2f \u2014 %1.2f]", mean(carat), mean(carat)-1.96*sd(carat), mean(carat)+1.96*sd(carat)),
-  `median price` = sprintf_list("%1.0f [%1.0f \u2014 %1.0f]", quantile(price, c(0.5,0.25,0.75)))
-)
+summary = ggplot2::diamonds %>% filter(cut %in% c("Fair","Good")) %>% 
+  group_by(cut,color,clarity) %>% 
+  summarise(
+    `average size (carat)` = sprintf("%1.2f [%1.2f \u2014 %1.2f]", mean(carat), mean(carat)-1.96*sd(carat), mean(carat)+1.96*sd(carat)),
+    `median price` = sprintf_list("%1.0f [%1.0f \u2014 %1.0f]", quantile(price, c(0.5,0.25,0.75)))
+  )
 
 table = summary %>% hux_tidy(colGroupVars = vars(cut), rowGroupVars = vars(color, clarity))
 
-table %>% hux_default_layout(defaultFontSize = 8) %>% hux_save_as(out("mulitpage_t2"), std_size$third)
+table %>% hux_default_layout(defaultFontSize = 8) %>% hux_save_as(out("multipage_t2"), std_size$third)
 
 ```
 

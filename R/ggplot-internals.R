@@ -100,12 +100,13 @@
 #' @noRd
 #' @examples
 #' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
-#'   ggplot2::theme_minimal(base_family="Roboto")+
+#'   ggplot2::theme_minimal(base_family=check_font("Roboto"))+
 #'   ggplot2::geom_point()+
-#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family=check_font("Kings"))+
 #'   ggplot2::labs(tag = "A")+
 #'   ggplot2::xlab("Carat\u2082")+
 #'   ggplot2::ylab("price\u2265")
+#'
 #' .gg_used_fonts(plot)
 .gg_used_fonts = function(plot) {
   theme = purrr::possibly(~.x$theme$text$family)(plot)

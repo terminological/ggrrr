@@ -31,11 +31,6 @@ tmp
 ```
 
 ```{r}
-
-tmp
-```
-
-```{r}
 summary = diamonds %>% filter(cut %in% c("Fair","Good")) %>% group_by(cut,color,clarity) %>% summarise(
   `average size (carat)` = sprintf("%1.2f [%1.2f \u2014 %1.2f]", mean(carat), mean(carat)-1.96*sd(carat), mean(carat)+1.96*sd(carat)),
   `median price` = sprintf_list("%1.0f [%1.0f \u2014 %1.0f]", quantile(price, c(0.5,0.25,0.75)))

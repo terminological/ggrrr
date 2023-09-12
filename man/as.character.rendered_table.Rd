@@ -17,3 +17,8 @@ a named vector
 \description{
 Convert a rendered_table object to a character
 }
+\examples{
+hux = iris \%>\% hux_default_layout()
+tmp = hux \%>\% hux_save_as(tempfile())
+as.character(tmp)
+}

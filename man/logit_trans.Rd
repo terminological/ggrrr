@@ -18,8 +18,8 @@ library(ggplot2)
 library(tibble)
 
 tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) \%>\%
- ggplot2::ggplot(aes(fold_change , pvalue)) +
- ggplot2::geom_point() +
- ggplot2::scale_y_continuous(trans = "logit")
+  ggplot2::ggplot(aes(fold_change , pvalue)) +
+  ggplot2::geom_point() +
+  ggplot2::scale_y_continuous(trans = "logit")
 
 }

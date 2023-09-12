@@ -400,7 +400,7 @@ hux_save_as = function(hux,filename,
         );
 
         if("pdf" %in% tmp) out$pdf = withExt("pdf")
-        if("png" %in% tmp) out$png = matchedFiles("png")
+        if("png" %in% tmp) out$png = unname(matchedFiles("png"))
 
       } else if (rlang::is_installed("webshot")) {
 
@@ -423,7 +423,7 @@ hux_save_as = function(hux,filename,
               vheight=10,
               zoom=300/96
             )
-            out$png = matchedFiles("png")
+            out$png = unname(matchedFiles("png"))
           }
 
           if("pdf" %in% formats) {
@@ -503,10 +503,18 @@ knit_print.rendered_table = function(x,...) {
 #'
 #' @return a named vector
 #' @export
+#' @examples
+#' hux = iris %>% hux_default_layout()
+#' tmp = hux %>% hux_save_as(tempfile())
+#' as.character(tmp)
 as.character.rendered_table = function(x, ...) {
   tmp = x[!names(x) %in% c("hux","width","height")]
-  class(tmp)="list"
-  lapply(tmp, as.character)
+  out = sprintf("a huxtable with %d outputs:", length(tmp))
+  if (length(tmp) > 0) {
+    class(tmp)="list"
+    out = c(out,sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse=", ")))
+  }
+  return(out)
 }
 
 #' Print a rendered_table object
