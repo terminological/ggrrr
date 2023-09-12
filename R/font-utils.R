@@ -514,7 +514,7 @@ webfont_provider = list(
           ttf = purrr::map2_chr(url, locn, ~ .get_web_ttf(.x,.y), .progress="Downloading fonts")
         )
 
-  tmp %>% dplyr::filter(!is.na(local)) %>% purrr::pwalk(.f = function(locn, local, ...) if(!fs::exists(local)) fs::file_copy(locn, local))
+  tmp %>% dplyr::filter(!is.na(local)) %>% purrr::pwalk(.f = function(locn, local, ...) if(!fs::file_exists(local)) fs::file_copy(locn, local))
 
   #TODO: what would happen if we rebuild systemfonts cache at this point?
   systemfonts::reset_font_cache()
