@@ -717,4 +717,45 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
   )
 }
 
+# TODO: ----
+
+#' @noRd
+#' @examples
+#' # example code
+#' f_m <- function(x) {message("this is a message"); str(x)}
+#' f_w <- function(x) {warning("this is a warning"); str(x)}
+#' f_e <- function() {stop("This is an error")}
+#'
+#' pure_fm <- purely(f_m)
+#' pure_fw <- purely(f_w)
+#' pure_fe <- purely(f_e)
+purely <- function(.f){
+  function(..., .log = "Log start..."){
+    res <- rlang::try_fetch(
+      rlang::eval_tidy(.f(...)),
+      error = function(err) err,
+      warning = function(warn) warn,
+      message = function(message) message,
+    )
+
+    final_result <- list(
+      result = NULL,
+      log = NULL
+    )
+
+    final_result$result <- if(any(c("error", "warning", "message") %in% class(res))){
+      NA
+    } else {
+      res
+    }
+
+    final_result$log <- if(any(c("error", "warning", "message") %in% class(res))){
+      res$message
+    } else {
+      NA
+    }
+    final_result
+  }
+}
+
 

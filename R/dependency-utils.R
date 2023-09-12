@@ -11,10 +11,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' library(tidyverse)
-#' ggrrr::unstable()
-#' }
+#' # ggrrr::unstable()
 unstable = function(pkg = "ggrrr", org="terminological") {
   if (pkg %in% rownames(utils::installed.packages())) try({devtools::unload(pkg)},silent = TRUE)
   local = sprintf("~/Git/%s",pkg)
@@ -107,9 +104,16 @@ non_cran = function(name,github,force=FALSE,subdir="",...) {
 #' @examples
 #' fn = optional_fn("openssl", "md5", digest::digest)
 #' as.character(fn(as.raw(c(1,2,3))))
-optional_fn = function(pkg, name, alt=function(...) {message("Skipping function call as ",pkg,"::",name," not available")}) {
+optional_fn = function(pkg, name, alt=function(...) {stop("function `",pkg,"::",name,"(...)` not available")}) {
+  if (rlang::is_missing(name) || rlang::is_function(name) || rlang::is_formula(name)) {
+    if (rlang::is_function(name) || rlang::is_formula(name)) alt = name
+    tmp = unlist(stringr::str_split(pkg,stringr::fixed("::")))
+    if (length(tmp) != 2) stop("either `name` must be supplied or the format `package::function` used for the `pkg` parameter")
+    pkg = tmp[1]
+    name = tmp[2]
+  }
+  alt = rlang::as_function(alt)
   if (!rlang::is_installed(pkg)) return(alt)
   return(utils::getFromNamespace(name, pkg))
 }
-
 # TODO: unload and reload a package including installation using devtools::install_local or devtools::install_github

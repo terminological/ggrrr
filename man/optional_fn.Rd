@@ -8,9 +8,9 @@ optional_fn(
   pkg,
   name,
   alt = function(...) {
-     message("Skipping function call as ", pkg, "::", name,
-    " not available")
- }
+     stop("function `", pkg, "::", name, "(...)` not available")
+
+    }
 )
 }
 \arguments{

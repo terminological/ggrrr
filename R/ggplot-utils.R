@@ -93,9 +93,13 @@ gg_set_size_defaults = function(lineSize = 0.5, fontSizePts = 4+lineSize*8, font
 #' @return nothing
 #' @export
 gg_pedantic = function(lineSize = 0.25, fontSize = 8, font="Roboto", ...) {
+
   font = ggrrr::check_font(font)
   ggplot2::theme_set(ggrrr::gg_tiny_theme(fontSize, font)+ggplot2::theme(...))
   ggrrr::gg_set_size_defaults(lineSize,fontSize*0.75,font)
+
+  if (is.null(knitr::opts_chunk$get("dev")))
+    knitr::opts_chunk$set(dev = "ragg_png")
 }
 
 #' Convert a label size from points to ggplot units
@@ -619,7 +623,8 @@ window.onload = init;
 #'   ggplot2::xlab("Carat\u2082")+
 #'   ggplot2::ylab("price\u2265")
 #' # plot %>% gg_save_as(filename="~/tmp/plot_example_2")
-#' plot %>% gg_save_as(filename=tempfile())
+#' res = plot %>% gg_save_as(filename=tempfile(), formats=c("png","ps"))
+#' as.character(res)
 gg_save_as = function(plot,filename = tempfile(),
                       size = std_size$half, maxWidth = size$width, maxHeight = size$height,
                       aspectRatio=maxWidth/maxHeight,
@@ -633,9 +638,6 @@ gg_save_as = function(plot,filename = tempfile(),
     # override width specificially for formatted tables
     maxWidth = attr(plot,"target.width")
   }
-
-  # TODO: https://svglite.r-lib.org/articles/fonts.html
-  # https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/#font-support
 
   # plot comes with an aspect ratio which is expressed as height/width
   # this is generally true if the coords_fixed (?coords_sf) has been used.
@@ -683,79 +685,102 @@ gg_save_as = function(plot,filename = tempfile(),
     height = out$height,
     bg = "transparent", device = svglite::svglite, web_fonts=web_fonts, ...);
 
-  # if (any(c("pdf","jpg","png","tiff") %in% formats)) {
-    if ("pdf" %in% formats) {
-      pdf_loc = withExt("pdf")
-      out$pdf = withExt("pdf")
-    # } else {
-    #   pdf_loc = tempfile(fileext = ".pdf")
-    # }
+  # this used to be here as ragg_png wasn;t working.
 
-      tryCatch({
+  if ("pdf" %in% formats) {
+    pdf_loc = withExt("pdf")
+    out$pdf = withExt("pdf")
+  # } else {
+  #   pdf_loc = tempfile(fileext = ".pdf")
+  # }
 
-        if (any(fonts %in% systemfonts::registry_fonts()$family)) stop("webfonts required")
+    tryCatch({
 
+      if (any(fonts %in% systemfonts::registry_fonts()$family)) stop("webfonts required")
+
+      if (capabilities("cairo")) {
+        ggplot2::ggsave(
+          pdf_loc,
+          plot,
+          width = out$width,
+          height = out$height,
+          bg = "transparent", device = grDevices::cairo_pdf, ...);
+      } else {
+        # convert the SVG file
         rsvg::rsvg_pdf(svg_loc, pdf_loc) #, css = web_fonts)
-
-        # ggplot2::ggsave(
-        #   pdf_loc,
-        #   plot,
-        #   width = out$width,
-        #   height = out$height,
-        #   bg = "transparent", device = grDevices::cairo_pdf, ...);
-
         #TODO: svg2pdf via V8? https://github.com/yWorks/svg2pdf.js/tree/master
+      }
 
-        extrafont::embed_fonts(pdf_loc)
-        },
-        error = function(e) {
-          message("chrome fallback: ",e$message)
-          .print_svg_with_chrome(svg_loc, pdf_loc)
-          extrafont::embed_fonts(pdf_loc)
-        }
+      extrafont::embed_fonts(pdf_loc)
 
-      )
-    }
+    }, error = function(e) {
 
+      message("chrome fallback: ",e$message)
+      .print_svg_with_chrome(svg_loc, pdf_loc)
+      extrafont::embed_fonts(pdf_loc)
 
+    })
+  }
 
-    if ("png" %in% formats) {
+  if ("ps" %in% formats) {
+
+    tryCatch({
+
+      cairops = optional_fn("Cairo::CairoPS",alt = stop("Please install package `Cairo` for ps output"))
       ggplot2::ggsave(
-        withExt("png"),
+        withExt("ps"),
         plot,
         width = out$width,
         height = out$height,
-        bg = "transparent", device = ragg::agg_png, dpi = 300, ...);
-      #suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
-      out$png = withExt("png")
-    }
+        bg = "transparent", device = cairops, dpi = 300, ...);
 
-    if ("jpg" %in% formats) {
-      ggplot2::ggsave(
-        withExt("jpg"),
-        plot,
-        width = out$width,
-        height = out$height,
-        bg = "transparent", device = ragg::agg_jpeg, dpi = 300, ...);
-      # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
-      out$jpg = withExt("jpg")
-    }
+    }, error = function(e) {
+      # convert the SVG file
+      rsvg::rsvg_eps(svg_loc, withExt("ps")) #, css = web_fonts)
 
-    if ("tiff" %in% formats) {
-      ggplot2::ggsave(
-        withExt("tiff"),
-        plot,
-        width = out$width,
-        height = out$height,
-        bg = "transparent", device = ragg::agg_tiff, dpi = 300, ...);
-      # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
-      out$tiff = withExt("tiff")
-    }
+    })
 
-  #}
+    if (fs::file_exists(withExt("ps"))) out$ps = withExt("ps")
+  }
+
+
+  if ("png" %in% formats) {
+    ggplot2::ggsave(
+      withExt("png"),
+      plot,
+      width = out$width,
+      height = out$height,
+      bg = "transparent", device = ragg::agg_png, dpi = 300, ...);
+    #suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
+    out$png = withExt("png")
+  }
+
+  if ("jpg" %in% formats) {
+    ggplot2::ggsave(
+      withExt("jpg"),
+      plot,
+      width = out$width,
+      height = out$height,
+      bg = "transparent", device = ragg::agg_jpeg, dpi = 300, ...);
+    # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
+    out$jpg = withExt("jpg")
+  }
+
+  if ("tiff" %in% formats) {
+    ggplot2::ggsave(
+      withExt("tiff"),
+      plot,
+      width = out$width,
+      height = out$height,
+      bg = "transparent", device = ragg::agg_tiff, dpi = 300, ...);
+    # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
+    out$tiff = withExt("tiff")
+  }
 
   return(structure(out, class="rendered_plot"))
 }
+
+
 
 #' Print a rendered_plot object
 #'
@@ -786,20 +811,19 @@ print.rendered_plot = function(x,...) {
     }
 
     if (.is_running_in_chunk()) {
-      # this runs when a
+      # this is running in a chunk in RStudio.
+      # If this was not the case it would be rendered by knitr::knit_print
+      # trick here is to render something inline in markdown document.
       grDevices::dev.new(width=x$width,height=x$height,unit="in")
       print(x$plot)
+
     }
 
   } else {
+    # file paths are more useful when not interactive.
     print(as.character(x))
   }
 
-
-  # if (.is_running_in_chunk()) {
-    # grDevices::dev.new(width=x$width,height=x$height,unit="in",noRStudioGD = TRUE)
-    # print(x$plot)
-  # }
 }
 
 #' Convert a rendered_plot object to a character
@@ -825,9 +849,13 @@ as.character.rendered_plot = function(x, ...) {
 #' @return nothing - used for side effects
 #' @export
 knit_print.rendered_plot  = function(x, options, ...) {
+
   # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
-  options$width = x$width
-  options$height = x$height
+  # overwrite current settings for defaults
+
+  options$fig.width = x$width
+  options$fig.height = x$height
+
   if (.is_html_output()) {
     if (!is.null(x$png)) {
       return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
@@ -850,30 +878,16 @@ knit_print.rendered_plot  = function(x, options, ...) {
   }
 }
 
-# TODO: Show text haas an issue with some UTF8 characters: e.g.
-# library(showtext)
-# ## Loading Google fonts (https://fonts.google.com/)
-# font_add_google("Gochi Hand", "gochi")
-# font_add_google("Schoolbell", "bell")
-#
-# ## Automatically use showtext to render text
-# showtext_auto()
-# #extrafont::loadfonts()
-#
-# set.seed(123)
-# graphics::hist(stats::rnorm(1000), breaks = 30, col = "steelblue", border = "white",
-#      main = "", xlab = "", ylab = "")
-# rlang::title("Histogram of Normal Random Numbers \u00B2 \u2074 \u2081 \u00B1 \u2463", family = "Roboto", cex.main = 2)
-# # rlang::title(ylab = "Frequency₂", family = "Arial", cex.lab = 2)
-# rlang::title(ylab = latex2exp::TeX("FiO_2"), family = "Arial", cex.lab = 2)
-# graphics::text(2, 70, latex2exp::TeX("FiO_2 = 1000 \u2014 \u2074 \u2082 \u00B1"), family = "bell", cex = 2.5)
-
-# These work when using extrafonts, but there are other issues with extrafonts in compatibility with
-# certain google ttf I think. extrafonts also only supports pdf.
-# showtext is good but has another issue in that the text is embedded not as a font but as a darwing object which makes it
-# difficult to edit. Not sure whether this is an issue for journals. If so we may need to revert to extrafonts, or use it as an option
-# at least. In this case we can use pdftools to generate a png file from the pdf to get consistency.
-
+# TODO: https://yihui.org/knitr/options/#chunk-options
+# dev: ('pdf' for LaTeX output and 'png' for HTML/Markdown; character) The
+# graphical device to generate plot files. All graphics devices in base R and
+# those in Cairo, svglite, ragg, and tikzDevice are supported, e.g., pdf, png,
+# svg, jpeg, tiff, cairo_pdf, CairoJPEG, CairoPNG, svglite, gridSVG, ragg_png,
+# tikz, and so on. See names(knitr:::auto_exts) for the full list. Besides these
+# devices, you can also provide a character string that is the name of a
+# function of the form function(filename, width, height). The units for the
+# image size are always inches (even for bitmap devices, in which DPI is used to
+# convert between pixels and inches).
 
 ## Colour scales ----
 

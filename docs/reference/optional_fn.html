@@ -19,7 +19,7 @@ as part of the Imports or Suggests fields in a package DESCRIPTION."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggrrr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9019</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9020</span>
       </span>
     </div>
 
@@ -86,9 +86,9 @@ as part of the Imports or Suggests fields in a package DESCRIPTION.</p>
 <span>  <span class="va">pkg</span>,</span>
 <span>  <span class="va">name</span>,</span>
 <span>  alt <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>     <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Skipping function call as "</span>, <span class="va">pkg</span>, <span class="st">"::"</span>, <span class="va">name</span>,</span>
-<span>    <span class="st">" not available"</span><span class="op">)</span></span>
-<span> <span class="op">}</span></span>
+<span>     <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"function `"</span>, <span class="va">pkg</span>, <span class="st">"::"</span>, <span class="va">name</span>, <span class="st">"(...)` not available"</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="op">}</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 

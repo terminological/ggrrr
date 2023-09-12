@@ -10,12 +10,89 @@ check_font(family)
 \item{family}{a font family name or names}
 }
 \value{
-the font family name if it can be located or an error otherwise
+the font family name if it can be located or an alternative if not.
 }
 \description{
-This checks to see if a font exists. If missing it will try and install from google fonts.
-If this is not possible it will throw an error.
+This checks to see if a font exists. If missing it will try and install from
+`google fonts` or `brick.io`. If nothing can be done it will suggest alternatives
+from `fonts_available()`. In all cases this will make the font available to
+`systemfonts` (for `ragg` and `svg` devices), and `extrafonts` (for `pdf` etc).
+Webfonts are automatically downloaded into the users font directory and from
+there will be picked up by `cairo` devices in theory, and system pdf/svg
+viewers. In practice this is a bit hit and miss.
 }
 \examples{
 check_font(c("Roboto","Arial","Kings","EB Garamond"))
+extrafont::fonts()
+fonts_available(c("Roboto","Arial","Kings","EB Garamond"))
+
+plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+  ggplot2::theme_minimal(base_family="Roboto")+
+  ggplot2::geom_point()+
+  ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+  ggplot2::labs(tag = "A")+
+  ggplot2::xlab("Carat\u2082")+
+  ggplot2::ylab("price\u2265")
+
+
+if (FALSE) {
+
+  # font but no unicode support
+  tmp = tempfile(fileext = ".pdf")
+  pdf(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # font and unicode support
+  tmp = tempfile(fileext = ".pdf")
+  cairo_pdf(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # font and unicode support
+  tmp = tempfile(fileext = ".png")
+  png(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # font and unicode support
+  tmp = tempfile(fileext = ".png")
+  ragg::agg_png(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # font and unicode support
+  tmp = tempfile(fileext = ".svg")
+  svglite::svglite(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # Does not work - "family 'Roboto' not included in postscript() device"
+  # however:  names(grDevices::postscriptFonts()) includes Roboto
+  tmp = tempfile(fileext = ".eps")
+  postscript(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # This does work but rasterises output at low fidelity
+  tmp = tempfile(fileext = ".eps")
+  cairo_ps(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+  # This fully works
+  tmp = tempfile(fileext = ".ps")
+  Cairo::CairoPS(tmp)
+  plot
+  dev.off()
+  utils::browseURL(tmp)
+
+}
 }

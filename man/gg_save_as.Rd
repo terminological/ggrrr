@@ -115,6 +115,7 @@ plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = c
   ggplot2::xlab("Carat\u2082")+
   ggplot2::ylab("price\u2265")
 # plot \%>\% gg_save_as(filename="~/tmp/plot_example_2")
-plot \%>\% gg_save_as(filename=tempfile())
+res = plot \%>\% gg_save_as(filename=tempfile(), formats=c("png","ps"))
+as.character(res)
 }
 \keyword{plot}

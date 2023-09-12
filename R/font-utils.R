@@ -1,6 +1,6 @@
 ## Fonts ----
 
-#' Which fonts are available on this system.
+#' Which fonts are available on this system without hitting webfonts.
 #'
 #' @param family a font family name or names
 #'
@@ -12,7 +12,7 @@ fonts_available = function(family) {
   families = c(systemfonts::registry_fonts()$family, systemfonts::system_fonts()$family)
 
   if (rlang::is_missing(family)) {
-    return(unique(families))
+    return(sort(unique(families)))
   } else {
     return(family[family %in% families])
   }
@@ -20,16 +20,93 @@ fonts_available = function(family) {
 
 #' Ensures a font is available.
 #'
-#' This checks to see if a font exists. If missing it will try and install from google fonts.
-#' If this is not possible it will throw an error.
+#' This checks to see if a font exists. If missing it will try and install from
+#' `google fonts` or `brick.io`. If nothing can be done it will suggest alternatives
+#' from `fonts_available()`. In all cases this will make the font available to
+#' `systemfonts` (for `ragg` and `svg` devices), and `extrafonts` (for `pdf` etc).
+#' Webfonts are automatically downloaded into the users font directory and from
+#' there will be picked up by `cairo` devices in theory, and system pdf/svg
+#' viewers. In practice this is a bit hit and miss.
 #'
 #' @param family a font family name or names
 #'
-#' @return the font family name if it can be located or an error otherwise
+#' @return the font family name if it can be located or an alternative if not.
 #' @export
 #'
 #' @examples
 #' check_font(c("Roboto","Arial","Kings","EB Garamond"))
+#' extrafont::fonts()
+#' fonts_available(c("Roboto","Arial","Kings","EB Garamond"))
+#'
+#' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+#'   ggplot2::theme_minimal(base_family="Roboto")+
+#'   ggplot2::geom_point()+
+#'   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+#'   ggplot2::labs(tag = "A")+
+#'   ggplot2::xlab("Carat\u2082")+
+#'   ggplot2::ylab("price\u2265")
+#'
+#'
+#' if (FALSE) {
+#'
+#'   # font but no unicode support
+#'   tmp = tempfile(fileext = ".pdf")
+#'   pdf(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # font and unicode support
+#'   tmp = tempfile(fileext = ".pdf")
+#'   cairo_pdf(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # font and unicode support
+#'   tmp = tempfile(fileext = ".png")
+#'   png(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # font and unicode support
+#'   tmp = tempfile(fileext = ".png")
+#'   ragg::agg_png(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # font and unicode support
+#'   tmp = tempfile(fileext = ".svg")
+#'   svglite::svglite(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # Does not work - "family 'Roboto' not included in postscript() device"
+#'   # however:  names(grDevices::postscriptFonts()) includes Roboto
+#'   tmp = tempfile(fileext = ".eps")
+#'   postscript(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # This does work but rasterises output at low fidelity
+#'   tmp = tempfile(fileext = ".eps")
+#'   cairo_ps(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#'   # This fully works
+#'   tmp = tempfile(fileext = ".ps")
+#'   Cairo::CairoPS(tmp)
+#'   plot
+#'   dev.off()
+#'   utils::browseURL(tmp)
+#'
+#' }
 check_font = function(family) {
 
   path = NULL
@@ -51,24 +128,64 @@ check_font = function(family) {
 }
 
 
-
-
 #' Reset any custom fonts
+#'
+#' This wipes a lot of cached font data.
+#'
+#' @param confirm set to TRUE to automatically confirm
+#' @param web also clear webfont cache? (default FALSE)
+#' @param fonts also clear any downloaded fonts or converted afm files? (default FALSE)
 #'
 #' @return nothing
 #' @export
-reset_fonts = function() {
-  options("ggrrr.webfonts" = list())
-  systemfonts::clear_registry()
-  .reset_webfont_catalogue()
+reset_fonts = function(confirm = utils::askYesNo(msg = "Are you sure?",default = FALSE), web = FALSE, fonts =FALSE) {
+  cat("This wipes font databases created by `systemfonts`, `extrafonts` and `ggrrr`.
+These will be rebuilt on demand by `ggrrr`.
+N.b. This will NOT remove any custom fonts installed on your system by `ggrrr`.")
+  if (confirm) {
+    systemfonts::clear_registry()
+    systemfonts::reset_font_cache()
+    if (web) {
+      .reset_webfont_catalogue()
+      try(fs::dir_delete(.css_loc()),silent=TRUE)
+    }
+    if (fonts) try(fs::dir_delete(.cache_loc()),silent=TRUE)
+
+    try(fs::dir_delete(fs::path(system.file(package="extrafontdb"),"metrics")),silent=TRUE)
+    try(fs::file_delete(fs::path(system.file(package="extrafontdb"),"fontmap/fonttable.csv")),silent=TRUE)
+    try(fs::file_delete(fs::path(system.file(package="extrafontdb"),"fontmap/Fontmap")),silent=TRUE)
+  }
 }
 
-.cache_loc = function(filename) {
+
+#' Rebuild font caches
+#'
+#' This repopulates `systemfonts` from the webfont cache and then `extrafont` from
+#' `systemfonts`. This does a full rebuild and will be slow (depending a bit )
+#'
+#' @return nothing
+#' @export
+rebuild_fonts = function() {
+  systemfonts::system_fonts()
+  systemfonts::registry_fonts()
+  .register_web_fonts_with_systemfont()
+  .import_systemfont_to_extrafont()
+  invisible(NULL)
+}
+
+## File locations ----
+
+.cache_loc = function(filename = "") {
   fs::dir_create(fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"fonts"))
   fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"fonts",fs::path_sanitize(filename))
 }
 
-.font_loc = function(filename) {
+.css_loc = function(filename = "") {
+  fs::dir_create(fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"css"))
+  fs::path(fs::path_expand_r(rappdirs::user_cache_dir("ggrrr")),"css",fs::path_sanitize(filename))
+}
+
+.font_loc = function(filename = "") {
   if (.Platform$OS.type == "unix") {
     if(grepl("^darwin", R.version$os)) {
       # mac
@@ -156,7 +273,7 @@ reset_fonts = function() {
 }
 
 .reset_webfont_catalogue = function() {
-  fs::file_delete(.cache_loc("webfonts.csv"))
+  try(fs::file_delete(.cache_loc("webfonts.csv")),silent = TRUE)
   assign("x", .empty_webfont_catalogue(), envir=.webfont_catalogue)
 }
 
@@ -209,7 +326,7 @@ reset_fonts = function() {
   return(tmp)
 }
 
-## format conversion utilities ---
+## Format conversion utilities ----
 
 .esc = function(names) {
   stringr::str_replace_all(names,"[[:space:]]", "+")
@@ -303,7 +420,9 @@ webfont_provider = list(
 .parse_css = function(request_url) {
 
   res = tryCatch({
-    ret = suppressMessages(suppressWarnings(ggrrr::cache_download(request_url, .stale = 7, quiet=TRUE, .extn="css")))
+    ret = suppressMessages(suppressWarnings(
+      ggrrr::cache_download(request_url, .stale = 7, quiet=TRUE, .extn="css", .cache = .css_loc())
+    ))
     res = readr::read_file(ret)
   }, error=function(e) "" )
 
@@ -336,7 +455,7 @@ webfont_provider = list(
 .get_web_ttf = function(url, ttf) {
   if (fs::file_exists(ttf)) return(ttf)
   #TODO: consider purrr:safely
-  try({download.file(url,destfile = ttf,quiet = TRUE)},silent = TRUE)
+  tryCatch({download.file(url,destfile = ttf,quiet = TRUE)},error = function(e) message(e$message))
   if (fs::file_exists(ttf)) return(ttf)
   return(NA_character_)
 }
@@ -374,7 +493,7 @@ webfont_provider = list(
 #' @noRd
 #' @examples
 #' tmp = .find_and_download_web_fonts("Kings")
-#' tmp
+#' tmp = .find_and_download_web_fonts("Helvetica")
 #'
 .find_and_download_web_fonts = function(fonts, services = names(webfont_provider), ...) {
 
@@ -389,14 +508,18 @@ webfont_provider = list(
   tmp = missing_webfonts %>% dplyr::mutate(
           face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
           extn = .css_format_to_extn(format),
-          locn = .font_loc(sprintf("%s-%s.%s",font_family, face, extn))
+          locn = .cache_loc(sprintf("%s-%s.%s",font_family, face, extn)),
+          local = ifelse(face == "plain", .font_loc(sprintf("%s.%s",font_family, face, extn)), NA_character_),
         ) %>% dplyr::mutate(
           ttf = purrr::map2_chr(url, locn, ~ .get_web_ttf(.x,.y), .progress="Downloading fonts")
         )
 
-  #TODO: what woudl happen if we rebuild systemfonts cache at this point?
-  # e.g. systemfonts::reset_font_cache()
-  # systemfonts::system_fonts()
+  tmp %>% dplyr::filter(!is.na(local)) %>% purrr::pwalk(.f = function(locn, local, ...) fs::file_copy(locn, local))
+
+  #TODO: what would happen if we rebuild systemfonts cache at this point?
+  systemfonts::reset_font_cache()
+  # force rebuild
+  systemfonts::system_fonts()
   # it might prevent the webfonts and need for chrome and maybe rsvg can work
   # if the font is actually installed. Maybe.
 
@@ -409,15 +532,18 @@ webfont_provider = list(
 #' .register_web_fonts_with_systemfont(tmp)
 .register_web_fonts_with_systemfont = function(webfonts = .get_webfont_catalogue()) {
 
-  font_weight = font_style = font_family = face = extn = ttf = font_family = TRUE
+  font_weight = font_style = font_family = face = extn = ttf = font_family = ps_face = TRUE
 
-  unregistered_with_systemfonts = webfonts %>% dplyr::anti_join(.all_system_fonts(valid_ps=FALSE), by=c("font_family"="family"))
+  unregistered_with_systemfonts = webfonts %>%
+    dplyr::mutate(ps_face = .style_to_ps_face(css_weight = font_weight, css_style = font_style)) %>%
+    dplyr::filter(!is.na(ps_face)) %>%
+    dplyr::anti_join(.all_system_fonts(valid_ps=FALSE), by=c("font_family"="family","ps_face"))
 
   # register any newly downloaded fonts with systemfonts
   tmp2 = unregistered_with_systemfonts  %>% dplyr::mutate(
     face = .style_to_ps_face(css_weight = font_weight,css_style = font_style),
     extn = .css_format_to_extn(format),
-    ttf = .font_loc(sprintf("%s-%s.%s",font_family, face, extn))
+    ttf = .cache_loc(sprintf("%s-%s.%s",font_family, face, extn))
   ) %>% dplyr::select(
       name = font_family, face, ttf
     ) %>% tidyr::pivot_wider(
@@ -441,7 +567,7 @@ webfont_provider = list(
 #' @noRd
 #' @examples
 #' .import_systemfont_to_extrafont("Courier New")
-#'
+#' .import_systemfont_to_extrafont("Kings")
 .import_systemfont_to_extrafont = function(family = .all_system_fonts(ttf_only = TRUE)$family) {
 
   path = name = ttf_files = NULL
@@ -455,19 +581,11 @@ webfont_provider = list(
     dplyr::group_by(family) %>%
     dplyr::summarise(ttf_files = list(ttf_files))
   tmp %>%
-    purrr::pwalk(purrr::safely(.extrafont_ttf_import))
+    purrr::pwalk(purrr::safely(.extrafont_ttf_import), .progress = "Importing to extrafonts")
+
   suppressMessages(extrafont::loadfonts())
 }
 
-.import_systemfont_to_grdevices = function(family = .all_system_fonts(valid_ps = TRUE)$family) {
-
-  localfonts = unique(.all_system_fonts(valid_ps = TRUE)$family)
-  # check what is locally available in systemfonts but not registered with grDevices
-  toadd = .grdevices_missing(dplyr::intersect(family,localfonts))
-
-  tmp3 = .register_ttf(toadd$name, toadd$plain, toadd$bold, toadd$italic, toadd$bolditalic)
-
-}
 
 
 # systemfonts fonts ----
@@ -538,8 +656,9 @@ webfont_provider = list(
   installable = .all_system_fonts(ttf_only=TRUE) %>%
     dplyr::filter(family %in% to_install) %>%
     dplyr::filter(fs::path_ext(path) == "ttf") %>%
-    dplyr::select(name=family,path,ps_face) %>%
+    dplyr::select(name=family,path,ps_face,source) %>%
     dplyr::group_by(name,ps_face) %>%
+
     dplyr::filter(dplyr::row_number() == 1) %>%
     dplyr::ungroup()
 
@@ -550,50 +669,93 @@ webfont_provider = list(
 
 }
 
-
+#' Converts ttf and caches them, compresses afms, updates extrafonts database.
+#' expects all ttf files for a single font family.
+#' @param ttf_files a list of paths to ttfs in a family
+#' @param family the family name
+#' @noRd
+#' @examples
+#' ttf = systemfonts::system_fonts() %>% filter(family == "Roboto") %>% pull(path) %>% `[`(1)
+#' .extrafont_ttf_import(ttf, "Roboto")
 .extrafont_ttf_import = function(ttf_files, family) {
 
   weight = fontname = familyname = fullname = italicangle = NULL
 
   if (length(ttf_files) == 0) return(NULL)
+  metrics_path = fs::path(system.file(package = "extrafontdb"),"metrics")
+  fs::dir_create(metrics_path)
+
   # TODO: write afm gzipped here:
   # extrafont:::metrics_path()
-  metrics_path = optional_fn("extrafont","metrics_path")
-  ttf_extract = optional_fn("extrafont","ttf_extract")
-  fonttable_add = optional_fn("extrafont","fonttable_add")
+  # fonttable_add = optional_fn("extrafont","fonttable_add")
 
-  fontmap <- suppressMessages(ttf_extract(ttf_files))
-  afmfiles = fs::path(metrics_path(), fs::path_file(fontmap$fontfile) %>% fs::path_ext_set("afm.gz"))
-  lapply(afmfiles, purrr::safely(.set_afm_meta), familyname=family)
-  fontdata = .get_afm_meta(afmfiles)
-  fontdata = fontdata %>% mutate(
+  # TODO: switch this out
+  # ttf_extract = optional_fn("extrafont","ttf_extract")
+  # fontmap <- suppressMessages(ttf_extract(ttf_files))
+  # afmfiles = fs::path(metrics_path, fs::path_file(fontmap$fontfile) %>% fs::path_ext_set("afm.gz"))
+  # lapply(afmfiles, purrr::safely(.set_afm_meta), familyname=family)
+  # fontdata = .get_afm_meta(afmfiles)
+
+  # for this and retest on windows
+  afm_files = .cache_loc(fs::path_file(ttf_files) %>% fs::path_ext_set("afm"))
+  afmgz_files = fs::path(metrics_path, fs::path_file(ttf_files) %>% fs::path_ext_set("afm.gz"))
+  # errors ignored:
+  purrr::map2(ttf_files, afm_files, purrr::possibly( ~ .exec_ttf2afm(.x,.y, family=family)) )
+  afm_compressed = purrr::map2(afm_files, afmgz_files, purrr::possibly( ~ .gz(.x, .y) )) %>% purrr::list_c()
+  # errors excluded:
+  fontdata = .get_afm_meta(afm_compressed)
+
+  # based on afmdata <- extrafont:::afm_scan_files()
+  fontdata = fontdata %>% dplyr::mutate(
     Bold = stringr::str_detect(weight, "Bold") | stringr::str_detect(fontname, "Bold|12"),
     Italic = stringr::str_detect(weight, "Italic|Oblique") | stringr::str_detect(fontname, "Italic|Oblique"),
     Symbol = stringr::str_detect(familyname, "Symbol"),
-    afmfile = fs::path_file(afmfiles),
+    afmfile = fs::path_file(afm_compressed),
     fontfile = ttf_files,
-    afmsymfile = NA
+    afmsymfile = NA,
+    package = NA
   ) %>% dplyr::rename(
     FamilyName = familyname,
     FontName = fontname,
     FullName = fullname
-  ) %>% select(c(-weight,-italicangle))
+  ) %>% dplyr::select(
+    tidyselect::all_of(c(
+      "package", "afmfile", "fontfile", "FullName", "FamilyName",
+      "FontName", "Bold", "Italic", "Symbol", "afmsymfile"))
+  )
 
-  # then continue as before
-  # fontmap <- fontmap[!is.na(fontmap$FontName), ]
-  # # message("Found FontName for ", nrow(fontmap), " fonts.")
-  # afmdata <- extrafont:::afm_scan_files()
-  #
-  # fontdata <- afmdata %>% dplyr::filter(afmfile %in% afmfiles)
+  tmp = dplyr::bind_rows(
+    extrafont::fonttable(),
+    fontdata
+  ) %>% dplyr::distinct()
 
-  if (nrow(fontdata) > 0) {
-    fontdata$package <- NA
-    suppressMessages(fonttable_add(fontdata))
-  }
+  ftab = fs::path(system.file(package="extrafontdb"),"fontmap/fonttable.csv")
+  fmap = fs::path(system.file(package="extrafontdb"),"fontmap/Fontmap")
+
+  fs::dir_create(fs::path_dir(ftab))
+  readr::write_csv(tmp, ftab, progress = FALSE)
+
+  if (fs::file_exists(fmap)) tmp2 = readr::read_lines(fmap,progress = FALSE) else tmp2 = character()
+  tmp2 = sort(unique(c(tmp2,sprintf("/%s (%s) ;", fontdata$FontName, fontdata$fontfile))))
+  suppressMessages(readr::write_lines(tmp2, fmap))
+
   return(NULL)
 }
 
 # grDevices fonts ----
+
+#' Not used at the moment
+#' @noRd
+.import_systemfont_to_grdevices = function(family = .all_system_fonts(valid_ps = TRUE)$family) {
+
+  localfonts = unique(.all_system_fonts(valid_ps = TRUE)$family)
+  # check what is locally available in systemfonts but not registered with grDevices
+  toadd = .grdevices_missing(dplyr::intersect(family,localfonts))
+
+  tmp3 = .register_ttf(toadd$name, toadd$plain, toadd$bold, toadd$italic, toadd$bolditalic)
+
+}
+
 
 #' @noRd
 #' @examples
@@ -659,7 +821,7 @@ webfont_provider = list(
     loc = .cache_loc(sprintf("%s-%s.afm",name,face)),
     afm = dplyr::if_else(
       !registered_pdf | !registered_ps,
-      purrr::map2_chr(ttf, loc, ~ .exec_ttf2afm(.x, .y), .progress = "Converting TTF to AFM"),
+      purrr::map2_chr(ttf, loc, purrr::possibly(~ .exec_ttf2afm(.x, .y, family = name), otherwise=NA_character_), .progress = "Converting TTF to AFM"),
       NA_character_
     )
   ) %>% dplyr::select(
@@ -678,14 +840,12 @@ webfont_provider = list(
     )
   )
 
-
-
   tmp2 = tmp %>% dplyr::filter(!registered_ps & !missing_afm) %>%
     dplyr::select(name,type1)
   arg2 = tmp2$type1
   names(arg2) = tmp2$name
   message(tmp2$name)
-  browser()
+  #browser()
 
   try({
     suppressMessages(do.call(grDevices::postscriptFonts, args = arg2))
@@ -696,7 +856,7 @@ webfont_provider = list(
   arg3 = tmp3$type1
   names(arg3) = tmp3$name
   message(tmp3$name)
-  browser()
+  #browser()
 
   try({
     suppressMessages(do.call(grDevices::pdfFonts, args = arg3))
@@ -723,42 +883,67 @@ webfont_provider = list(
 
 }
 
+## TTF to AFM conversion ----
+
 #' @noRd
-#' @examples
-#' .ttf2afm_binary()
-.ttf2afm_binary = function() {
-  tmp = getOption("ggrrr.ttf2afm", default = Sys.which("ttf2afm"))
-  if (tmp == "") return(NULL)
-  return(enc2native(tmp))
+#' @returns the afm filename if successful. otherwise an error.
+#'    doesn't clean up after itself. doesn't fix afm issues. expects input to exist
+#'
+.ttf2afm_call = function(ttf, afm) {
+  out = tryCatch({
+    binary = Rttf2pt1::which_ttf2pt1()
+    if (.Platform$OS.type == "windows")
+      args = c("-a", "-G", "fAe", shQuote(ttf), shQuote(fs::path_ext_remove(afm)))
+    else args = c("-a", "-GfAe", shQuote(ttf), shQuote(fs::path_ext_remove(afm)))
+
+    res = suppressWarnings(system2(enc2native(binary),  args, stdout = NULL, stderr = TRUE, timeout=2))
+    if (isTRUE(attr(res,"status") != 0)) stop("ttf2pt1 error: ",res)
+
+  }, error = function(e) {
+
+    binary = getOption("ggrrr.ttf2afm", default = Sys.which("ttf2afm"))
+    if (binary == "") stop(e$message,"\nno ttf2afm found: set option('ggrrr.ttf2afm'=...) to path of ttf2afm binary.")
+    args = c(shQuote(ttf), "-o", shQuote(afm))
+
+    res = suppressWarnings(system2(enc2native(binary),  args, stdout = NULL, stderr = TRUE, timeout=2))
+    if (isTRUE(attr(res,"status") != 0)) stop(e$message,"\nttf2afm error: ",res)
+
+  })
+  if (!fs::file_exists(afm)) stop("afm conversion failed, unknown reason.")
+  return(afm)
 }
 
 #  ttf2afm /Library/Fonts/Impact.ttf /out/path/Impact
 
 #' @noRd
+#' @returns the filename of the afm or an error. caches, fixes afm issues, tidies up after error.
 #' @examples
 #' ttf = systemfonts::system_fonts() %>% dplyr::filter(family == "Roboto") %>% dplyr::pull(path) %>% utils::head(1)
 #' afm = fs::path(tempdir(),fs::path_file(ttf)) %>% fs::path_ext_set("afm")
 #' converted_afm = .exec_ttf2afm(ttf, afm, overwrite=TRUE)
 #' tmp = readr::read_lines(converted_afm)
-.exec_ttf2afm = function(ttf, afm =fs::path_ext_set(ttf,"afm"), binary = .ttf2afm_binary(), overwrite=FALSE, family=NULL) {
+#'
+#' try(.exec_ttf2afm(tempfile(), tempfile(), overwrite=TRUE))
+.exec_ttf2afm = function(ttf, afm = fs::path_ext_set(ttf,"afm"), overwrite=FALSE, family=NULL) {
 
-  #TODO: fall back to Rttf2pt1 when no binary
+  # cache
   if (fs::file_exists(afm) && !overwrite) return(afm)
   fs::dir_create(fs::path_dir(afm))
-  if (is.null(binary)) return(NA_character_)
-  tmp = suppressWarnings(system2(
-    binary,
-    c(shQuote(ttf), "-o", shQuote(afm)),
-    stdout = NULL, stderr = NULL,timeout = 1))
-  if (tmp != 0) fs::file_delete(afm)
-  if (!fs::file_exists(afm)) return(NA_character_)
+  try(fs::file_delete(afm), silent=TRUE)
 
-  if (is.null(family)) {
-    tmp = .get_afm_meta(afm)
-    family = tmp$familyname
-  }
-
-  .set_afm_meta(afm, familyname = family)
+  tryCatch({
+      .ttf2afm_call(ttf, afm)
+      if (is.null(family)) {
+        tmp = .get_afm_meta(afm)
+        family = tmp$familyname
+      }
+      .set_afm_meta(afm, familyname = family)
+    },
+    error = function(e) {
+      try(fs::file_delete(afm), silent=TRUE)
+      stop(e)
+    }
+  )
 
   return(afm)
 }
@@ -802,4 +987,29 @@ webfont_provider = list(
   readr::write_lines(tmp,file = afm,append = FALSE)
   return(afm)
 }
+
+#' @noRd
+#' @examples
+#' tmp = tempfile()
+#' readr::write_file("test",tmp)
+#' out = .gz(tmp)
+#' time = fs::file_info(out)$modification_time
+#'
+#' Sys.sleep(0.01)
+#' # does nothing
+#' .gz(tmp)
+#' time == fs::file_info(out)$modification_time
+#'
+#' try(.gz(tempfile()))
+.gz = function(infile, outfile = paste0(infile,".gz")) {
+  if (!fs::file_exists(infile)) stop("`",infile,"` does not exist")
+  if (fs::file_exists(outfile)) {
+    # do nothing if gzipped file is newer than infile
+    if (fs::file_info(infile)$modification_time <= fs::file_info(outfile)$modification_time) return(outfile)
+  }
+  readr::write_file(readr::read_file(infile), file = gzfile(outfile))
+  return(outfile)
+}
+
+
 

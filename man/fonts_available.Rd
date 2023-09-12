@@ -2,7 +2,7 @@
 % Please edit documentation in R/font-utils.R
 \name{fonts_available}
 \alias{fonts_available}
-\title{Which fonts are available on this system.}
+\title{Which fonts are available on this system without hitting webfonts.}
 \usage{
 fonts_available(family)
 }
@@ -13,7 +13,7 @@ fonts_available(family)
 the font family name if it can be located or an empty list otherwise
 }
 \description{
-Which fonts are available on this system.
+Which fonts are available on this system without hitting webfonts.
 }
 \examples{
 fonts_available(c("Arial","sdfdsfsd"))
