@@ -17,58 +17,11 @@ library(tidyverse)
 library(ggrrr)
 ```
 
-# File output
+# Dependencies and setup
 
-determining where an output file when you may want date versioning.
+TODO:
 
-```{r}
+# Further info
 
-# an output directory in the current project with date versioning in the filename itself
-# out = outputter(here::here("output"))
-# out("figure1.png")
-
-# an output directory in a temp directory which has versioned subdirectories
-out2 = outputter(normalizePath(tempdir(), mustWork = FALSE),datedSubdirectory = TRUE)
-out2("figure1.png")
-out2("supplementary1.xlsx",delete = TRUE)
-
-# unversioned files in temp directory
-out3 = outputter(normalizePath(tempdir(), mustWork = FALSE),datedSubdirectory = FALSE,datedFile = FALSE)
-out3("figure1.png")
-
-
-```
-
-# Ggplot utilities
-
-```{r}
-
-# set a range of defaults for graphs
-ggrrr::gg_pedantic(font = "Roboto")
-
-# Create a graph and save it to a png and pdf with near exact matches in output layout and to fit in a third A4 page
-plot = ggplot(diamonds, aes(x=carat,y=price,color = color))+geom_point()+annotate("label",x=2,y=10000,label="Hello")+labs(tag = "A")
-tmp = plot %>% gg_save_as(out2("diamonds1"), size = std_size$third)
-
-message("Files were saved as: \n",tmp$png,"\n",tmp$pdf)
-tmp
-```
-
-# Tabular data in ggplots
-
-A simple table
-
-```{r}
-tableExample = diamonds %>% 
-  mutate(size = cut(carat, breaks=c(-Inf,quantile(carat, probs = c(0.25,0.75)),Inf), labels=c("small","medium","large")) %>% as.factor()) %>%
-  group_by(size,cut) %>%
-  summarise(
-    N = n(),
-    depth = sprintf_list("%1.2f (IQR %1.2f \u2014 %1.2f)", quantile(depth,c(0.5,0.25,0.75))),
-    price = sprintf_list("%1.0f (IQR %1.0f \u2014 %1.0f)", quantile(price,c(0.5,0.25,0.75)))
-  )
-  
-
-tableExample %>% gg_simple_table(font = "Roboto")
-```
+https://terminological.github.io/ggrrr/articles/web/getting-started.html
 

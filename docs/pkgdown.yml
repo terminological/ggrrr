@@ -2,11 +2,12 @@ pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  cache-functions: cache-functions.html
-  figure-functions: figure-functions.html
-  font-functions: font-functions.html
   ggrrr: ggrrr.html
-  other-table-formats: other-table-formats.html
-  table-functions: table-functions.html
-last_built: 2023-09-12T23:11Z
+  cache-functions: web/cache-functions.html
+  figure-functions: web/figure-functions.html
+  font-functions: web/font-functions.html
+  getting-started: web/getting-started.html
+  other-table-formats: web/other-table-formats.html
+  table-functions: web/table-functions.html
+last_built: 2023-09-13T08:41Z
 

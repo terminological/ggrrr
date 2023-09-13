@@ -167,7 +167,8 @@ Getting a file from the internet and locally caching. This does not check for re
 ```{r}
 file = cache_download(
   "https://raw.githubusercontent.com/terminological/arear/main/data-raw/NHSSurgeCapacityMarch2020.csv",
-  .extn = "csv"
+  .extn = "csv",
+  .nocache = TRUE
 )
 ```
 
