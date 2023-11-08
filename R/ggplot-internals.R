@@ -2,6 +2,7 @@
 #'
 #' Labels like geom_text are in a random unit size which is only mysteriously connected to the size of text on axes
 #'
+#' @keywords internal
 #' @param pts label size in points
 .gg_label_size = function(pts) {
   return (pts/ggplot2::.pt) #/(96/72))
@@ -9,6 +10,7 @@
 
 #' Hide the x axis of a plot
 #'
+#' @keywords internal
 #' @return a theme
 .gg_hide_X_axis = function() {
   ggplot2::theme(
@@ -21,6 +23,7 @@
 
 #' Hide the y axis of a plot
 #'
+#' @keywords internal
 #' @return a theme
 .gg_hide_Y_axis = function() {
   ggplot2::theme(
@@ -33,6 +36,7 @@
 
 #' Hide the legend of a plot
 #'
+#' @keywords internal
 #' @return a theme
 .gg_hide_legend = function() {
   ggplot2::theme(legend.position = "none")
@@ -42,6 +46,7 @@
 #'
 #' @param ang the angle for the x labels
 #'
+#' @keywords internal
 #' @return a theme
 .gg_set_X_angle = function(ang = 60) {
   hj = dplyr::case_when(
@@ -63,6 +68,7 @@
 #'
 #' @param ang the angle for the x labels
 #'
+#' @keywords internal
 #' @return a theme
 .gg_narrow = function(ang = 90) {
   list(
@@ -82,6 +88,7 @@
 #' @param textSize - the size in pts of the text
 #' @param spaceLegend - degree of spacing between items in the scale (defines overall size)
 #'
+#' @keywords internal
 #' @return a theme
 .gg_resize_legend = function(pointSize = 0.75, textSize = 6, spaceLegend = 0.75) {
   return(list(
@@ -120,12 +127,12 @@
   aes = match.arg(aes)
   scale = match.arg(scale)
   # get the palette
-  tmp = ggplot_build(plot)
+  tmp = ggplot2::ggplot_build(plot)
   fill = tmp$plot$scales$scales %>% purrr::discard(~ !aes %in% .x$aesthetics) %>% `[[`(1)
   man = fill$palette.cache
   names(man) = fill$range$range
   if (scale == "fill")
-    return(scale_fill_manual(values = man, ...))
+    return(ggplot2::scale_fill_manual(values = man, ...))
   else
-    return(scale_color_manual(values = man, ...))
+    return(ggplot2::scale_color_manual(values = man, ...))
 }

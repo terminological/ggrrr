@@ -163,7 +163,7 @@
 # .is_formula_interface()
 .is_formula_interface = function(...) {
   out = tryCatch(
-    sapply(c(...),.maybe_formula),
+    suppressWarnings(sapply(c(...),.maybe_formula)),
     error = function(e) {
         # could have been a tidyselect.
         FALSE

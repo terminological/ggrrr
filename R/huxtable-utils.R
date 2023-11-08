@@ -704,6 +704,7 @@ data_supplement = function(..., filename="supplementary-material.xlsx", out = gg
       }
 
       wb = hux2 %>% huxtable::as_Workbook(Workbook = wb, sheet = sheetname)
+      openxlsx::setRowHeights(wb, sheetname, 1:nrow(hux2), heights=32)
       .catalog <<- .catalog %>% dplyr::filter(table != sheetname) %>% dplyr::bind_rows(tidyr::tibble(table=sheetname,description=caption))
       .wb <<- wb
       # indexes keeps track of order in which sheets added and overwritten

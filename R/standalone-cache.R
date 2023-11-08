@@ -1,3 +1,19 @@
+# ---
+# repo: terminological/ggrrr
+# file: standalone-cache.R
+# last-updated: 2023-11-08
+# license: https://unlicense.org
+# imports:
+#   rlang (>= 1.1.0)
+#   digest
+#   rappdirs
+#   fs
+#   stringr
+#   dplyr
+#   tidyr
+#   utils
+# ---
+
 # package depends
 # c("digest","rappdirs","fs","stringr","dplyr","tidyr","utils","rlang") %>% lapply(usethis::use_package)
 
