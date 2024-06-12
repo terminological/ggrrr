@@ -883,7 +883,7 @@ knit_print.rendered_plot  = function(x, options, ...) {
      defaultFontSize = 8,
      sheetname = fs::path_ext_remove(fs::path_file(filename)),
      pdfConverter = .print_html_with_chrome,
-     webfontFinder = ~ return(list()),
+     webfontFinder = ~ return(list())
 ) {
 
   html2 = NULL  # remove global binding note
