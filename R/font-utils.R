@@ -459,7 +459,7 @@ webfont_provider = list(
 
   res = tryCatch({
     ret = suppressMessages(suppressWarnings(
-      ggrrr::cache_download(request_url, .stale = 7, quiet=TRUE, .extn="css", .cache = .css_loc())
+      .cache_download(request_url, .stale = 7, quiet=TRUE, .extn="css", .cache = .css_loc())
     ))
     res = readr::read_file(ret)
   }, error=function(e) "" )

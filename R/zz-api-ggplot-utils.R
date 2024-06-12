@@ -298,10 +298,10 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
 
 
   borders = dplyr::bind_rows(
-    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(topBorderWeight)) %>% dplyr::select(x=x0,y=ay1,xend=x1,yend=ay1,size),
-    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(bottomBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x1,yend=ay0,size),
-    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(leftBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x0,yend=ay1,size),
-    tidy2 %>% dplyr::mutate(size=ggrrr::gg_label_size(rightBorderWeight)) %>% dplyr::select(x=x1,y=ay0,xend=x1,yend=ay1,size)
+    tidy2 %>% dplyr::mutate(size=.gg_label_size(topBorderWeight)) %>% dplyr::select(x=x0,y=ay1,xend=x1,yend=ay1,size),
+    tidy2 %>% dplyr::mutate(size=.gg_label_size(bottomBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x1,yend=ay0,size),
+    tidy2 %>% dplyr::mutate(size=.gg_label_size(leftBorderWeight)) %>% dplyr::select(x=x0,y=ay0,xend=x0,yend=ay1,size),
+    tidy2 %>% dplyr::mutate(size=.gg_label_size(rightBorderWeight)) %>% dplyr::select(x=x1,y=ay0,xend=x1,yend=ay1,size)
   ) %>% dplyr::filter(size>0) %>% dplyr::distinct()
 
   g = ggplot2::ggplot(tidy2)+
@@ -312,7 +312,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
       # ggplot2::ggplot(mtcars, ggplot2::aes(x=wt, y=mpg, label=rownames(mtcars))) + ggplot2::geom_label(ggplot2::aes(family=c("Times New Roman", "Roboto")[am+1],fontface=c("bold", "italic")[am+1]))
       # Does do what it is supposed to
       family=fontName,fontface=fontFace,
-      size=ggrrr::gg_label_size(fontSize)*scale), # Shrink the label to ensure the table fits the max table width
+      size=.gg_label_size(fontSize)*scale), # Shrink the label to ensure the table fits the max table width
       label.size=0, label.padding = grid::unit(2*scale,"pt")
     )+
     ggplot2::theme(
@@ -447,11 +447,11 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
 #' # colour axis. N.b. having enough different colours here is important
 #' ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
 #'   ggplot2::geom_bar(stat="identity",orientation = "y")+
-#'   ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
+#'   scale_fill_subtype(.palette = scales::brewer_pal,
 #'     palette="Accent", subclasses = subgroups)+
-#'   ggrrr::scale_colour_subtype(subclasses=subgroups)+
-#'   ggrrr::gg_hide_Y_axis()+
-#'   ggrrr::gg_narrow()
+#'   scale_colour_subtype(subclasses=subgroups)+
+#'   gg_hide_Y_axis()+
+#'   gg_narrow()
 scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", lighten=NA,  na.value = "grey50", aesthetics = "fill") {
   dots = rlang::list2(...)
   discrete_scale_opts = dots[names(dots) %in% names(formals(ggplot2::discrete_scale)) & !names(dots) %in% c("palette","scale_name")]

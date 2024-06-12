@@ -6,7 +6,6 @@
 # imports:
 #    - dplyr
 #    - ggplot2
-#    - ggrrr
 #    - knitr
 #    - purrr
 #    - ragg
@@ -212,7 +211,7 @@
   for(geom in geoms) {
     try({
       if (geom %in% c("label","text","sf_label","sf_text")) {
-        ggplot2::update_geom_defaults(geom, list(size = ggrrr::gg_label_size(fontSizePts), family=font))
+        ggplot2::update_geom_defaults(geom, list(size = .gg_label_size(fontSizePts), family=font))
       } else {
         ggplot2::update_geom_defaults(geom, list(size = size, linewidth=lineSize))
       }
