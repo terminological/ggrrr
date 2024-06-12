@@ -4,24 +4,20 @@
 # last-updated: 2023-11-08
 # license: https://unlicense.org
 # imports:
-#   - rlang (>= 1.1.0)
-#   - digest
-#   - rappdirs
-#   - fs
-#   - stringr
-#   - dplyr
-#   - tidyr
-#   - utils
+#    - usethis
+#    - digest
+#    - rappdirs
+#    - utils
+#    - rlang
+#    - stringr
+#    - fs
+#    - dplyr
+#    - tidyr
 # ---
-
-# package depends
-# c("digest","rappdirs","fs","stringr","dplyr","tidyr","utils","rlang") %>% lapply(usethis::use_package)
 
 .md5obj = function(obj) {
   as.character(digest::digest(obj, algo="md5"))
 }
-
-#.arear.cache <- new.env(parent=emptyenv())
 
 #' A simple pass-through cache for complex or long running operations
 #'
@@ -35,6 +31,7 @@
 #' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("cache.stale")
 #' @keywords internal
+#' @concept cache
 #'
 #' @return the output of .expr which will usually be a value
 .cached = function (
@@ -95,13 +92,14 @@
 #'
 #' @return nothing. called for side effects.
 #' @keywords internal
+#' @concept cache
 .cache_delete_stale = function(
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
   .stale = Inf
 ) {
 
-  change_time = path = NULL # remove global binding note
+  modification_time = stale_time = path = NULL # remove global binding note
 
   if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
   day_start = getOption("cache.time_day_starts", default=3)
@@ -124,6 +122,7 @@
 #'
 #' @return nothing. called for side effects
 #' @keywords internal
+#' @concept cache
 .cache_clear = function (
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
@@ -157,7 +156,7 @@
 #' makes sure it is reused.
 #'
 #' @param url the url to download
-#' @inheritDotParams utils::download.file
+#' @param ... passed to `utils::download.file()`
 #' @param .nocache if set to TRUE all caching is disabled
 #' @param .cache the location of the downloaded files
 #' @param .stale how long to leave this file before replacing it.
@@ -165,6 +164,7 @@
 #'
 #' @return the path to the downloaded file
 #' @keywords internal
+#' @concept cache
 .cache_download = function(
   url,
   ...,

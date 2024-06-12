@@ -4,3 +4,6 @@
 ^LICENSE\.md$
 ^docs
 ^doRelease$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

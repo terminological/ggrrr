@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9023
+Version: 0.0.0.9024
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -20,7 +20,6 @@ Imports:
     grid,
     gridExtra,
     gtable,
-    here,
     huxtable,
     openxlsx,
     rlang,
@@ -36,6 +35,7 @@ Imports:
     officer,
     patchwork,
     purrr,
+    pillar,
     readr,
     rstudioapi,
     stringr,
@@ -43,7 +43,6 @@ Imports:
     systemfonts,
     extrafont,
     scales,
-    functional,
     colorspace,
     svglite,
     rsvg,
@@ -53,7 +52,9 @@ Imports:
     grDevices,
     knitr,
     base64enc,
-    ragg
+    ragg,
+    lifecycle,
+    pdftools
 Suggests: 
     tidyverse,
     rmarkdown,
@@ -63,7 +64,7 @@ Suggests:
     Rttf2pt1 (>= 1.3.12),
     Cairo
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr
 BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3

@@ -1,0 +1,93 @@
+---
+title: "Structured lists"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Structured lists}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Structured lists are a simple(r) and lighter weight alternative to `vctrs` from
+the `tidyverse` package. In `pkgutils` a `struct` is defined as a S3 class based
+on a named list of values that is managed as a single entity. E.g. a value and
+confidence limits. All `struct`s live in `struct_list`s allowing them to be part
+of data frames. This list of S3 classes/lists approach means that `struct`s need
+infrastructure to make sure they stay in the same format. 
+
+
+```{r setup}
+# library(pkgutils)
+devtools::load_all()
+```
+
+
+The aim of `struct_list` is to be transparent to the user and created in a 
+package, but removing the overhead of managing data as lists of lists.
+
+## Constructor
+
+As with `vctrs` the first step is to define a constructor function that performs
+any error checking, and handles any vectorisation needed 
+
+```{r}
+
+new_HR = function(mid, lower, upper, p.value) {
+  return(struct(
+    mid = mid,
+    lower = lower,
+    upper = upper,
+    p.value = p.value,
+    .class = "HR"))
+}
+
+format.HR = function(x, ...) {
+  sprintf("%1.2f [%1.2f \u2014 %1.2f] (P:%s)",x$mid,x$lower,x$upper,scales::pvalue(x$p.value))
+}
+
+new_HR(1.2,0.8,1.6,0.8534)
+
+```
+
+Printing as a list of custom S3 object is handled by default using `tibble` and
+`pillar` packages.
+
+```{r}
+
+df = tibble::tibble(
+  index = 1:5,
+  HR = rep(new_HR(1.2,0.8,1.6,0.8534),5)
+) 
+
+format(df)
+```
+
+and it will also print correctly using `knitr`s default 
+
+```{r}
+knitr::kable(df)
+# but not directly with huxtable
+# huxtable::hux(df %>% dplyr::mutate(HR = format(HR)))
+```
+
+As first class lists they can be manipulated with `purrr` functions, for 
+extracting or manipulating values. If the 
+value we expect back from a purrr::map is a `struct` just like `purrr::map_dbl`
+and similar functions we use a `pkgutils::map_struct` function.
+
+```{r}
+x = new_HR(1.2,0.8,1.6,0.8534)
+
+x$mid
+```
+
+
+```{r}
+df$HR$mid
+```

@@ -81,7 +81,7 @@ tmp = p2 %>% gg_save_as(out("figure1"),size = std_size$two_third)
 ```
 
 ```{r}
-tmp
+as.character(tmp)
 ```
 
 In general journals don't like this mixture of figures and tables however simple tables are also good to add as annotations to a plot. 

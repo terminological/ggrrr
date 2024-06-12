@@ -28,6 +28,9 @@
     <loc>/articles/other-table-formats.html</loc>
   </url>
   <url>
+    <loc>/articles/struct-lists.html</loc>
+  </url>
+  <url>
     <loc>/articles/table-functions.html</loc>
   </url>
   <url>
@@ -58,6 +61,15 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/Math.struct_list.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Ops.struct_list.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Summary.struct_list.html</loc>
+  </url>
+  <url>
     <loc>/reference/as.character.rendered_plot.html</loc>
   </url>
   <url>
@@ -65,6 +77,9 @@
   </url>
   <url>
     <loc>/reference/as.long_format_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/as.struct_list.html</loc>
   </url>
   <url>
     <loc>/reference/as_vars.html</loc>
@@ -86,6 +101,9 @@
   </url>
   <url>
     <loc>/reference/cached.html</loc>
+  </url>
+  <url>
+    <loc>/reference/cash-.checked_list.html</loc>
   </url>
   <url>
     <loc>/reference/check_font.html</loc>
@@ -127,7 +145,19 @@
     <loc>/reference/dot-cached.html</loc>
   </url>
   <url>
+    <loc>/reference/dot-convert_pdf_to_pngs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-embed_fonts.html</loc>
+  </url>
+  <url>
     <loc>/reference/dot-find_chrome.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_breaks_log1p.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_fonts_missing.html</loc>
   </url>
   <url>
     <loc>/reference/dot-gg_hide_X_axis.html</loc>
@@ -145,10 +175,148 @@
     <loc>/reference/dot-gg_narrow.html</loc>
   </url>
   <url>
+    <loc>/reference/dot-gg_pedantic.html</loc>
+  </url>
+  <url>
     <loc>/reference/dot-gg_resize_legend.html</loc>
   </url>
   <url>
+    <loc>/reference/dot-gg_save_as.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_consistent.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_x_log1p.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_x_logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_x_percent.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_y_log1p.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_y_logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_scale_y_percent.html</loc>
+  </url>
+  <url>
     <loc>/reference/dot-gg_set_X_angle.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_set_size_defaults.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_substitute_fonts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_tiny_theme.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-gg_transform_logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-here.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_bind_rows.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_default_layout.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_insert_start.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_nest_group.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_save_as.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_set_caption.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_set_font.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_set_footer.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_substitute_fonts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hux_tidy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-if_na.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-if_present.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_document_output.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_html_output.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_knitting.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_latex_output.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_output.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_running_in_chunk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_running_in_console.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_unknown_output.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-is_viewer_available.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-locate_project.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-optional_fn.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-outputter.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-pmixnorm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-print_html_with_chrome.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-print_svg_with_chrome.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-qmixnorm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-sprintf_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-sprintf_dp.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-substitute_fonts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-this_script.html</loc>
   </url>
   <url>
     <loc>/reference/drawDetails.watermark.html</loc>
@@ -173,6 +341,9 @@
   </url>
   <url>
     <loc>/reference/get_value_sets.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gg_find_webfonts.html</loc>
   </url>
   <url>
     <loc>/reference/gg_formatted_table.html</loc>
@@ -218,6 +389,12 @@
   </url>
   <url>
     <loc>/reference/google_font.html</loc>
+  </url>
+  <url>
+    <loc>/reference/here.html</loc>
+  </url>
+  <url>
+    <loc>/reference/html_pdf_converter.html</loc>
   </url>
   <url>
     <loc>/reference/hux_auto_widths.html</loc>
@@ -277,6 +454,12 @@
     <loc>/reference/logit_trans.html</loc>
   </url>
   <url>
+    <loc>/reference/map2_struct.html</loc>
+  </url>
+  <url>
+    <loc>/reference/map_struct.html</loc>
+  </url>
+  <url>
     <loc>/reference/non_cran.html</loc>
   </url>
   <url>
@@ -286,7 +469,13 @@
     <loc>/reference/outputter.html</loc>
   </url>
   <url>
+    <loc>/reference/percent_trans.html</loc>
+  </url>
+  <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pmap_struct.html</loc>
   </url>
   <url>
     <loc>/reference/pmixnorm.html</loc>
@@ -319,10 +508,37 @@
     <loc>/reference/scale_fill_subtype.html</loc>
   </url>
   <url>
+    <loc>/reference/scale_x_log1p.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_x_logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_x_percent.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_y_log1p.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_y_logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_y_percent.html</loc>
+  </url>
+  <url>
     <loc>/reference/sprintf_list.html</loc>
   </url>
   <url>
     <loc>/reference/std_size.html</loc>
+  </url>
+  <url>
+    <loc>/reference/struct.html</loc>
+  </url>
+  <url>
+    <loc>/reference/struct_flatten.html</loc>
+  </url>
+  <url>
+    <loc>/reference/subset-struct-list.html</loc>
   </url>
   <url>
     <loc>/reference/summarise_with_totals.html</loc>

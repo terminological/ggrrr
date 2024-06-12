@@ -222,7 +222,7 @@ rebuild_fonts = function() {
 
 #' @noRd
 #' @examples
-#' .search_webfont_services(c("Roboto","EB Garamond"))
+#' .search_webfont_services(c("Roboto","EB Garamond","Arial"))
 .search_webfont_services = function(fonts, services = names(webfont_provider), ...) {
 
   font_family = NULL
@@ -251,7 +251,7 @@ rebuild_fonts = function() {
 #' .get_webfont_catalogue()
 #' .webfont_catalogue
 .get_webfont_catalogue = function() {
-  if (!exists("x",envir=.webfont_catalogue)) {
+  if (!exists("x",envir=.webfont_catalogue,inherits = FALSE)) {
     if (fs::file_exists(.cache_loc("webfonts.csv"))) {
       tmp =  readr::read_csv(.cache_loc("webfonts.csv"),col_types = readr::cols(.default = readr::col_character()))
       assign("x", tmp, envir=.webfont_catalogue)
@@ -343,6 +343,30 @@ rebuild_fonts = function() {
 
 ## Format conversion utilities ----
 
+#' Embed font families into pdf
+#'
+#' Embeds a set of font files relating to the specified families into the
+#' pdf file, from local file storage.
+#'
+#' @param pdfFile the pdf
+#' @param fonts the font families
+#'
+#' @return nothing
+#' @keywords internal
+.embed_fonts = function(pdfFile, fonts) {
+
+  weight = family = path = NULL
+  paths = dplyr::bind_rows(
+    systemfonts::registry_fonts() %>% dplyr::select(-weight),
+    systemfonts::system_fonts() %>% dplyr::select(-weight)
+  ) %>% filter(family %in% fonts) %>%
+    pull(path)
+
+  suppressMessages(
+    embedFonts(file = fs::path_expand(pdfFile), fontpaths = paths)
+  )
+}
+
 .esc = function(names) {
   stringr::str_replace_all(names,"[[:space:]]", "+")
 }
@@ -399,7 +423,6 @@ rebuild_fonts = function() {
 }
 
 # Webfonts ----
-## adapted from showtextdb ----
 
 webfont_provider = list(
   # google = function(fonts) {
@@ -477,7 +500,7 @@ webfont_provider = list(
 
 #' @noRd
 #' @examples
-#' .get_font_face(c("Roboto", "EB Garamond", "Kings"))
+#' .get_font_face(c("Roboto", "EB Garamond", "Kings","Arial"))
 #'
 .get_font_face = function(fonts) {
 
@@ -646,23 +669,45 @@ webfont_provider = list(
   return(tmp)
 }
 
-#' @noRd
+#' Pick a locally installed font family that matches requested
+#' @param family the font family requested
+#' @param quiet do not print warnings.
+#'
 #' @examples
-#' .substitute_fonts(c("Roboto","Arial","Kings"))
-.substitute_fonts = function(family) {
+#' try({
+#' .substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+#' })
+.substitute_fonts = function(family, quiet = TRUE) {
+  weight = path = NULL
 
-  path = NULL
+  sys_fonts_list = dplyr::bind_rows(
+    systemfonts::registry_fonts() %>% dplyr::mutate(weight = as.character(weight)),
+    systemfonts::system_fonts() %>% dplyr::mutate(weight = as.character(weight))
+  ) %>% dplyr::select(
+    path, sub=family
+  ) %>% dplyr::distinct()
 
   tmp = tibble::tibble(
     family = family,
-    path = sapply(family, function(x) systemfonts::match_font(x)$path)
+    path = systemfonts::match_fonts(family)$path
   ) %>% dplyr::inner_join(
-    .all_system_fonts(valid_ps = FALSE) %>% dplyr::select(sub=family,path), by="path"
-  ) %>% dplyr::select(family, sub) %>%
+    sys_fonts_list, by="path"
+  ) %>%
+    dplyr::select(family, sub) %>%
     dplyr::distinct()
+
+  if (!quiet && any(tmp$family != tmp$sub)) {
+    missing = tmp %>% filter(family != sub) %>% pull(family) %>% paste0(collapse = ", ")
+    rlang::warn(
+      sprintf("The requested font(s): [%s], are not present on the system. Alternatives will be used.", missing),
+      .frequency = "once",
+      .frequency_id = missing
+    )
+  }
   names(tmp$sub) = tmp$family
   return(tmp$sub)
 }
+
 
 # extrafont fonts ----
 

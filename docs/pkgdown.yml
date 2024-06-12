@@ -1,13 +1,13 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: 3.1.13
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  ggrrr: ggrrr.html
   cache-functions: web/cache-functions.html
   figure-functions: web/figure-functions.html
   font-functions: web/font-functions.html
   getting-started: web/getting-started.html
   other-table-formats: web/other-table-formats.html
+  struct-lists: struct-lists.html
   table-functions: web/table-functions.html
-last_built: 2023-09-13T08:41Z
+last_built: 2024-06-12T15:12Z
 
