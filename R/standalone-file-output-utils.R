@@ -856,6 +856,8 @@ knit_print.rendered_plot  = function(x, options, ...) {
 #' @param formats if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"
 #' @param defaultFontSize the default font size
 #' @param sheetname if saving as an xlsx file.
+#' @param pdfConverter a function that takes an HTML fragment and returns a pdf file.
+#' @param webfontFinder a function that takes a set of font families and returns a css webfonts directive
 #'
 #' @return the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.
 #' @keywords internal
@@ -880,11 +882,13 @@ knit_print.rendered_plot  = function(x, options, ...) {
      formats = c("html","docx"),
      defaultFontSize = 8,
      sheetname = fs::path_ext_remove(fs::path_file(filename)),
-     pdfConverter = .print_html_with_chrome
+     pdfConverter = .print_html_with_chrome,
+     webfontFinder = ~ return(list()),
 ) {
 
   html2 = NULL  # remove global binding note
   pdfConverter = rlang::as_function(pdfConverter)
+  webfontFinder = rlang::as_function(webfontFinder)
 
   if (!huxtable::is_hux(hux)) stop("input must be a huxtable")
   if (.is_knitting() & .is_latex_output()) {
@@ -969,7 +973,7 @@ knit_print.rendered_plot  = function(x, options, ...) {
     if ("html" %in% formats) {
       style_dec = ""
       fonts = .hux_used_fonts(hux)
-      webfonts = .get_font_face(fonts)
+      webfonts = webfontFinder(fonts)
       if (length(webfonts) > 0) style_dec = sprintf("<style>%s</style>",paste0(webfonts, collapse = ""))
       write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
       out$html = withExt("html")

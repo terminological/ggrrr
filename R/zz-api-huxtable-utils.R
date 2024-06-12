@@ -234,7 +234,7 @@ hux_sprintf = function(fmt, ..., na.text = "\u2014") {
 #' @export
 hux_to_ggplot = function(hux, width=5.9) {
   longFormatTable = hux %>% ggrrr::as.long_format_table(hux)
-  ggrrr::gg_formatted_table(longFormatTable, width)
+  gg_formatted_table(longFormatTable, width)
 }
 
 

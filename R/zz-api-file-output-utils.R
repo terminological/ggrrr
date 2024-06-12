@@ -39,7 +39,7 @@ gg_find_webfonts = function(plot) {
 #' @inheritDotParams .hux_save_as
 #' @export
 hux_save_as = function(...) {
-  .hux_save_as(..., pdfConverter = html_pdf_converter)
+  .hux_save_as(..., pdfConverter = html_pdf_converter, webfontFinder = .get_font_face)
 }
 
 #' Convert html to pdf depending on what is available on the platform
