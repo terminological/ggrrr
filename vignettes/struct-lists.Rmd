@@ -23,6 +23,7 @@ infrastructure to make sure they stay in the same format.
 
 
 ```{r setup}
+library(ggrrr)
 # devtools::load_all()
 ```
 
