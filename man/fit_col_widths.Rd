@@ -20,3 +20,4 @@ potential for wrapping.
 library(tidyverse)
 iris \%>\% fit_col_widths()
 }
+\concept{huxtable}

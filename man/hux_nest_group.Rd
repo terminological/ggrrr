@@ -19,3 +19,4 @@ Converts row spanning columns into column spanning header rows making
 a table narrower but longer. The column that is being moved is retained to
 allow for the appearance of indentation.
 }
+\concept{huxtable}

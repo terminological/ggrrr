@@ -20,3 +20,4 @@ a watermark layer
 \description{
 Add in a watermark to plots
 }
+\concept{ggplot}

@@ -15,3 +15,4 @@ display a 0-1 scale as 0-100%
 \details{
 `r lifecycle::badge(stage = "deprecated")`
 }
+\concept{ggplot}

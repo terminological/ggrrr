@@ -2,6 +2,7 @@
 
 #' @inherit .gg_tiny_theme
 #' @export
+#' @concept ggplot
 #'
 #' @examples
 #' if (interactive()) {
@@ -14,6 +15,7 @@ gg_tiny_theme = .gg_tiny_theme
 
 #' @inherit .gg_set_size_defaults
 #' @export
+#' @concept ggplot
 #'
 #' @examples
 #' library(tidyverse)
@@ -22,34 +24,42 @@ gg_set_size_defaults = .gg_set_size_defaults
 
 #' @inherit .gg_pedantic
 #' @export
+#' @concept ggplot
 gg_pedantic = .gg_pedantic
 
 #' @inherit .gg_label_size
 #' @export
+#' @concept ggplot
 gg_label_size = .gg_label_size
 
 #' @inherit .gg_hide_X_axis
 #' @export
+#' @concept ggplot
 gg_hide_X_axis = .gg_hide_X_axis
 
 #' @inherit .gg_hide_Y_axis
 #' @export
+#' @concept ggplot
 gg_hide_Y_axis = .gg_hide_Y_axis
 
 #' @inherit .gg_hide_legend
 #' @export
+#' @concept ggplot
 gg_hide_legend = .gg_hide_legend
 
 #' @inherit .gg_set_X_angle
 #' @export
+#' @concept ggplot
 gg_set_X_angle = .gg_set_X_angle
 
 #' @inherit .gg_narrow
 #' @export
+#' @concept ggplot
 gg_narrow = .gg_narrow
 
 #' @inherit .gg_resize_legend
 #' @export
+#' @concept ggplot
 gg_resize_legend = .gg_resize_legend
 
 # drawDetails.watermark <<- function(x, rot = 45, ...){
@@ -63,6 +73,7 @@ gg_resize_legend = .gg_resize_legend
 #' @return a grid object
 #' @importFrom grid drawDetails
 #' @export
+#' @concept ggplot
 drawDetails.watermark = function(x, recording) {
   rot = 45
   alpha = 0.1
@@ -80,6 +91,7 @@ drawDetails.watermark = function(x, recording) {
 #'
 #' @return a watermark layer
 #' @export
+#' @concept ggplot
 gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.watermark",default=FALSE)) {
   if (!disable) {
     grb = grid::grob(lab=lab, cl="watermark")
@@ -93,6 +105,7 @@ gg_watermark = function(lab = "DRAFT", disable = getOption("ggrrr.disable.waterm
 
 #' @inherit .gg_breaks_log1p
 #' @export
+#' @concept ggplot
 #'
 #' @examples
 #' library(tidyverse)
@@ -107,6 +120,7 @@ breaks_log1p = .gg_breaks_log1p
 #' @description display a 0-1 scale as 0-100%
 #' @return A scales object
 #' @export
+#' @concept ggplot
 percent_trans <- function() {
   lifecycle::deprecate_stop("0.0.0.9024","percent_trans()","scale_y_percent()")
 #
@@ -130,31 +144,38 @@ percent_trans <- function() {
 #'   ggplot2::scale_y_continuous(trans = "logit")
 #'
 #' @export
+#' @concept ggplot
 logit_trans = .gg_transform_logit
 
 
 #' @inherit .gg_scale_x_log1p
 #' @export
+#' @concept ggplot
 scale_x_log1p = .gg_scale_x_log1p
 
 #' @inherit .gg_scale_y_log1p
 #' @export
+#' @concept ggplot
 scale_y_log1p = .gg_scale_y_log1p
 
 #' @inherit .gg_scale_x_logit
 #' @export
+#' @concept ggplot
 scale_x_logit = .gg_scale_x_logit
 
 #' @inherit .gg_scale_y_logit
 #' @export
+#' @concept ggplot
 scale_y_logit = .gg_scale_y_logit
 
 #' @inherit .gg_scale_x_percent
 #' @export
+#' @concept ggplot
 scale_x_percent = .gg_scale_x_percent
 
 #' @inherit .gg_scale_y_percent
 #' @export
+#' @concept ggplot
 scale_y_percent = .gg_scale_y_percent
 
 ## GGplot tables ----
@@ -163,6 +184,7 @@ scale_y_percent = .gg_scale_y_percent
 #'
 #' @keywords graph layout
 #' @export
+#' @concept ggplot
 #' @param df the dataframe with the table data. Column names will become headings
 #' @param pts text size in points
 #' @param font the font family
@@ -226,6 +248,7 @@ gg_simple_table = function(df, pts=8, font = "sans", unwrapped = FALSE) {
 #'
 #' @return a ggplot object containing the table as a ggplot.
 #' @export
+#' @concept ggplot
 gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInches=5.9, font="Roboto", ...) {
 
   hux = colSpan = rowSpan = y1 = y0 = x0 = x1 = ay0 = ay1 = label = fontName = fontSize = textwidth = width =
@@ -423,6 +446,7 @@ gg_formatted_table = function(longFormatTable, colWidths = NULL, tableWidthInche
 #'
 #' @return a ggplot scale
 #' @export
+#' @concept ggplot
 #'
 #' @examples
 #' library(tidyverse)
@@ -474,6 +498,7 @@ scale_fill_subtype = function (.palette, subclasses, ..., undefined="#606060", l
 #'
 #' @return a ggplot scale
 #' @export
+#' @concept ggplot
 #'
 #' @examples
 #' library(tidyverse)

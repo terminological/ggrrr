@@ -19,3 +19,4 @@ the altered huxtable
 \description{
 Set the font family and size in a huxtable globally
 }
+\concept{huxtable}

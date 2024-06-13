@@ -31,3 +31,4 @@ to get a single consistent look and feel.
 library(tidyverse)
 gg_set_size_defaults(lineSize = 0.25)
 }
+\concept{ggplot}

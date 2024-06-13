@@ -33,3 +33,4 @@ default sizes for line widths and point sizes. It also
 switched the default png renderer in knitr to `ragg::ragg_png` to allow for
 modern font support.
 }
+\concept{ggplot}

@@ -18,3 +18,4 @@ a grid object
 \description{
 Internal function for drawing watermark on ggplots
 }
+\concept{ggplot}

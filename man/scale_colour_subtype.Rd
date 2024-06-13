@@ -61,3 +61,4 @@ ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
   ggrrr::gg_hide_Y_axis()+
   ggrrr::gg_narrow()
 }
+\concept{ggplot}

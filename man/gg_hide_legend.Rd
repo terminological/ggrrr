@@ -12,3 +12,4 @@ a theme
 \description{
 Hide the legend of a plot
 }
+\concept{ggplot}

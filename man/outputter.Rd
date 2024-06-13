@@ -37,3 +37,4 @@ the date.
 out = outputter("~/output",datedSubdirectory=TRUE)
 out("file.png")
 }
+\concept{output}

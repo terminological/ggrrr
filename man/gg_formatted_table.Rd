@@ -29,3 +29,4 @@ a ggplot object containing the table as a ggplot.
 \description{
 This is useful if you want to combine a formatted table with a plot in a multi-panel patchwork.
 }
+\concept{ggplot}

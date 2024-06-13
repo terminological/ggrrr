@@ -4,6 +4,7 @@
 
 #' @inherit .hux_default_layout
 #' @export
+#' @concept huxtable
 #' @examples
 #' library(tidyverse)
 #' hux = iris %>% hux_default_layout()
@@ -13,18 +14,22 @@ hux_default_layout = .hux_default_layout
 
 #' @inherit .hux_bind_rows
 #' @export
+#' @concept huxtable
 hux_bind_rows = .hux_bind_rows
 
 #' @inherit .hux_set_caption
 #' @export
+#' @concept huxtable
 hux_set_caption = .hux_set_caption
 
 #' @inherit .hux_insert_start
 #' @export
+#' @concept huxtable
 hux_insert_start = .hux_insert_start
 
 #' @inherit .hux_set_footer
 #' @export
+#' @concept huxtable
 hux_set_footer = .hux_set_footer
 
 
@@ -32,18 +37,21 @@ hux_set_footer = .hux_set_footer
 
 #' @inherit .hux_set_font
 #' @export
+#' @concept huxtable
 hux_set_font = .hux_set_font
 
 ### hux_tidy ----
 
 #' @inherit .hux_tidy
 #' @export
+#' @concept huxtable
 hux_tidy = .hux_tidy
 
 ### hux_nest_group ----
 
 #' @inherit .hux_nest_group
 #' @export
+#' @concept huxtable
 hux_nest_group = .hux_nest_group
 
 #' Estimate column content widths
@@ -55,6 +63,7 @@ hux_nest_group = .hux_nest_group
 #'
 #' @return a vector of column widths
 #' @export
+#' @concept huxtable
 #'
 #' @examples
 #' library(tidyverse)
@@ -121,6 +130,7 @@ fit_col_widths = function(table) {
 #'
 #' @return the huxtable with the width options set.
 #' @export
+#' @concept huxtable
 hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 
   value = minStrwidth = newwidth = NULL  # remove global binding note
@@ -216,6 +226,7 @@ hux_auto_widths = function(hux, target = "html", including_headers = FALSE) {
 #'
 #' @return a string value
 #' @export
+#' @concept huxtable
 hux_sprintf = function(fmt, ..., na.text = "\u2014") {
   sprintf(fmt,...) %>% stringr::str_replace_all("NA",na.text)
 }
@@ -232,6 +243,7 @@ hux_sprintf = function(fmt, ..., na.text = "\u2014") {
 #'
 #' @return a ggplot object of the right width
 #' @export
+#' @concept huxtable
 hux_to_ggplot = function(hux, width=5.9) {
   longFormatTable = hux %>% ggrrr::as.long_format_table(hux)
   gg_formatted_table(longFormatTable, width)

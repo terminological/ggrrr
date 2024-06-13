@@ -1,5 +1,6 @@
 #' @inherit .cached
 #' @export
+#' @concept cache
 #'
 #' @examples
 #' colName = "Petal.Width"
@@ -18,6 +19,7 @@ cached = function (
 }
 
 #' @inherit .cache_delete_stale
+#' @concept cache
 #' @export
 cache_delete_stale = function(
   .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
@@ -33,6 +35,7 @@ cache_delete_stale = function(
 # generally filesystem abstraction functions from ukcovidtools
 
 #' @inherit .cache_clear
+#' @concept cache
 #' @export
 #' @examples
 #' cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
@@ -46,6 +49,7 @@ cache_clear = function (
 }
 
 #' @inherit .cache_download
+#' @concept cache
 #' @export
 cache_download = function(
   url,

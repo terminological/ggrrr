@@ -14,7 +14,8 @@
   formats = c("html", "docx"),
   defaultFontSize = 8,
   sheetname = fs::path_ext_remove(fs::path_file(filename)),
-  pdfConverter = .print_html_with_chrome
+  pdfConverter = .print_html_with_chrome,
+  webfontFinder = ~return(list())
 )
 }
 \arguments{
@@ -35,6 +36,10 @@
 \item{defaultFontSize}{the default font size}
 
 \item{sheetname}{if saving as an xlsx file.}
+
+\item{pdfConverter}{a function that takes an HTML fragment and returns a pdf file.}
+
+\item{webfontFinder}{a function that takes a set of font families and returns a css webfonts directive}
 }
 \value{
 the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.

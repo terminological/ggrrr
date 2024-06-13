@@ -14,6 +14,9 @@ reference:
 - title: "Huxtable"
   contents:
   - has_concept("huxtable")
-- title: "Ohers"
+- title: "Structured lists"
   contents:
-  - lacks_concepts(c("cache", "output", "ggplot","huxtable"))
+  - has_concept("structures")
+- title: "Others"
+  contents:
+  - lacks_concepts(c("cache", "output", "ggplot","huxtable","structures"))

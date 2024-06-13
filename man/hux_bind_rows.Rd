@@ -15,3 +15,4 @@ a single huxtable
 \description{
 Sometimes vanilla bind_rows gets confused.
 }
+\concept{huxtable}

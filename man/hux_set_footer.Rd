@@ -18,3 +18,4 @@ a huxtable with last row footer
 Keeps the same formatting as the rest of the table except
 for borders
 }
+\concept{huxtable}

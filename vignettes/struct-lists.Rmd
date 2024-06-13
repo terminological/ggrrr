@@ -23,8 +23,7 @@ infrastructure to make sure they stay in the same format.
 
 
 ```{r setup}
-# library(pkgutils)
-devtools::load_all()
+# devtools::load_all()
 ```
 
 

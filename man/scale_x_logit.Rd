@@ -19,3 +19,4 @@ a ggplot scale
 \description{
 A logit x scale
 }
+\concept{ggplot}

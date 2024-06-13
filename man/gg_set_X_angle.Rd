@@ -16,3 +16,4 @@ a theme
 Also sets horizontal and vertical alignment correctly, and does top and
 bottom axes.
 }
+\concept{ggplot}

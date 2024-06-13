@@ -23,3 +23,4 @@ ggplot2::ggplot(diamonds, ggplot2::aes(x=price))+
   ggplot2::geom_density()+
   ggplot2::scale_x_continuous(trans="log1p", breaks=ggrrr::breaks_log1p())
 }
+\concept{ggplot}

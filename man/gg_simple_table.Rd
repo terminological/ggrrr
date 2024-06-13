@@ -26,5 +26,6 @@ if (FALSE) {
   gg_simple_table(tibble::tibble(x=c(1,2,3),y=c(5,4,3)),pts=10)
 }
 }
+\concept{ggplot}
 \keyword{graph}
 \keyword{layout}

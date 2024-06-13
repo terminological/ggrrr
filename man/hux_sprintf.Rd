@@ -19,3 +19,4 @@ a string value
 \description{
 A sprintf alternative that handles NA values gracefully (ish)
 }
+\concept{huxtable}

@@ -21,3 +21,4 @@ a huxtable with row inserted at start in the same format
 \description{
 Insert row at start maintaining format
 }
+\concept{huxtable}

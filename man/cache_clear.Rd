@@ -26,3 +26,4 @@ Clear data from the passthrough cache for complex or long running operations
 \examples{
 cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
 }
+\concept{cache}

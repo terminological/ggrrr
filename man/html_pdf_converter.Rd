@@ -22,3 +22,4 @@ nothing called for side effects
 If html2pdfr is installed it will use that by default, if not it will fall
 back to a headless chrome instance.
 }
+\concept{output}

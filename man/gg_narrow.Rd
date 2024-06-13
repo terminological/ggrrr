@@ -15,3 +15,4 @@ a theme
 \description{
 Make a plot narrower
 }
+\concept{ggplot}

@@ -19,3 +19,4 @@ a theme
 \description{
 Make the legend smaller
 }
+\concept{ggplot}

@@ -52,3 +52,4 @@ nested tree of rows (using `rowGroupVars`) and a nested tree of columns (from
 these two trees. If there are multiple matches an additional layer of grouping
 is added to the columns.
 }
+\concept{huxtable}

@@ -62,9 +62,10 @@ subgroups = data \%>\%
 # colour axis. N.b. having enough different colours here is important
 ggplot2::ggplot(data, ggplot2::aes(y=1,x=n, fill=color_cut, color=color_cut))+
   ggplot2::geom_bar(stat="identity",orientation = "y")+
-  ggrrr::scale_fill_subtype(.palette = scales::brewer_pal,
+  scale_fill_subtype(.palette = scales::brewer_pal,
     palette="Accent", subclasses = subgroups)+
-  ggrrr::scale_colour_subtype(subclasses=subgroups)+
-  ggrrr::gg_hide_Y_axis()+
-  ggrrr::gg_narrow()
+  scale_colour_subtype(subclasses=subgroups)+
+  gg_hide_Y_axis()+
+  gg_narrow()
 }
+\concept{ggplot}

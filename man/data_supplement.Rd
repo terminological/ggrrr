@@ -31,3 +31,4 @@ function you can add extra data to the supplement as a new sheet, or you can wri
 When each data table is written either the table can be written silently or returned so that it is included
 in a knitr document. This is controlled by `option("hide.supplementary.tables"=TRUE)`.
 }
+\concept{output}

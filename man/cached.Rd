@@ -39,3 +39,4 @@ colName = "Petal.Width"
   iris[[colName]]
 } \%>\% cached(iris, colName, .prefix="example", .cache=tempdir())
 }
+\concept{cache}

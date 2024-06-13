@@ -19,6 +19,8 @@ hux_save_as(...)
     \item{\code{formats}}{if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"}
     \item{\code{defaultFontSize}}{the default font size}
     \item{\code{sheetname}}{if saving as an xlsx file.}
+    \item{\code{pdfConverter}}{a function that takes an HTML fragment and returns a pdf file.}
+    \item{\code{webfontFinder}}{a function that takes a set of font families and returns a css webfonts directive}
   }}
 }
 \value{
@@ -43,3 +45,4 @@ try({
 })
 
 }
+\concept{output}

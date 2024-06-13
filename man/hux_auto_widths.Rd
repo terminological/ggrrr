@@ -19,3 +19,4 @@ the huxtable with the width options set.
 \description{
 Calculate a sensible column and table width for a huxtable based on its content.
 }
+\concept{huxtable}

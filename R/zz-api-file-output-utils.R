@@ -2,6 +2,7 @@
 
 #' @inherit .outputter
 #' @export
+#' @concept output
 #'
 #' @examples
 #' out = outputter("~/output",datedSubdirectory=TRUE)
@@ -10,12 +11,14 @@ outputter = .outputter
 
 #' @inherit .here
 #' @export
+#' @concept output
 here = .here
 
 
 #' @inherit .gg_save_as
 #' @inheritDotParams .gg_save_as
 #' @export
+#' @concept output
 gg_save_as = function(...) {
   .gg_save_as(..., webfontFinder = gg_find_webfonts)
 }
@@ -38,6 +41,7 @@ gg_find_webfonts = function(plot) {
 #' @inherit .hux_save_as
 #' @inheritDotParams .hux_save_as
 #' @export
+#' @concept output
 hux_save_as = function(...) {
   .hux_save_as(..., pdfConverter = html_pdf_converter, webfontFinder = .get_font_face)
 }
@@ -54,6 +58,7 @@ hux_save_as = function(...) {
 #'
 #' @return nothing called for side effects
 #' @export
+#' @concept output
 html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
 
   if(rlang::is_installed("html2pdfr") && utils::packageVersion("html2pdfr") >= "0.4.0") {
@@ -113,6 +118,7 @@ html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
 #' $add_table(hux, caption, footnote, index), which takes a huxtable, caption, and index a writes the huxtable into a supplementary.
 #' $write() which writes the collection of tables to the excel file.
 #' @export
+#' @concept output
 data_supplement = function(..., filename="supplementary-material.xlsx", out = ggrrr::outputter(...), nameGlue="Supplementary Table {index}") {
   e1 = new.env(parent = environment())
   with(e1, {

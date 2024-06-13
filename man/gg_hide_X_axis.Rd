@@ -12,3 +12,4 @@ a theme
 \description{
 Hide the x axis of a plot
 }
+\concept{ggplot}

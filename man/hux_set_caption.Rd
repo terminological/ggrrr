@@ -17,3 +17,4 @@ a huxtable with first row caption
 \description{
 Keeps the same formatting as the rest of the table
 }
+\concept{huxtable}

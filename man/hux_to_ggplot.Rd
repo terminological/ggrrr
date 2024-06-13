@@ -17,3 +17,4 @@ a ggplot object of the right width
 \description{
 Useful if you need to include a formatted table in a figure with a plot
 }
+\concept{huxtable}

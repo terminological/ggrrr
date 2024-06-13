@@ -17,3 +17,4 @@ a ggplot scale
 \description{
 A percentage x scale
 }
+\concept{ggplot}

@@ -30,3 +30,4 @@ The main aim is to get something that works with google docs when you copy and p
 library(tidyverse)
 hux = iris \%>\% hux_default_layout()
 }
+\concept{huxtable}

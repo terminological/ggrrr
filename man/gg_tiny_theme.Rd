@@ -25,3 +25,4 @@ if (interactive()) {
     gg_tiny_theme()
 }
 }
+\concept{ggplot}
