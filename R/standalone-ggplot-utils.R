@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-ggplot-utils.R
-# last-updated: 2024-06-06
+# last-updated: 2025-06-20
 # license: https://unlicense.org
 # imports:
 #    - dplyr
@@ -531,3 +531,125 @@
     labels = ~ sprintf("%.*g%%",sf,.x*100),
     ...))
 }
+
+
+# Programmatic ggplot layers ----
+
+# make a colour aesthetic apply to fill
+..fill_col = function(mapping) {
+  if (is.null(mapping$fill)) {
+    mapping$fill = mapping$colour
+    mapping$colour=NULL
+  }
+  return(mapping)
+}
+
+# the subset of ... params that apply to a geom plus any default values
+# This allows us to supply irrelevant aesthetics in ... for a function that we
+# map to geoms that are more relevant
+..flt = function(geom, dots, mapping, .default = list()) {
+  dots = dots[names(dots) %in% geom$aesthetics()]
+  dots = dots[!names(dots) %in% names(mapping)]
+  dots = c(dots, .default[!names(.default) %in% c(names(dots),names(mapping))])
+  return(dots)
+}
+
+# internal function: allow a ggplot to be constructed more dynamically
+
+#' Support for ggplot compositional functions
+#'
+#' I often want to make a function that does both data manipulation or
+#' summarisation and plotting of the summary, or combines data from multiple
+#' sources. I often want to reuse this and apply similar options to several
+#' layers at once, without causing a whole lot of grief. This function allows
+#' you to pass on data, augment a aesthetic mapping, and pass on other styling
+#' to a set of layers filtering them so they are relevant to the geom. I almost
+#' never want `inherit.aes` to be true.
+#'
+#' @param geom The `ggplot2` layer e.g. `ggplot2::GeomPoint`
+#' @param data the data you are going to plot - optional and will be inherited
+#' @param mapping a mapping typically inherit from the higher level function call
+#'   or augmented (see example)
+#' @param ... inherit from the higher level function to enable user customisation
+#'   these are checked for their relevance to the `geom` before being passed on
+#' @param .default a list containing default aesthetics e.g.
+#'   `list(colour='blue')` that can be overridden by the user if they supply a
+#'   `...` or `mapping` aesthethic that overrides.
+#' @param .switch_fill do you want to use the colour aesthetic for fill for this
+#'   layer. Most commonly I want to do this with ribbons.
+#'
+#' @return a ggplot layer.
+#' @export
+#'
+#' @examples
+#' # top level function contains `...` and `mapping` extensions points:
+#' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
+#'     xCol = rlang::f_lhs(formula)
+#'     yCol = rlang::f_rhs(formula)
+#'     ggplot(data)+
+#'     .gg_layer(
+#'       ggplot2::GeomPoint,
+#'       data = data,
+#'       mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
+#'       ...,
+#'       .default = list(size=10)
+#'      )
+#' }
+#' myPlot(iris, Sepal.Length~Sepal.Width, mapping=aes(colour=Species))
+#' myPlot(iris, Sepal.Length~Petal.Length, mapping=aes(colour=Species), shape="+", size=5)
+#' myPlot(mtcars, mpg~wt, mapping=aes(colour=as.factor(cyl), size=hp))
+.gg_layer = function(geom, data = NULL, mapping, ..., .default = list(), .switch_fill = inherits(geom,"GeomRibbon")) {
+  dots = rlang::list2(...)
+  if (.switch_fill) {
+    mapping = ..fill_col(mapping)
+    dots$fill = dots$colour
+    dots$colour = NULL
+  }
+  return(
+    ggplot2::layer(
+      geom = geom,
+      stat = ggplot2::StatIdentity,
+      data = data,
+      mapping = mapping,
+      position = dots$position %||% "identity",
+      show.legend = dots$show.legend %||% TRUE,
+      inherit.aes = dots$inherit.aes %||% FALSE,
+      check.aes = dots$check.aes %||% TRUE,
+      check.param = dots$check.param %||% TRUE,
+      param = ..flt(geom, dots, mapping, .default = .default)
+    )
+  )
+}
+
+# for use as a default parameter in a function.
+# checks a ggplot::aes is not given in the dots, before passing the dots onto
+# another function
+.gg_check_for_aes = function(...) {
+  dots = rlang::list2(...)
+  if (length(dots)>0 && any(sapply(dots,class)=="uneval")) stop("Unnamed `ggplot2::aes` mapping detected. Ggplot aesthetic parameters must be named `mapping=aes(...)`",call. = FALSE)
+}
+
+
+#' # TODO: needs evaluation in correct environment
+#' #' Merge aesthetic mappings and deduplicate the result
+#' #'
+#' #' @param ... a set of `name=value`, and `aes(...)` specifications
+#' #'
+#' #' @return a single deduplicated set. `name=value` pairs take precedence
+#' #' @export
+#' #'
+#' #' @examples
+#' #' m1 = aes(x=a,y=b,colour=class)
+#' #' .gg_merge_aes(x=A,y=BB,m1)
+#' .gg_merge_aes = function(...) {
+#'   dots = rlang::enexprs(...)
+#'   aess = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))=="uneval"]
+#'   others = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))!="uneval"]
+#'   out = aes(!!!others)
+#'   for (a in aess) {
+#'     browser()
+#'     a = eval(a)[!names(eval(a)) %in% names(out)]
+#'     out = aes(!!!out, !!!a)
+#'   }
+#'   return(out)
+#' }

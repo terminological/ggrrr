@@ -51,7 +51,7 @@
     dplyr::distinct()
 
   if (any(tmp$family != tmp$sub)) {
-    missing = tmp %>% filter(family != sub) %>% pull(family) %>% paste0(collapse = ", ")
+    missing = tmp %>% dplyr::filter(family != sub) %>% dplyr::pull(family) %>% paste0(collapse = ", ")
     rlang::warn(
       sprintf("The requested font(s): [%s], are not present on the system. Alternatives will be used.", missing),
       .frequency = "once",
