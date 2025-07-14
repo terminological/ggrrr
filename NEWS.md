@@ -39,3 +39,7 @@
 
 * big tidy up of rendering pipelines
 * remove showtext etc in favour of svglite
+
+# ggrrr 0.0.0.9025
+
+* standalone mixture distributions

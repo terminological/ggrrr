@@ -12,10 +12,43 @@
 \item{na.replace}{a value to replace NA values with}
 
 \item{...}{
-  Arguments passed on to \code{\link[base:format]{base::format}}
-  \describe{
-    \item{\code{}}{}
-  }}
+  Named arguments passed on to \code{\link[base:format]{base::format}}\describe{
+    \item{\code{trim}}{logical; if \code{FALSE}, logical, numeric and complex
+    values are right-justified to a common width: if \code{TRUE} the
+    leading blanks for justification are suppressed.}
+\item{\code{digits}}{a positive integer indicating how many significant digits
+    are to be used for
+    numeric and complex \code{x}.  The default, \code{NULL}, uses
+    \code{\link[base]{getOption}("digits")}.  This is a suggestion: enough decimal
+    places will be used so that the smallest (in magnitude) number has
+    this many significant digits, and also to satisfy \code{nsmall}.
+    (For more, notably the interpretation for complex numbers see
+    \code{\link[base]{signif}}.)}
+\item{\code{nsmall}}{the minimum number of digits to the right of the decimal
+    point in formatting real/complex numbers in non-scientific formats.
+    Allowed values are \code{0 <= nsmall <= 20}.}
+\item{\code{justify}}{should a \emph{character} vector be left-justified (the
+    default), right-justified, centred or left alone.  Can be abbreviated.}
+\item{\code{cut.names}}{\code{\link[base]{logical}} passed to the \code{list} method
+    of \code{\link[base]{as.data.frame}()}.}
+\item{\code{width}}{\code{default} method: the \emph{minimum} field width or
+    \code{NULL} or \code{0} for no restriction.
+
+    \code{AsIs} method: the \emph{maximum} field width for non-character
+    objects.  \code{NULL} corresponds to the default \code{12}.
+  }
+\item{\code{na.encode}}{logical: should \code{NA} strings be encoded?  Note
+    this only applies to elements of character vectors, not to numerical,
+    complex nor logical \code{NA}s, which are always encoded as \code{"NA"}.}
+\item{\code{scientific}}{either a logical specifying whether
+    elements of a real or complex vector should be encoded in scientific
+    format, or an integer penalty (see \code{\link[base]{options}("scipen")}).
+    Missing values correspond to the current default penalty.}
+\item{\code{...}}{further arguments passed to or from other methods.}
+\item{\code{big.mark,big.interval,small.mark,small.interval,decimal.mark,zero.print,drop0trailing}}{%
+    used for prettying (longish) numerical and complex sequences.
+    Passed to \code{\link[base]{prettyNum}}: that help page explains the details.}
+}}
 }
 \value{
 a vector of character values

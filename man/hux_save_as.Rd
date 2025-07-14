@@ -8,20 +8,19 @@ hux_save_as(...)
 }
 \arguments{
 \item{...}{
-  Arguments passed on to \code{\link[=.hux_save_as]{.hux_save_as}}
-  \describe{
+  Named arguments passed on to \code{\link[=.hux_save_as]{.hux_save_as}}\describe{
     \item{\code{hux}}{the huxtable to save}
-    \item{\code{filename}}{the filename, which may omit the extension}
-    \item{\code{size}}{a `std_size` list entry}
-    \item{\code{maxWidth}}{or the maximum width in inches}
-    \item{\code{maxHeight}}{and either the maximum height in inches}
-    \item{\code{aspectRatio}}{or the minimum allowed aspect ratio}
-    \item{\code{formats}}{if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"}
-    \item{\code{defaultFontSize}}{the default font size}
-    \item{\code{sheetname}}{if saving as an xlsx file.}
-    \item{\code{pdfConverter}}{a function that takes an HTML fragment and returns a pdf file.}
-    \item{\code{webfontFinder}}{a function that takes a set of font families and returns a css webfonts directive}
-  }}
+\item{\code{filename}}{the filename, which may omit the extension}
+\item{\code{size}}{a `std_size` list entry}
+\item{\code{maxWidth}}{or the maximum width in inches}
+\item{\code{maxHeight}}{and either the maximum height in inches}
+\item{\code{aspectRatio}}{or the minimum allowed aspect ratio}
+\item{\code{formats}}{if the extension is omitted, all the formats described here will be saved. Currently supported outputs are "html","png","pdf","docx","xlsx"}
+\item{\code{defaultFontSize}}{the default font size}
+\item{\code{sheetname}}{if saving as an xlsx file.}
+\item{\code{pdfConverter}}{a function that takes an HTML fragment and returns a pdf file.}
+\item{\code{webfontFinder}}{a function that takes a set of font families and returns a css webfonts directive}
+}}
 }
 \value{
 the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.

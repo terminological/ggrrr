@@ -4,7 +4,15 @@
 \alias{qmixnorm}
 \title{Mixture of normal distribution quantiles}
 \usage{
-qmixnorm(p, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
+qmixnorm(
+  p,
+  means,
+  sds,
+  weights = rep(1, length(means)),
+  na.rm = FALSE,
+  approx = TRUE,
+  ...
+)
 }
 \arguments{
 \item{p}{vector of probabilities.}
@@ -16,9 +24,13 @@ qmixnorm(p, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
 \item{weights}{a vector of weights}
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
+
+\item{approx}{use Cornish Fisher moment based approximation if available}
+
+\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
 }
 \value{
-the value of the yth quantile
+the value of the `p`th quantile
 }
 \description{
 `r lifecycle::badge("deprecated")`

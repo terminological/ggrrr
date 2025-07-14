@@ -12,10 +12,9 @@
 \item{params}{the inputs as a list or a dataframe (rather than an enumeration of individual numbers)}
 
 \item{...}{
-  Arguments passed on to \code{\link[=.sprintf_dp]{.sprintf_dp}}
-  \describe{
+  Named arguments passed on to \code{\link[=.sprintf_dp]{.sprintf_dp}}\describe{
     \item{\code{sep}}{a character to use a decimal point.}
-  }}
+}}
 
 \item{na.replace}{a value to replace NA values with.}
 }

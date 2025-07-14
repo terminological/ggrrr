@@ -574,19 +574,20 @@
 #'   these are checked for their relevance to the `geom` before being passed on
 #' @param .default a list containing default aesthetics e.g.
 #'   `list(colour='blue')` that can be overridden by the user if they supply a
-#'   `...` or `mapping` aesthethic that overrides.
+#'   `...` or `mapping` aesthetic that overrides.
 #' @param .switch_fill do you want to use the colour aesthetic for fill for this
 #'   layer. Most commonly I want to do this with ribbons.
 #'
 #' @return a ggplot layer.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' # top level function contains `...` and `mapping` extensions points:
-#' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
+#' try({
+#'   myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
 #'     xCol = rlang::f_lhs(formula)
 #'     yCol = rlang::f_rhs(formula)
-#'     ggplot(data)+
+#'     ggplot2::ggplot(data)+
 #'     .gg_layer(
 #'       ggplot2::GeomPoint,
 #'       data = data,
@@ -594,10 +595,11 @@
 #'       ...,
 #'       .default = list(size=10)
 #'      )
-#' }
-#' myPlot(iris, Sepal.Length~Sepal.Width, mapping=aes(colour=Species))
-#' myPlot(iris, Sepal.Length~Petal.Length, mapping=aes(colour=Species), shape="+", size=5)
-#' myPlot(mtcars, mpg~wt, mapping=aes(colour=as.factor(cyl), size=hp))
+#'   }
+#'   myPlot(iris, Sepal.Length~Sepal.Width, mapping=ggplot2::aes(colour=Species))
+#'   myPlot(iris, Sepal.Length~Petal.Length, mapping=ggplot2::aes(colour=Species), shape="+", size=5)
+#'   myPlot(mtcars, mpg~wt, mapping=ggplot2::aes(colour=as.factor(cyl), size=hp))
+#' })
 .gg_layer = function(geom, data = NULL, mapping, ..., .default = list(), .switch_fill = inherits(geom,"GeomRibbon")) {
   dots = rlang::list2(...)
   if (.switch_fill) {
@@ -636,7 +638,7 @@
 #' #' @param ... a set of `name=value`, and `aes(...)` specifications
 #' #'
 #' #' @return a single deduplicated set. `name=value` pairs take precedence
-#' #' @export
+#' #' @keywords internal
 #' #'
 #' #' @examples
 #' #' m1 = aes(x=a,y=b,colour=class)
