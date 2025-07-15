@@ -67,7 +67,7 @@ Suggests:
     Cairo
 VignetteBuilder: knitr
 RoxygenNote: 7.3.2.9003
-URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr
+URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr, https://terminological.github.io/ggrrr/
 BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3
 SystemRequirements: Google Chrome or other Chromium-based browser.

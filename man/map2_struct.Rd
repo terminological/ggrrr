@@ -7,41 +7,15 @@
 map2_struct(.x, .y, .f, ..., .progress = FALSE)
 }
 \arguments{
-\item{.x, .y}{A pair of vectors, usually the same length. If not, a vector
-of length 1 will be recycled to the length of the other.}
+\item{.x}{a `struct_list`}
 
-\item{.f}{A function, specified in one of the following ways:
-\itemize{
-\item A named function.
-\item An anonymous function, e.g. \verb{\\(x, y) x + y} or \code{function(x, y) x + y}.
-\item A formula, e.g. \code{~ .x + .y}. You must use \code{.x} to refer to the current
-element of \code{x} and \code{.y} to refer to the current element of \code{y}.
-No longer recommended.
-}
+\item{.y}{a list or vector the same length as `.x`}
 
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\item{.f}{a function to apply to each `.x`, `.y` pair}
 
-Wrap a function with \code{\link[purrr:in_parallel]{in_parallel()}} to declare that it should be performed
-in parallel. See \code{\link[purrr:in_parallel]{in_parallel()}} for more details.
-Use of \code{...} is not permitted in this context.}
+\item{...}{additional parameters to  `.f` but anonymous function preferred}
 
-\item{...}{Additional arguments passed on to the mapped function.
-
-We now generally recommend against using \code{...} to pass additional
-(constant) arguments to \code{.f}. Instead use a shorthand anonymous function:
-
-\if{html}{\out{<div class="sourceCode R">}}\preformatted{# Instead of
-x |> map(f, 1, 2, collapse = ",")
-# do:
-x |> map(\\(x) f(x, 1, 2, collapse = ","))
-}\if{html}{\out{</div>}}
-
-This makes it easier to understand which arguments belong to which
-function and will tend to yield better error messages.}
-
-\item{.progress}{Whether to show a progress bar. Use \code{TRUE} to turn on
-a basic progress bar, use a string to give it a name, or see
-\link[purrr]{progress_bars} for more details.}
+\item{.progress}{display a progress bar (logical or string name)}
 }
 \value{
 a `struct_list`

@@ -61,7 +61,7 @@ struct = function(..., .class = NULL, .attr = list()) {
   }
 
   if (!all(names(tmp)=="")) {
-    # There is a mix of names and unnamed paramters in the ... parameters
+    # There is a mix of names and unnamed parameters in the ... parameters
     # this is an error
     stop("`struct` parameters must be either all named or all unnamed structs or struct_lists",call. = FALSE)
   }
@@ -556,7 +556,13 @@ rep.struct_list = function(x, ...) {
 }
 
 
-#' @inherit purrr::map params title description details
+#' @param .x a `struct_list`
+#' @param .f a function to apply to each structure
+#' @param ... additional parameters to  `.f` but anonymous function preferred
+#' @param .progress display a progress bar (logical or string name)
+#' @seealso [purrr::map()]
+#'
+#' @inherit purrr::map title description details
 #' @returns a `struct_list`
 #' @export
 #' @concept structures
@@ -566,7 +572,13 @@ map_struct = function(.x, .f, ..., .progress=FALSE) {
   return(purrr::map(.x, .f, ..., .progress=.progress) %>% as.struct_list())
 }
 
-#' @inherit purrr::map2 params title description details
+#' @param .x a `struct_list`
+#' @param .y a list or vector the same length as `.x`
+#' @param .f a function to apply to each `.x`, `.y` pair
+#' @param ... additional parameters to  `.f` but anonymous function preferred
+#' @param .progress display a progress bar (logical or string name)
+#'
+#' @inherit purrr::map2 title description details
 #' @returns a `struct_list`
 #' @export
 #' @concept structures
@@ -574,10 +586,16 @@ map2_struct = function(.x, .y, .f, ..., .progress = FALSE) {
   return(purrr::map2(.x, .y, .f, ..., .progress=.progress) %>% as.struct_list())
 }
 
-#' @inherit purrr::pmap params title description details
+#' @param .l A `struct_list`.
+#' @param .f a function to apply to each `.l` item
+#' @param ... additional parameters to  `.f` but anonymous function preferred
+#' @param .progress display a progress bar (logical or string name)
+#' @inherit purrr::pmap title description details
 #' @returns a `struct_list`
 #' @export
 #' @concept structures
 pmap_struct = function(.l, .f, ..., .progress = FALSE) {
-  return(purrr::map2(.l, .f, ..., .progress=.progress) %>% as.struct_list())
+  return(
+    purrr::map(as.list.struct_list(.l), \(item) do.call(.f, item), ..., .progress = .progress) %>% as.struct_list()
+  )
 }
