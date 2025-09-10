@@ -4,11 +4,7 @@
 \alias{.cache_delete_stale}
 \title{Delete stale files in a cache}
 \usage{
-.cache_delete_stale(
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
-  .prefix = ".*",
-  .stale = Inf
-)
+.cache_delete_stale(.cache = .cache_loc(), .prefix = ".*", .stale = Inf)
 }
 \arguments{
 \item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}

@@ -4,13 +4,7 @@
 \alias{.pmixlnorm}
 \title{The cumulative density function of a mixture of log normal distributions}
 \usage{
-.pmixlnorm(
-  q,
-  meanlogs,
-  sdlogs,
-  weights = rep(1, length(meanlogs)),
-  na.rm = FALSE
-)
+.pmixlnorm(q, meanlogs, sdlogs, weights = 1, na.rm = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}

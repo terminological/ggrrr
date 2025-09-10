@@ -40,17 +40,17 @@
 #' @export
 #' @concept output
 std_size = list(
-  A4 = list(width=8.25,height=11.75,rot=0),
-  A5 = list(width=5+7/8,height=8.25,rot=0),
-  full =  list(width=5.9,height=8,rot=0),
-  landscape =  list(width=9.75,height=5.9,rot=0),
-  half =  list(width=5.9,height=4,rot=0),
-  third =  list(width=5.9,height=3,rot=0),
-  two_third = list(width=5.9,height=6,rot=0),
-  quarter = list(width=5.9,height=2,rot=0),
-  quarter_portrait = list(width=3,height=4,rot=0),
-  sixth = list(width=3,height=3,rot=0),
-  slide = list(width=12,height=6,rot=0)
+  A4 = list(width = 8.25, height = 11.75, rot = 0),
+  A5 = list(width = 5 + 7 / 8, height = 8.25, rot = 0),
+  full = list(width = 5.9, height = 8, rot = 0),
+  landscape = list(width = 9.75, height = 5.9, rot = 0),
+  half = list(width = 5.9, height = 4, rot = 0),
+  third = list(width = 5.9, height = 3, rot = 0),
+  two_third = list(width = 5.9, height = 6, rot = 0),
+  quarter = list(width = 5.9, height = 2, rot = 0),
+  quarter_portrait = list(width = 3, height = 4, rot = 0),
+  sixth = list(width = 3, height = 3, rot = 0),
+  slide = list(width = 12, height = 6, rot = 0)
 )
 
 # Project output directory tools ----
@@ -74,15 +74,19 @@ std_size = list(
 #' (allowing for libraries that refuse to overwrite existing files)
 #' @keywords internal
 #' @concept output
-.outputter = function(directory = .here("output"), ..., datedFile=!datedSubdirectory, datedSubdirectory=FALSE) {
+.outputter = function(
+  directory = .here("output"),
+  ...,
+  datedFile = !datedSubdirectory,
+  datedSubdirectory = FALSE
+) {
   rlang::check_dots_empty()
   directory = fs::path_norm(directory)
   fs::dir_create(directory)
-  message("directing output to: ",directory)
-  return(function(filename = "", delete=FALSE) {
-
-    if(datedSubdirectory) {
-      directory = fs::path(directory,Sys.Date())
+  message("directing output to: ", directory)
+  return(function(filename = "", delete = FALSE) {
+    if (datedSubdirectory) {
+      directory = fs::path(directory, Sys.Date())
       fs::dir_create(directory)
     }
 
@@ -92,9 +96,14 @@ std_size = list(
     }
 
     ext = fs::path_ext(filename)
-    if(datedFile) filename = paste0(fs::path_ext_remove(filename),"-",Sys.Date()) %>% fs::path_ext_set(ext)
-    path = fs::path(directory,filename)
-    if (delete & fs::file_exists(path)) unlink(path)
+    if (datedFile) {
+      filename = paste0(fs::path_ext_remove(filename), "-", Sys.Date()) %>%
+        fs::path_ext_set(ext)
+    }
+    path = fs::path(directory, filename)
+    if (delete & fs::file_exists(path)) {
+      unlink(path)
+    }
 
     return(path)
   })
@@ -114,13 +123,17 @@ std_size = list(
 #' .this_script()
 #' })
 .this_script = function() {
-  if (.is_knitting()) return(knitr::current_input(dir = TRUE))
+  if (.is_knitting()) {
+    return(knitr::current_input(dir = TRUE))
+  }
   if (.is_running_in_chunk()) {
     return(fs::path_abs(rstudioapi::getSourceEditorContext()$pat))
   }
   # in a .R script in R studio
   tmp = try(rstudioapi::getActiveDocumentContext()$path)
-  if (tmp != "") return(fs::path_abs(tmp))
+  if (tmp != "") {
+    return(fs::path_abs(tmp))
+  }
   # command line with a file parameter
   cmdArgs <- commandArgs(trailingOnly = FALSE)
   needle <- "--file="
@@ -130,13 +143,16 @@ std_size = list(
     return(fs::path_abs(sub(needle, "", cmdArgs[match])))
   } else {
     # 'source'd via R console
-    tryCatch({
-      if (sys.frames()[[1]]$ofile != "") {
-        return(fs::path_abs(sys.frames()[[1]]$ofile))
-      }
-    },error = function(e) return(fs::path_abs(getwd())))
+    tryCatch(
+      {
+        if (sys.frames()[[1]]$ofile != "") {
+          return(fs::path_abs(sys.frames()[[1]]$ofile))
+        }
+      },
+      error = function(e) return(fs::path_abs(getwd()))
+    )
   }
-  warning("not running in a script.",call. = FALSE)
+  warning("not running in a script.", call. = FALSE)
   return(fs::path_abs(getwd()))
 }
 
@@ -167,27 +183,65 @@ std_size = list(
   repeat {
     grandparent = unique(fs::path_dir(current))
     grandparent = grandparent[!grandparent %in% parent]
-    if (length(grandparent) == 0) break
-    parent = c(parent,grandparent)
+    if (length(grandparent) == 0) {
+      break
+    }
+    parent = c(parent, grandparent)
     current = grandparent[grandparent != fs::path_home()]
   }
-  root = fs::path_dir(fs::dir_ls(parent,glob="*.Rproj",type = "file"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob="*/DESCRIPTION",type = "file"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob="*/NAMESPACE",type = "file"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob = "*/R",type="directory"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob = "*/vignettes",type="directory"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob="*/.git",all = TRUE,type = "directory"))
-  if(length(root) == 1) return(root)
-  root = fs::path_dir(fs::dir_ls(parent,glob="*/.Rproj.user",all = TRUE,type = "directory"))
-  if(length(root) == 1) return(root)
+  root = fs::path_dir(fs::dir_ls(parent, glob = "*.Rproj", type = "file"))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(parent, glob = "*/DESCRIPTION", type = "file"))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(parent, glob = "*/NAMESPACE", type = "file"))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(parent, glob = "*/R", type = "directory"))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(
+    parent,
+    glob = "*/vignettes",
+    type = "directory"
+  ))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(
+    parent,
+    glob = "*/.git",
+    all = TRUE,
+    type = "directory"
+  ))
+  if (length(root) == 1) {
+    return(root)
+  }
+  root = fs::path_dir(fs::dir_ls(
+    parent,
+    glob = "*/.Rproj.user",
+    all = TRUE,
+    type = "directory"
+  ))
+  if (length(root) == 1) {
+    return(root)
+  }
   # return the longest possible path with a .Rhistory file
-  root = fs::path_dir(fs::dir_ls(parent,glob="*/.Rhistory$",all = TRUE,type = "file"))
-  return(root %>% magrittr::extract(stringr::str_length(.) == max(stringr::str_length(.))))
+  root = fs::path_dir(fs::dir_ls(
+    parent,
+    glob = "*/.Rhistory$",
+    all = TRUE,
+    type = "file"
+  ))
+  return(
+    root %>%
+      magrittr::extract(stringr::str_length(.) == max(stringr::str_length(.)))
+  )
 }
 
 #' Drop in replacement for `here` (`here` pkg)
@@ -230,27 +284,39 @@ std_size = list(
   switch(
     .Platform$OS.type,
     windows = {
-      res = tryCatch({
-        # unlist(utils::readRegistry('MSEdgeHTM\shell\open\command', 'HCR'))
-        unlist(utils::readRegistry('ChromeHTML\\shell\\open\\command', 'HCR'))
-      }, error = function(e) '')
+      res = tryCatch(
+        {
+          # unlist(utils::readRegistry('MSEdgeHTM\shell\open\command', 'HCR'))
+          unlist(utils::readRegistry('ChromeHTML\\shell\\open\\command', 'HCR'))
+        },
+        error = function(e) ''
+      )
       res = unlist(strsplit(res, '"'))
       res = utils::head(res[file.exists(res)], 1)
-      if (length(res) != 1) stop(
-        'Cannot find Google Chrome automatically from the Windows Registry Hive. ',
-        "Please pass the full path of chrome.exe to the 'browser' argument ",
-        "or to the environment variable 'PAGEDOWN_CHROME'."
-      )
+      if (length(res) != 1) {
+        stop(
+          'Cannot find Google Chrome automatically from the Windows Registry Hive. ',
+          "Please pass the full path of chrome.exe to the 'browser' argument ",
+          "or to the environment variable 'PAGEDOWN_CHROME'."
+        )
+      }
       res
     },
     unix = if (unname(Sys.info()["sysname"] == "Darwin")) {
       '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
       #TODO check this exists
     } else {
-      for (i in c('google-chrome', 'chromium-browser', 'chromium', 'google-chrome-stable')) {
+      for (i in c(
+        'google-chrome',
+        'chromium-browser',
+        'chromium',
+        'google-chrome-stable'
+      )) {
         if ((res <- Sys.which(i)) != '') break
       }
-      if (res == '') stop('Cannot find Chromium or Google Chrome')
+      if (res == '') {
+        stop('Cannot find Chromium or Google Chrome')
+      }
       res
     },
     stop('Your platform is not supported')
@@ -289,10 +355,19 @@ std_size = list(
 #'  # browseURL(tmp)
 #'  # The resulting pdf has fonts embedded.
 #' })
-.print_svg_with_chrome = function(svgFile, pdfFile = tempfile(fileext=".pdf"), chromeBinary = getOption("ggrrr.chrome",default = .find_chrome()), maxWidth=NULL, maxHeight=NULL) {
-  if (!fs::file_exists(svgFile)) stop("SVG file does not exist: ",svgFile)
+.print_svg_with_chrome = function(
+  svgFile,
+  pdfFile = tempfile(fileext = ".pdf"),
+  chromeBinary = getOption("ggrrr.chrome", default = .find_chrome()),
+  maxWidth = NULL,
+  maxHeight = NULL
+) {
+  if (!fs::file_exists(svgFile)) {
+    stop("SVG file does not exist: ", svgFile)
+  }
   tmp_html = tempfile(fileext = ".html")
-  html=sprintf("
+  html = sprintf(
+    "
 <html>
   <head>
     <style>
@@ -318,19 +393,27 @@ window.onload = init;
   </body>
 </html>
 ",
-if (is.null(maxWidth)) 1000000 else maxWidth*72,
-if (is.null(maxHeight)) 1000000 else maxHeight*72,
-svgFile)
+    if (is.null(maxWidth)) 1000000 else maxWidth * 72,
+    if (is.null(maxHeight)) 1000000 else maxHeight * 72,
+    svgFile
+  )
   readr::write_file(html, tmp_html)
   out = system2(
     chromeBinary,
     # args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile), tmp_html),
-    args=c("--headless", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile), tmp_html),
-    stdout = NULL, stderr = NULL)
+    args = c(
+      "--headless",
+      "--no-pdf-header-footer",
+      sprintf("--print-to-pdf=%s", pdfFile),
+      tmp_html
+    ),
+    stdout = NULL,
+    stderr = NULL
+  )
   if (out == 127) {
-    stop("Could not execute chrome headless, using: ",chromeBinary)
+    stop("Could not execute chrome headless, using: ", chromeBinary)
   } else if (out != 0) {
-    stop("Unable to process SVG file: ",svgFile)
+    stop("Unable to process SVG file: ", svgFile)
   }
   invisible(pdfFile)
 }
@@ -357,11 +440,21 @@ svgFile)
 #'  # browseURL(tmp)
 #'  # The resulting pdf has fonts embedded & is multipage.
 #' })
-.print_html_with_chrome = function(htmlFragment, pdfFile = tempfile(fileext=".pdf"), css = list(), chromeBinary = getOption("ggrrr.chrome",default = .find_chrome()), maxWidth=NULL, maxHeight=NULL) {
+.print_html_with_chrome = function(
+  htmlFragment,
+  pdfFile = tempfile(fileext = ".pdf"),
+  css = list(),
+  chromeBinary = getOption("ggrrr.chrome", default = .find_chrome()),
+  maxWidth = NULL,
+  maxHeight = NULL
+) {
   tmp_html = tempfile(fileext = ".html")
   style_dec = ""
-  if (length(css) > 0) style_dec = sprintf("<style>%s</style>",paste0(css, collapse = ""))
-  html=sprintf("
+  if (length(css) > 0) {
+    style_dec = sprintf("<style>%s</style>", paste0(css, collapse = ""))
+  }
+  html = sprintf(
+    "
 <html>
   <head>
     %s
@@ -388,18 +481,25 @@ window.onload = init;
 </html>
 ",
     style_dec,
-    as.integer(if (is.null(maxWidth)) 1000000 else maxWidth*72),
-    as.integer(if (is.null(maxHeight)) 1000000 else maxHeight*72),
+    as.integer(if (is.null(maxWidth)) 1000000 else maxWidth * 72),
+    as.integer(if (is.null(maxHeight)) 1000000 else maxHeight * 72),
     htmlFragment
-)
+  )
   readr::write_file(html, tmp_html)
   out = system2(
     chromeBinary,
     # args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile),tmp_html),
-    args=c("--headless", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile), tmp_html),
-    stdout = NULL, stderr = NULL)
+    args = c(
+      "--headless",
+      "--no-pdf-header-footer",
+      sprintf("--print-to-pdf=%s", pdfFile),
+      tmp_html
+    ),
+    stdout = NULL,
+    stderr = NULL
+  )
   if (out == 127) {
-    stop("Could not execute chrome headless, using: ",chromeBinary)
+    stop("Could not execute chrome headless, using: ", chromeBinary)
   } else if (out != 0) {
     stop("Unable to process html fragment")
   }
@@ -424,8 +524,11 @@ window.onload = init;
 #' })
 .convert_pdf_to_pngs = function(pdfFile) {
   pages = pdftools::pdf_length(pdfFile)
-  out = pdfFile %>% fs::path_ext_remove() %>% paste0(sprintf("_%03d",1:pages)) %>% fs::path_ext_set("png")
-  pdftools::pdf_convert(pdfFile, filenames=out,dpi = 300,verbose = FALSE)
+  out = pdfFile %>%
+    fs::path_ext_remove() %>%
+    paste0(sprintf("_%03d", 1:pages)) %>%
+    fs::path_ext_set("png")
+  pdftools::pdf_convert(pdfFile, filenames = out, dpi = 300, verbose = FALSE)
   return(out)
 }
 
@@ -450,7 +553,7 @@ window.onload = init;
 .is_document_output = function() {
   !.is_html_output() &
     !.is_latex_output() &
-    .is_output(c("odt_document","word_document"))
+    .is_output(c("odt_document", "word_document"))
 }
 
 #' Check knitr output is not a known output forma
@@ -473,9 +576,11 @@ window.onload = init;
 #' @keywords internal
 #' @concept output
 .is_output = function(outputFormats) {
-  if (is.null(knitr::current_input())) stop("not running in a rmarkdown document")
+  if (is.null(knitr::current_input())) {
+    stop("not running in a rmarkdown document")
+  }
   fmt = rmarkdown::default_output_format(knitr::current_input())$name
-  return (fmt %in% outputFormats)
+  return(fmt %in% outputFormats)
 }
 
 #' Check if the current code is being executed during document knitting
@@ -545,7 +650,7 @@ window.onload = init;
 #'
 #' For maximum cross platform reproducibility we are using the combination of
 #' `systemfonts` for font management, `svglite` to render the canonical output
-#' `rsvg` to convert that to pdf, and `ragg` to for bitmap formats.
+#' `rsvg` to convert that to pdf, and `ragg` for bitmap formats.
 #' In some situations `rsvg` fails in which case we fall back to rendering in a
 #' headless chrome instance. This rather complicated pipeline ensures modern
 #' webfont support, and editable SVG or PDF.
@@ -560,7 +665,7 @@ window.onload = init;
 #' @param webfontFinder a function that takes a plot and returns a properly
 #'   formatted css specification for webfonts in the plot. This is for internal
 #'   use and does not need to be changed.
-#' @inheritDotParams svglite::svglite
+#' @inheritDotParams svglite::svglite -height -width -bg -web_fonts -system_fonts -user_fonts
 #'
 #' @keywords plot
 #' @return the output is an sensible default object that can be displayed given
@@ -589,20 +694,23 @@ window.onload = init;
 #' as.character(res)
 #' res
 #' })
-.gg_save_as = function(plot, filename = tempfile(),
-    size = std_size$half, maxWidth = size$width, maxHeight = size$height,
-    aspectRatio=maxWidth/maxHeight,
-    formats = getOption("ggrrr.formats",default = c("svg","png","pdf")),
-    webfontFinder = ~ return(list()),
-    ...
-  ) {
-
+.gg_save_as = function(
+  plot,
+  filename = tempfile(),
+  size = std_size$half,
+  maxWidth = size$width,
+  maxHeight = size$height,
+  aspectRatio = maxWidth / maxHeight,
+  formats = getOption("ggrrr.formats", default = c("svg", "png", "pdf")),
+  webfontFinder = ~ return(list()),
+  ...
+) {
   webfontFinder = rlang::as_function(webfontFinder)
   web_fonts = webfontFinder(plot)
 
   if ("formatted.table" %in% class(plot)) {
     # override width specifically for formatted tables
-    maxWidth = attr(plot,"target.width")
+    maxWidth = attr(plot, "target.width")
   }
 
   # plot comes with an aspect ratio which is expressed as height/width
@@ -618,14 +726,20 @@ window.onload = init;
 
   filename = fs::path_expand_r(filename)
   dir = fs::path_dir(filename)
-  if(!fs::is_absolute_path(dir)) {
-    dir = fs::path_abs(dir,getwd())
-    filename = fs::path_abs(filename,getwd())
+  if (!fs::is_absolute_path(dir)) {
+    dir = fs::path_abs(dir, getwd())
+    filename = fs::path_abs(filename, getwd())
   }
-  if(fs::path_ext(filename) %in% c("svg","png","pdf","jpg","tiff","Rdata")) formats = fs::path_ext(filename)
+  if (
+    fs::path_ext(filename) %in% c("svg", "png", "pdf", "jpg", "tiff", "Rdata")
+  ) {
+    formats = fs::path_ext(filename)
+  }
   fs::dir_create(dir)
   filename = fs::path_ext_remove(filename)
-  withExt = function(extn) {fs::path_ext_set(filename,extn)}
+  withExt = function(extn) {
+    fs::path_ext_set(filename, extn)
+  }
 
   if ("Rdata" %in% formats) {
     saveRDS(plot, withExt("Rdata"))
@@ -634,8 +748,8 @@ window.onload = init;
 
   out = list()
   out$plot = plot
-  out$width = min(maxWidth,maxHeight*aspectRatio)
-  out$height = min(maxHeight,maxWidth/aspectRatio)
+  out$width = min(maxWidth, maxHeight * aspectRatio)
+  out$height = min(maxHeight, maxWidth / aspectRatio)
 
   if ("svg" %in% formats) {
     svg_loc = withExt("svg")
@@ -651,26 +765,25 @@ window.onload = init;
     height = out$height,
     bg = "transparent",
     device = svglite::svglite,
-    web_fonts=web_fonts, ...);
-
+    web_fonts = web_fonts,
+    ...
+  )
 
   if ("pdf" %in% formats) {
     pdf_loc = withExt("pdf")
     out$pdf = withExt("pdf")
 
-    tryCatch({
-
-      rsvg::rsvg_pdf(svg_loc, pdf_loc)
-
-    }, error = function(e) {
-
-      .print_svg_with_chrome(svg_loc, pdf_loc)
-
-    })
+    tryCatch(
+      {
+        rsvg::rsvg_pdf(svg_loc, pdf_loc)
+      },
+      error = function(e) {
+        .print_svg_with_chrome(svg_loc, pdf_loc)
+      }
+    )
   }
 
   if ("eps" %in% formats) {
-
     rsvg::rsvg_eps(svg_loc, withExt("eps")) #, css = web_fonts)
 
     #   cairops = optional_fn("Cairo :: CairoPS",alt = stop("Please install package `Cairo` for ps output"))
@@ -684,14 +797,17 @@ window.onload = init;
     if (fs::file_exists(withExt("eps"))) out$ps = withExt("eps")
   }
 
-
   if ("png" %in% formats) {
     ggplot2::ggsave(
       withExt("png"),
       plot,
       width = out$width,
       height = out$height,
-      bg = "transparent", device = ragg::agg_png, dpi = 300, ...);
+      bg = "transparent",
+      device = ragg::agg_png,
+      dpi = 300,
+      ...
+    )
     # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
     out$png = withExt("png")
   }
@@ -702,7 +818,11 @@ window.onload = init;
       plot,
       width = out$width,
       height = out$height,
-      bg = "transparent", device = ragg::agg_jpeg, dpi = 300, ...);
+      bg = "transparent",
+      device = ragg::agg_jpeg,
+      dpi = 300,
+      ...
+    )
     # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
     out$jpg = withExt("jpg")
   }
@@ -713,14 +833,17 @@ window.onload = init;
       plot,
       width = out$width,
       height = out$height,
-      bg = "transparent", device = ragg::agg_tiff, dpi = 300, ...);
+      bg = "transparent",
+      device = ragg::agg_tiff,
+      dpi = 300,
+      ...
+    )
     # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
     out$tiff = withExt("tiff")
   }
 
-  return(structure(out, class="rendered_plot"))
+  return(structure(out, class = "rendered_plot"))
 }
-
 
 
 #' Print a rendered_plot object
@@ -731,10 +854,8 @@ window.onload = init;
 #' @return nothing - used for side effects
 #' @export
 #' @concept output
-print.rendered_plot = function(x,...) {
-
+print.rendered_plot = function(x, ...) {
   if (interactive()) {
-
     mktmp = function(file) {
       tmp = tempfile()
       fs::file_copy(file, tmp)
@@ -743,10 +864,13 @@ print.rendered_plot = function(x,...) {
 
     # open the pdf or png in a viewer to check dimensions
     v = getOption("viewer", utils::browseURL)
-    if (!is.null(x$png)) v(mktmp(x$png))
-    else if (!is.null(x$svg)) v(mktmp(x$svg))
-    else if (!is.null(x$pdf)) utils::browseURL(x$pdf)
-    else {
+    if (!is.null(x$png)) {
+      v(mktmp(x$png))
+    } else if (!is.null(x$svg)) {
+      v(mktmp(x$svg))
+    } else if (!is.null(x$pdf)) {
+      utils::browseURL(x$pdf)
+    } else {
       # this will generally open in a viewer and will output pdf by default
       # grDevices::dev.new(width=x$width,height=x$height,unit="in",noRStudioGD = TRUE)
       print(x$plot)
@@ -756,16 +880,13 @@ print.rendered_plot = function(x,...) {
       # this is running in a chunk in RStudio.
       # If this was not the case it would be rendered by knitr::knit_print
       # trick here is to render something inline in markdown document.
-      grDevices::dev.new(width=x$width,height=x$height,unit="in")
+      grDevices::dev.new(width = x$width, height = x$height, unit = "in")
       print(x$plot)
-
     }
-
   } else {
     # file paths are more useful when not interactive.
     print(as.character(x))
   }
-
 }
 
 #' Convert a rendered_plot object to a character
@@ -777,11 +898,14 @@ print.rendered_plot = function(x,...) {
 #' @export
 #' @concept output
 as.character.rendered_plot = function(x, ...) {
-  tmp = x[!names(x) %in% c("plot","width","height")]
+  tmp = x[!names(x) %in% c("plot", "width", "height")]
   out = sprintf("a ggplot with %d outputs:", length(tmp))
   if (length(tmp) > 0) {
-    class(tmp)="list"
-    out = c(out,sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse=", ")))
+    class(tmp) = "list"
+    out = c(
+      out,
+      sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse = ", "))
+    )
   }
   return(out)
 }
@@ -797,8 +921,7 @@ as.character.rendered_plot = function(x, ...) {
 #' @return nothing - used for side effects
 #' @export
 #' @concept output
-knit_print.rendered_plot  = function(x, options, ...) {
-
+knit_print.rendered_plot = function(x, options, ...) {
   # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
   # overwrite current settings for defaults
 
@@ -807,10 +930,16 @@ knit_print.rendered_plot  = function(x, options, ...) {
 
   if (.is_html_output()) {
     if (!is.null(x$png)) {
-      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
+      return(knitr::asis_output(sprintf(
+        "<img src='%s'></img>",
+        base64enc::dataURI(file = x$png, mime = "image/png")
+      )))
       # return(knitr::include_graphics(path = x$png, dpi=300))
     } else if (!is.null(x$svg)) {
-      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$svg, mime = "image/svg+xml"))))
+      return(knitr::asis_output(sprintf(
+        "<img src='%s'></img>",
+        base64enc::dataURI(file = x$svg, mime = "image/svg+xml")
+      )))
       # N.B. don't technically need to encode: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
       # return(knitr::include_graphics(path = x$svg))
     } else {
@@ -818,10 +947,14 @@ knit_print.rendered_plot  = function(x, options, ...) {
     }
     # return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = x$png, mime = "image/png"))))
   } else if (.is_latex_output()) {
-    if (!is.null(x$pdf)) return(knitr::include_graphics(path = x$pdf))
-    else if (!is.null(x$png)) return(knitr::include_graphics(path = x$png,auto_pdf = TRUE, dpi=300))
-    # else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
-    else return(knitr::knit_print(x$plot, options, ...))
+    if (!is.null(x$pdf)) {
+      return(knitr::include_graphics(path = x$pdf))
+    } else if (!is.null(x$png)) {
+      return(knitr::include_graphics(path = x$png, auto_pdf = TRUE, dpi = 300))
+    } else {
+      # else if (!is.null(x$svg)) return(knitr::include_graphics(path = x$svg))
+      return(knitr::knit_print(x$plot, options, ...))
+    }
   } else {
     return(knitr::knit_print(x$plot, options, ...))
   }
@@ -839,7 +972,6 @@ knit_print.rendered_plot  = function(x, options, ...) {
 # convert between pixels and inches).
 
 # Huxtable save as ----
-
 
 #' Save a table to a variety of formats
 #'
@@ -875,46 +1007,65 @@ knit_print.rendered_plot  = function(x, options, ...) {
 #'  # The resulting pdf has fonts embedded & is multipage.
 #' })
 #'
-.hux_save_as = function(hux,
-     filename,
-     size = std_size$full, maxWidth = size$width, maxHeight = size$height,
-     aspectRatio=maxWidth/maxHeight,
-     formats = c("html","docx"),
-     defaultFontSize = 8,
-     sheetname = fs::path_ext_remove(fs::path_file(filename)),
-     pdfConverter = .print_html_with_chrome,
-     webfontFinder = ~ return(list())
+.hux_save_as = function(
+  hux,
+  filename,
+  size = std_size$full,
+  maxWidth = size$width,
+  maxHeight = size$height,
+  aspectRatio = maxWidth / maxHeight,
+  formats = c("html", "docx"),
+  defaultFontSize = 8,
+  sheetname = fs::path_ext_remove(fs::path_file(filename)),
+  pdfConverter = .print_html_with_chrome,
+  webfontFinder = ~ return(list())
 ) {
-
-  html2 = NULL  # remove global binding note
+  html2 = NULL # remove global binding note
   pdfConverter = rlang::as_function(pdfConverter)
   webfontFinder = rlang::as_function(webfontFinder)
 
-  if (!huxtable::is_hux(hux)) stop("input must be a huxtable")
+  if (!huxtable::is_hux(hux)) {
+    stop("input must be a huxtable")
+  }
   if (.is_knitting() & .is_latex_output()) {
-    formats = unique(c(formats,"pdf"))
+    formats = unique(c(formats, "pdf"))
   }
 
-  supported = c("html","png","pdf","docx","xlsx")
+  supported = c("html", "png", "pdf", "docx", "xlsx")
   formats = formats[formats %in% supported]
 
   dir = fs::path_dir(filename)
-  if(dir==".") stop("directory not given. filename must be a full path (use `.here` function).")
-  if(fs::path_ext(filename) %in% supported) formats = fs::path_ext(filename)
-  if (!dir.exists(dir)) dir.create(dir,recursive = TRUE)
+  if (dir == ".") {
+    stop(
+      "directory not given. filename must be a full path (use `.here` function)."
+    )
+  }
+  if (fs::path_ext(filename) %in% supported) {
+    formats = fs::path_ext(filename)
+  }
+  if (!dir.exists(dir)) {
+    dir.create(dir, recursive = TRUE)
+  }
   filename = fs::path_ext_remove(filename)
-  withExt = function(extn) {fs::path_ext_set(filename,extn)}
+  withExt = function(extn) {
+    fs::path_ext_set(filename, extn)
+  }
 
   matchedFiles = function(extns) {
-    extns = paste0(extns,collapse="|")
-    fs::dir_ls(fs::path_dir(filename), regexp = paste0(.escape_regex(filename),"(_[0-9]+)?\\.(",extns,")"))
+    extns = paste0(extns, collapse = "|")
+    fs::dir_ls(
+      fs::path_dir(filename),
+      regexp = paste0(.escape_regex(filename), "(_[0-9]+)?\\.(", extns, ")")
+    )
   }
 
   # clean up any possible outputs from previous run
   lapply(matchedFiles(supported), function(x) try(unlink(x)))
 
   fonts_used = hux %>% huxtable::font() %>% as.vector() %>% unique()
-  non_local_fonts = fonts_used[!fonts_used %in% systemfonts::system_fonts()$family]
+  non_local_fonts = fonts_used[
+    !fonts_used %in% systemfonts::system_fonts()$family
+  ]
 
   out = list()
   out$hux = hux
@@ -925,32 +1076,70 @@ knit_print.rendered_plot  = function(x, options, ...) {
     doc = officer::read_docx()
     # browser()
     pageSize =
-      if (maxWidth >= 21*2/2.54)
-        officer::page_size(width = 29.7/2.54, height=21*2/2.54, orient="landscape") #A3 landscape
-    else if (maxWidth >= 29.7/2.54)
-      officer::page_size(width = 29.7/2.54, height=21*2/2.54, orient="portrait") #A3 portrait
-    else if (maxWidth >= 21/2.54)
-      officer::page_size(width = 21/2.54, height=29.7/2.54, orient="landscape") #A4 landscape
-    else officer::page_size(width = 21/2.54, height=29.7/2.54, orient="portrait") #A4 portrait
+      if (maxWidth >= 21 * 2 / 2.54) {
+        #A3 landscape
+        officer::page_size(
+          width = 29.7 / 2.54,
+          height = 21 * 2 / 2.54,
+          orient = "landscape"
+        )
+      } else if (maxWidth >= 29.7 / 2.54) {
+        #A3 portrait
+        officer::page_size(
+          width = 29.7 / 2.54,
+          height = 21 * 2 / 2.54,
+          orient = "portrait"
+        )
+      } else if (maxWidth >= 21 / 2.54) {
+        #A4 landscape
+        officer::page_size(
+          width = 21 / 2.54,
+          height = 29.7 / 2.54,
+          orient = "landscape"
+        )
+      } else {
+        officer::page_size(
+          width = 21 / 2.54,
+          height = 29.7 / 2.54,
+          orient = "portrait"
+        )
+      } #A4 portrait
 
-    marginSize = (pageSize$width-maxWidth)/2
+    marginSize = (pageSize$width - maxWidth) / 2
 
-    doc = doc %>% officer::body_set_default_section(
-      officer::prop_section(
-        page_size=pageSize,
-        page_margins = officer::page_mar(marginSize,marginSize,marginSize,marginSize,0.1,0.1,0.1),
-        type = "continuous"
+    doc = doc %>%
+      officer::body_set_default_section(
+        officer::prop_section(
+          page_size = pageSize,
+          page_margins = officer::page_mar(
+            marginSize,
+            marginSize,
+            marginSize,
+            marginSize,
+            0.1,
+            0.1,
+            0.1
+          ),
+          type = "continuous"
+        )
       )
-    )
-    ft = hux %>% huxtable::as_flextable() %>% flextable::autofit(add_h=0)
+    ft = hux %>% huxtable::as_flextable() %>% flextable::autofit(add_h = 0)
     for (i in 1:ncol(hux)) {
-      ft = ft %>% flextable::width(j = i, width = huxtable::col_width(hux)[[i]]*maxWidth)
+      ft = ft %>%
+        flextable::width(
+          j = i,
+          width = huxtable::col_width(hux)[[i]] * maxWidth
+        )
     }
     # ft = ft %>% #flextable::autofit(part = "body") %>%
     # flextable::fit_to_width(maxWidth)
     if (!is.null(ft$caption$value)) {
       if (utils::packageVersion("flextable") >= "0.5.5") {
-        doc <- officer::body_add_par(doc, ft$caption$value, style = "table title")
+        doc <- officer::body_add_par(
+          doc,
+          ft$caption$value,
+          style = "table title"
+        )
       }
     }
     doc <- flextable::body_add_flextable(doc, ft)
@@ -960,42 +1149,59 @@ knit_print.rendered_plot  = function(x, options, ...) {
   }
 
   if ("xlsx" %in% formats) {
-    hux %>% huxtable::quick_xlsx(file = withExt("xlsx"),open=FALSE)
+    hux %>% huxtable::quick_xlsx(file = withExt("xlsx"), open = FALSE)
     out$xlsx = withExt("xlsx")
   }
 
-  if (any(c("pdf","png","html") %in% formats)) {
-
+  if (any(c("pdf", "png", "html") %in% formats)) {
     html = stringr::str_remove(
       hux %>% huxtable::to_html(),
-      stringr::fixed("margin-bottom: 2em; margin-top: 2em;"))
+      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")
+    )
 
     if ("html" %in% formats) {
       style_dec = ""
       fonts = .hux_used_fonts(hux)
       webfonts = webfontFinder(fonts)
-      if (length(webfonts) > 0) style_dec = sprintf("<style>%s</style>",paste0(webfonts, collapse = ""))
-      write(sprintf("<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",style_dec,html), withExt("html"))
+      if (length(webfonts) > 0) {
+        style_dec = sprintf(
+          "<style>%s</style>",
+          paste0(webfonts, collapse = "")
+        )
+      }
+      write(
+        sprintf(
+          "<html><head><meta charset='UTF-8'>%s</head><body>%s</body></html>",
+          style_dec,
+          html
+        ),
+        withExt("html")
+      )
       out$html = withExt("html")
     }
 
-    if (any(c("pdf","png") %in% formats)) {
-
-      tmp = c("pdf","png")[c("pdf","png") %in% formats]
+    if (any(c("pdf", "png") %in% formats)) {
+      tmp = c("pdf", "png")[c("pdf", "png") %in% formats]
       unlink(withExt("pdf"))
-      pdfConverter(html, withExt("pdf"), maxWidth = maxWidth, maxHeight=maxHeight)
+      pdfConverter(
+        html,
+        withExt("pdf"),
+        maxWidth = maxWidth,
+        maxHeight = maxHeight
+      )
       if (fs::file_exists(withExt("pdf"))) {
-        if("pdf" %in% tmp) out$pdf = withExt("pdf")
+        if ("pdf" %in% tmp) {
+          out$pdf = withExt("pdf")
+        }
         if ("png" %in% formats) {
           pngs = .convert_pdf_to_pngs(withExt("pdf"))
-          if("png" %in% tmp) out$png = unname(matchedFiles("png"))
+          if ("png" %in% tmp) out$png = unname(matchedFiles("png"))
         }
       }
-
     }
   }
 
-  return(structure(out, class="rendered_table"))
+  return(structure(out, class = "rendered_table"))
 }
 
 #' Knit a rendered_table object
@@ -1006,14 +1212,18 @@ knit_print.rendered_plot  = function(x, options, ...) {
 #' @return nothing - used for side effects
 #' @export
 #' @concept output
-knit_print.rendered_table = function(x,...) {
-  hidetables = getOption("hide.tables",FALSE)
+knit_print.rendered_table = function(x, ...) {
+  hidetables = getOption("hide.tables", FALSE)
   if (hidetables) {
     # e.g. knitting to a word document
-    return(knitr::asis_output(paste0("INSERT TABLE HERE: ",as.character(x),"\n\n")))
+    return(knitr::asis_output(paste0(
+      "INSERT TABLE HERE: ",
+      as.character(x),
+      "\n\n"
+    )))
   } else {
     pngs = x$png
-    if(.is_html_output()) {
+    if (.is_html_output()) {
       # knitting a html document
       return(knitr::knit_print(x$hux %>% huxtable::set_width("auto")))
     } else if (.is_document_output()) {
@@ -1025,9 +1235,9 @@ knit_print.rendered_table = function(x,...) {
       # most likely latex
       if (.is_latex_output() & !is.null(x$pdf)) {
         return(knitr::include_graphics(path = x$pdf))
-      } else if (length(pngs)>0) {
+      } else if (length(pngs) > 0) {
         # this will be default output in many situations - a png with fallback to pdf if available.
-        return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi=300))
+        return(knitr::include_graphics(path = pngs, auto_pdf = TRUE, dpi = 300))
       } else {
         # some non standard output.
         # just let huxtable decide what the best thing to do is.
@@ -1050,11 +1260,14 @@ knit_print.rendered_table = function(x,...) {
 #' tmp = hux %>% hux_save_as(tempfile())
 #' as.character(tmp)
 as.character.rendered_table = function(x, ...) {
-  tmp = x[!names(x) %in% c("hux","width","height")]
+  tmp = x[!names(x) %in% c("hux", "width", "height")]
   out = sprintf("a huxtable with %d outputs:", length(tmp))
   if (length(tmp) > 0) {
-    class(tmp)="list"
-    out = c(out,sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse=", ")))
+    class(tmp) = "list"
+    out = c(
+      out,
+      sprintf("%s: %s", names(tmp), sapply(tmp, paste0, collapse = ", "))
+    )
   }
   return(out)
 }
@@ -1067,27 +1280,48 @@ as.character.rendered_table = function(x, ...) {
 #' @return nothing - used for side effects
 #' @export
 #' @concept output
-print.rendered_table = function(x,...) {
-
+print.rendered_table = function(x, ...) {
   if (interactive()) {
     v = getOption("viewer", utils::browseURL)
-    if (!is.null(x$pdf)) v(x$pdf)
-    else if (!is.null(x$png)) v(x$png)
-    else if (!is.null(x$html)) v(x$html)
-    else htmltools::html_print(htmltools::HTML(x$hux %>% huxtable::to_html()))
+    if (!is.null(x$pdf)) {
+      v(x$pdf)
+    } else if (!is.null(x$png)) {
+      v(x$png)
+    } else if (!is.null(x$html)) {
+      v(x$html)
+    } else {
+      htmltools::html_print(htmltools::HTML(x$hux %>% huxtable::to_html()))
+    }
   }
 
   print(x$hux)
-
 }
 
 
 # private utilities ----
 
 # from rex:::escape.character
-.escape_regex = function (x) {
-  chars <- c("*", ".", "?", "^", "+", "$", "|", "(", ")", "[", "]", "{", "}", "\\")
-  gsub(paste0("([\\", paste0(collapse = "\\", chars), "])"),
-       "\\\\\\1", x, perl = TRUE)
+.escape_regex = function(x) {
+  chars <- c(
+    "*",
+    ".",
+    "?",
+    "^",
+    "+",
+    "$",
+    "|",
+    "(",
+    ")",
+    "[",
+    "]",
+    "{",
+    "}",
+    "\\"
+  )
+  gsub(
+    paste0("([\\", paste0(collapse = "\\", chars), "])"),
+    "\\\\\\1",
+    x,
+    perl = TRUE
+  )
 }
-

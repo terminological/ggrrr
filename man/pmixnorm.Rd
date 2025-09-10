@@ -4,7 +4,7 @@
 \alias{pmixnorm}
 \title{Mixture of normal distribution PDFs}
 \usage{
-pmixnorm(q, means, sds, weights = rep(1, length(means)), na.rm = FALSE)
+pmixnorm(q, means, sds, weights = 1, na.rm = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}

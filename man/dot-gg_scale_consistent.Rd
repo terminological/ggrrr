@@ -59,15 +59,6 @@ notation.
     \item{\code{call}}{The \code{call} used to construct the scale for reporting messages.}
     \item{\code{super}}{The super class to use for the constructed scale}
   }}
-\item{\code{values}}{a set of aesthetic values to map data values to. The values
-will be matched in order (usually alphabetical) with the limits of the
-scale, or with \code{breaks} if provided. If this is a named vector, then the
-values will be matched based on the names instead. Data values that don't
-match will be given \code{na.value}.}
-\item{\code{aesthetics}}{Character string or vector of character strings listing the
-name(s) of the aesthetic(s) that this scale works with. This can be useful, for
-example, to apply colour settings to the \code{colour} and \code{fill} aesthetics at the
-same time, via \code{aesthetics = c("colour", "fill")}.}
 \item{\code{breaks}}{One of:
 \itemize{
 \item \code{NULL} for no breaks

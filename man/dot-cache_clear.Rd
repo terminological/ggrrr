@@ -4,11 +4,7 @@
 \alias{.cache_clear}
 \title{Clear data from the passthrough cache for complex or long running operations}
 \usage{
-.cache_clear(
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
-  .prefix = ".*",
-  interactive = TRUE
-)
+.cache_clear(.cache = .cache_loc(), .prefix = ".*", interactive = TRUE)
 }
 \arguments{
 \item{.cache}{the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}

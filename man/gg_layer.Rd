@@ -61,3 +61,4 @@ myPlot(iris, Sepal.Length~Sepal.Width, mapping = ggplot2::aes(colour=Species))
 myPlot(iris, Sepal.Length~Petal.Length, mapping = ggplot2::aes(colour=Species), shape="+", size=5)
 myPlot(mtcars, mpg~wt, mapping = ggplot2::aes(colour=as.factor(cyl), size=hp))
 }
+\concept{ggplot}

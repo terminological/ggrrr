@@ -17,8 +17,6 @@ cache_download(
 \arguments{
 \item{url}{the url to download}
 
-\item{...}{passed to `utils::download.file()`}
-
 \item{.nocache}{if set to TRUE all caching is disabled}
 
 \item{.cache}{the location of the downloaded files}

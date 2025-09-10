@@ -20,8 +20,6 @@ gg_pedantic(
 \item{font}{the default font name.}
 
 \item{size}{the size of points (the default size aesthetic)}
-
-\item{...}{passed to `ggplot2::theme`}
 }
 \value{
 nothing

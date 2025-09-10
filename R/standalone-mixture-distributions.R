@@ -1,14 +1,27 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-mixture-distributions.R
-# last-updated: '2025-07-10'
+# last-updated: 2025-07-17
 # license: https://unlicense.org
 # imports:
 # - purrr
 # - stats
 # - interfacer
 # ---
+
+
 # This set of functions are stats distributions and an anomaly here in ggrrr.
+#TODO: Implement mixture distribution quantile algorithm
+# There is an algorithm here that goes something like this.
+# If we order the distributions by mean.
+# probably the 0.25 quantile of the mixture is smaller than the 0.25 quantiles of the mean - Proof?
+# probably the 0.25 quantile of the mixture is near than the mean of the 0.25 quantiles - Proof?
+# There will be a set of distributions we can discard as irrelevant if the CDF at the current estimate is nearly zero
+# suppose we discard the top 50 out of 100. Then we are no long looking for the 0.25 quantile but rather the 0.5 quantile
+# as we have discarded 50% of the mass.
+# we can do the same for the bottom, until we have a set that are actually relevant.
+# This could speed things up a lot in the situation where there is little overlap between the mixtures and they are a set of
+# spikes.
 
 # mix normals ----
 
@@ -28,7 +41,7 @@
 #' try({
 #' .pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
 #' })
-.pmixnorm = function(q, means, sds, weights=rep(1,length(means)), na.rm=FALSE) {
+.pmixnorm = function(q, means, sds, weights=1, na.rm=FALSE) {
   return(.pmix("norm",q,means,sds,weights,na.rm))
 }
 
@@ -50,8 +63,9 @@
 #' try({
 #' .qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
 #' })
-.qmixnorm = function(p, means, sds, weights=rep(1,length(means)), na.rm=FALSE, approx = TRUE,...) {
-  return(.qmix("norm",p, means,sds,weights,na.rm,approx,...))
+.qmixnorm = function(p, means, sds, weights=1, na.rm=FALSE, method = c("exact","samples","moments"),...) {
+  method = match.arg(method)
+  return(.qmix("norm",p, means,sds,weights,na.rm,method,...))
 }
 
 # mix log normals ----
@@ -72,7 +86,7 @@
 #' try({
 #' .pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
 #' })
-.pmixlnorm = function(q, meanlogs, sdlogs, weights=rep(1,length(meanlogs)), na.rm=FALSE) {
+.pmixlnorm = function(q, meanlogs, sdlogs, weights=1, na.rm=FALSE) {
   return(.pmix("lnorm",q,meanlogs,sdlogs,weights,na.rm))
 }
 
@@ -83,8 +97,8 @@
 #' @param sdlogs  a vector of log normal distribution sds
 #' @param weights  a vector of weights
 #' @param na.rm remove distributions with NA values for mean or sd
-#' @param approx use Cornish Fisher moment based approximation if available
-#' @param ... passed on to internal function, `samples=TRUE` to force random sampling
+#' @param method one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)
+#' @param ... passed on to internal function, `seed=XXX` to fix random seed
 #'
 #' @return the value of the `p`th quantile
 #' @keywords internal
@@ -93,11 +107,12 @@
 #' @examples
 #' try({
 #'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
-#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), approx=FALSE)
-#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(1,1,2), approx=FALSE)
+#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
+#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
 #' })
-.qmixlnorm = function(p, meanlogs, sdlogs, weights=rep(1,length(meanlogs)), na.rm=FALSE, approx = TRUE,...) {
-  return(.qmix("lnorm",p, meanlogs,sdlogs,weights,na.rm,approx,...))
+.qmixlnorm = function(p, meanlogs, sdlogs, weights=rep(1,length(meanlogs)), na.rm=FALSE, method = c("exact","samples","moments"),...) {
+  method = match.arg(method)
+  return(.qmix("lnorm",p, meanlogs,sdlogs,weights,na.rm,method,...))
 }
 
 
@@ -119,7 +134,7 @@
 #' try({
 #'   .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
 #' })
-.pmixgamma = function(q, shapes, rates, weights=rep(1,length(shapes)), na.rm=FALSE) {
+.pmixgamma = function(q, shapes, rates, weights=1, na.rm=FALSE) {
   return(.pmix("gamma",q,shapes,rates,weights,na.rm))
 }
 
@@ -130,8 +145,8 @@
 #' @param rates  a vector of gamma distribution rates
 #' @param weights  a vector of weights
 #' @param na.rm remove distributions with NA values for mean or sd
-#' @param approx use Cornish Fisher moment based approximation if available
-#' @param ... passed on to internal function, `samples=TRUE` to force random sampling
+#' @param method one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)
+#' @param ... passed on to internal function, `seed=XXX` to fix random seed
 #'
 #' @return the value of the `p`th quantile
 #' @keywords internal
@@ -139,10 +154,13 @@
 #'
 #' @examples
 #' try({
-#'   .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2))
+#'   .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
+#'   .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
 #' })
-.qmixgamma = function(p, shapes, rates, weights=rep(1,length(shapes)), na.rm=FALSE, approx = TRUE,...) {
-  return(.qmix("gamma",p, shapes,rates,weights,na.rm,approx,...))
+.qmixgamma = function(p, shapes, rates, weights=1, na.rm=FALSE, method = c("exact","samples","moments"),...) {
+
+  method = match.arg(method)
+  return(.qmix("gamma",p, shapes,rates,weights,na.rm,method,...))
 }
 
 
@@ -164,7 +182,7 @@
 #' try({
 #'   .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
 #' })
-.pmixbeta = function(q, alphas, betas, weights=rep(1,length(alphas)), na.rm=FALSE) {
+.pmixbeta = function(q, alphas, betas, weights=1, na.rm=FALSE) {
   return(.pmix("beta",q,alphas,betas,weights,na.rm))
 }
 
@@ -175,8 +193,8 @@
 #' @param betas  a vector of gamma distribution rates
 #' @param weights  a vector of weights
 #' @param na.rm remove distributions with NA values for mean or sd
-#' @param approx use Cornish Fisher moment based approximation if available
-#' @param ... passed on to internal function, `samples=TRUE` to force random sampling
+#' @param method one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)
+#' @param ... passed on to internal function, `seed=XXX` to fix random seed
 #'
 #' @return the value of the `p`th quantile
 #' @keywords internal
@@ -185,9 +203,12 @@
 #' @examples
 #' try({
 #'   .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
+#'   .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
 #' })
-.qmixbeta = function(p, alphas, betas, weights=rep(1,length(alphas)), na.rm=FALSE, approx = TRUE,...) {
-  return(.qmix("beta",p, alphas,betas,weights,na.rm,approx,...))
+.qmixbeta = function(p, alphas, betas, weights=1, na.rm=FALSE, method = c("exact","samples","moments"),...) {
+
+  method = match.arg(method)
+  return(.qmix("beta",p, alphas,betas,weights,na.rm,method,...))
 }
 
 # internal utilities ----
@@ -201,8 +222,7 @@
 # inputs and a probably different length vector of param1,param2,weights describing the
 # (single) mixture distribution. (N.B. the multiple inputs is required for the
 # solver.)
-#' Title
-#'
+
 #' @param dist either a function e.g. `pnorm` or a character e.g. `"norm"`
 #' @param x a vector of values for assess for `P(X<x)`
 #' @param param1 the first parameter of `dist`
@@ -210,8 +230,7 @@
 #' @param weights the weighting of the mixture (defaults to uniform)
 #' @param na.rm remove `NA` values from the distributions (in `param1`, `param2`, or `weights`)
 #'
-#' @return a vector of probabilities either the same length as input `x` or if
-#'   `x` is length 1 and `param1` is a list, then length of `param1`
+#' @return a vector of probabilities the same length as input `x`
 #' @keywords internal
 #' @noRd
 #'
@@ -230,7 +249,7 @@
 #' ) %>% glimpse()
 #'
 #' # same as last row above
-#' .pmix("norm", 3, param1=c(6,7,8,9), param2=3)
+#' .pmix("norm", c(3,5,10), param1=c(6,7,8,9), param2=3)
 #'
 .pmix = function(dist, x, param1, param2, weights=1, na.rm=FALSE) {
 
@@ -245,15 +264,6 @@
                  # default:
                  get0(sprintf("p%s",dist),mode = "function")
     )
-  }
-
-  if (is.list(param1)) {
-    # if param1 is a list then this is a set of mixture distributions.
-    # this is OK if the length of x is 1 or the same as param1,param2,weights
-    interfacer::recycle(x, param1, param2, weights)
-    return(sapply(seq_along(x), function(i) {
-      .pmix(dist, x[i], param1[[i]], param2[[i]], weights[[i]], na.rm)
-    }))
   }
 
   # so param1, param2, and weights are expected to be numeric vectors at this point.
@@ -287,10 +297,22 @@
   )
 
   if (is.matrix(tmp)) {
+    # length of x was > 1
     tmp = apply(tmp,MARGIN=1,mean)
   } else {
+    # length of x was 1
     tmp = mean(tmp)
   }
+  return(tmp)
+}
+
+# param1list is a list of vectors. typically from a nested dataframe column
+.qmixlist = function(dist, p, param1list, param2list, weights=1, na.rm=FALSE, method = c("exact","samples","moments"), seed=NULL, n_samples=50000) {
+  if (length(p) > 1) stop(".qmixlist only can process a single quantile at a time")
+  tmp = purrr::map2_dbl(.x = param1list, .y = param2list, .f = \(x,y) .qmix(
+    dist=dist,
+    p=p, param1 = x, param2 = y, weights=weights,na.rm=na.rm, method=method, seed=seed, n_samples=n_samples))
+  if (length(tmp) != length(param1list)) browser()
   return(tmp)
 }
 
@@ -298,7 +320,11 @@
 # solve
 # This function is vectorised on p and parameters. as mixture parameters
 # must be a list of vectors.
-.qmix = function(dist, p, param1, param2, weights=1, na.rm=FALSE, approx=TRUE, samples=FALSE) {
+.qmix = function(dist, p, param1, param2, weights=1, na.rm=FALSE, method = c("exact","samples","moments"), seed=NULL, n_samples=50000) {
+
+  method = match.arg(method)
+
+  if (method == "moments" && !.is_analytical(dist)) stop(paste0("moments not supported for this distribution"))
 
   if (is.function(dist)) {
     qfn=dist
@@ -311,15 +337,6 @@
                  # default:
                  get0(sprintf("q%s",dist),mode = "function")
     )
-  }
-
-  if (is.list(param1)) {
-    # input is a list of mixtures. p should be length 1 or the same as param1
-    # this supports the dataframe use case.
-    interfacer::recycle(p,param1,param2,weights)
-    return(sapply(seq_along(p), function(i) {
-      .qmix(dist, p[i], param1[[i]], param2[[i]], weights[[i]], na.rm)
-    }))
   }
 
   # This is the vectorised single mixture use case
@@ -342,14 +359,14 @@
   if (length(param1) == 1 || (
     .allEqual(param1) && .allEqual(param2)
   )) {
-    return(qfn(p,param1,param2))
+    return(qfn(p,param1[[1]],param2[[1]]))
   }
 
   # so we need to do the quantile(s) here for the single mixture with params1/2
   # Options are: solve using uniroot for each quantile (non vectorised)
   # calculate moments and use PDQutils to estimate with Cornish-Fisher expansion
 
-  if (!approx) {
+  if (method == "exact") {
     # solve the mixture cdf for the quantiles
     out = sapply(p, function(p1) {
       minmax = range(qfn(p1,param1,param2))
@@ -361,41 +378,46 @@
         tol = 0.01
       )$root
     })
-  } else {
-    if (.is_analytical(dist) && !samples) {
+  } else if (method == "samples") {
+
+    # sampling.
+    samples = numeric(length = n_samples)
+    pointer = 1
+    for (i in seq_along(param1)) {
+      n_sample = floor(n_samples * weights[[i]])
+      rsample = qfn(stats::runif(n_sample), param1[[i]], param2[[i]])
+      samples[pointer:(pointer+n_sample-1)] = rsample
+      pointer = pointer+n_sample
+    }
+    out = stats::quantile(samples[1:(pointer-1)], probs=p)
+
+  } else if (method == "moments") {
       # moment based approach.
       # calculate analytical moments for sum:
       moments = .mixture_moments_vectorised(dist,param1,param2, weights)
       skewness = (moments[3] - 3*moments[1]*moments[2] + 2*moments[1]^3) / (moments[2] - moments[1]^2)^1.5
+
       # kurtosis = (moments[4] + 4*moments[3]*moments[1] + 6*moments[2]*moments[1]^2-3*moments[1]^4) / (moments[2] - moments[1]^2)^2
-      if(abs(skewness) > 3) {
+      if(is.na(skewness) || abs(skewness) > 3) {
         # warn(paste0("falling back to slow quantiles due to excess skewness: ",skewness))
-        return(.qmix(dist,p,param1,param2,weights,na.rm,approx=TRUE,samples=TRUE))
+        return(.qmix(dist,p,param1,param2,weights,na.rm,method="samples"))
       }
+
       # if(abs(kurtosis) > 5) {
       #   warn(paste0("falling back to slow quantiles due to excess kurtosis: ",kurtosis))
-      #   return(.qmix(dist,p,param1,param2,weights,na.rm,approx=FALSE))
+      #   return(.qmix(dist,p,param1,param2,weights,na.rm,method="samples"))
       # }
       raw_cumulants = PDQutils::moment2cumulant(moments)
       out = PDQutils::qapx_cf(p, raw.cumulants = raw_cumulants, support=.support(dist))
       if (!identical(order(out), order(p)))
-        return(.qmix(dist,p,param1,param2,weights,na.rm,approx=FALSE,samples=TRUE))
-    } else {
-      # sampling.
-      samples = numeric(length = 50000)
-      pointer = 1
-      for (i in seq_along(param1)) {
-        n_sample = floor(50000*weights[[i]])
-        rsample = qfn(stats::runif(n_sample), param1[[i]], param2[[i]])
-        samples[pointer:(pointer+n_sample-1)] = rsample
-        pointer = pointer+n_sample
-      }
-      out = stats::quantile(samples[1:(pointer-1)], probs=p)
-    }
+        return(.qmix(dist,p,param1,param2,weights,na.rm,method="samples"))
   }
 
   names(out) = paste0("q.",p)
-  return(out)
+
+  if (length(out) != length(p)) browser()
+
+  return(unlist(out))
 }
 
 .is_analytical = function(dist) {
@@ -415,20 +437,19 @@
 # .mixture_moments_vectorised("norm", c(-1,0,1), c(1,1,1), c(1,1,1)/3)
 # .mixture_moments_vectorised("lnorm", c(-1,0,1), c(1,1,1), c(1,1,1)/3)
 # .mixture_moments_vectorised("gamma", c(1,2,3), c(1,1,1), c(1,1,1)/3)
-.mixture_moments_vectorised = function(dist_type, param1, param2, weights) {
+# .mixture_moments_vectorised("beta", c(1,2,3), c(1,1,1), c(1,1,1)/3)
+.mixture_moments_vectorised = function(dist_type, param1, param2, weights, n=10) {
   if(dist_type == "norm") {
     # Normal distribution moments
     mu <- param1
     sigma <- param2
 
-    arr = cbind(
-        mu,
-        mu^2 + sigma^2,
-        mu^3 + 3*mu*sigma^2,
-        mu^4 + 6*mu^2*sigma^2 + 3*sigma^4,
-        mu^5 + 10*mu^3*sigma^2 + 15*mu*sigma^4,
-        mu^6 + 15*mu^4*sigma^2 + 45*mu^2*sigma^4 + 15*sigma^6
-    )
+    arr = matrix(ncol = n,nrow = length(mu))
+    arr[,1] = mu
+    arr[,2] = mu^2+sigma^2
+    for (i in 3:n) {
+      arr[,i] = mu*arr[,i-1] + i*sigma^2*arr[,i-2]
+    }
 
   } else if(dist_type == "gamma") {
     # Gamma distribution moments
@@ -436,8 +457,15 @@
     rate <- param2
     scale <- 1/rate
 
+    arr = matrix(ncol = n,nrow = length(shape))
+
+    arr[,1] = shape * scale
+    for (i in 2:n) {
+      arr[,i] = scale*arr[,i-1]*(shape+i-1)
+    }
+
     # E[X^k] = scale^k * Gamma(shape + k) / Gamma(shape)
-    arr = sapply(1:6, \(k) scale^k * gamma(shape + k) / gamma(shape))
+    # arr = sapply(1:n, \(k) scale^k * exp(lgamma(shape + k) - lgamma(shape)))
 
   } else if(dist_type == "lnorm") {
     # Log-normal distribution moments
@@ -445,23 +473,23 @@
     sdlog <- param2
 
     # E[X^k] = exp(k*meanlog + k^2*sdlog^2/2)
-    arr = sapply(1:6, \(k) exp(k * meanlog + k^2 * sdlog^2 / 2))
+    arr = sapply(1:n, \(k) exp(k * meanlog + k^2 * sdlog^2 / 2))
 
   } else if(dist_type == "beta") {
     # Beta distribution moments (assuming support [0,1])
     alpha <- param1
     beta <- param2
 
+
+    arr = matrix(ncol = n,nrow = length(alpha))
+
+    arr[,1] = alpha / (alpha+beta)
+    for (i in 2:n) {
+      arr[,i] = (alpha+i-1)/(alpha+beta+i-1) * arr[,i-1]
+    }
+
     # E[X^k] = B(alpha+k, beta) / B(alpha, beta)
-    arr = sapply(1:6, \(k) beta(alpha + k, beta) / beta(alpha, beta))
-
-  } else if(dist_type == "weibull") {
-    # Weibull distribution moments
-    shape <- param1
-    scale <- param2
-
-    # E[X^k] = scale^k * Gamma(1 + k/shape)
-    arr = sapply(1:6, \(k) scale^k * gamma(1 + k/shape))
+    # arr = sapply(1:n, \(k) exp( lbeta(alpha + k, beta) - lbeta(alpha, beta) ) )
 
   } else {
     # Numerical integration fallback for unknown distributions
@@ -471,3 +499,4 @@
   arr = apply(arr, MARGIN = 2, \(x) sum(x*weights))
   return(arr)
 }
+

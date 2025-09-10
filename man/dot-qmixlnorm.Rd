@@ -10,7 +10,7 @@
   sdlogs,
   weights = rep(1, length(meanlogs)),
   na.rm = FALSE,
-  approx = TRUE,
+  method = c("exact", "samples", "moments"),
   ...
 )
 }
@@ -25,9 +25,9 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{approx}{use Cornish Fisher moment based approximation if available}
+\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
 
-\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+\item{...}{passed on to internal function, `seed=XXX` to fix random seed}
 }
 \value{
 the value of the `p`th quantile
@@ -38,8 +38,8 @@ A quantile function for a mixture of log normal distributions
 \examples{
 try({
   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
-  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), approx=FALSE)
-  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(1,1,2), approx=FALSE)
+  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
+  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
 })
 }
 \concept{distributions}

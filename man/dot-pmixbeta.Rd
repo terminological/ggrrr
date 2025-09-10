@@ -4,7 +4,7 @@
 \alias{.pmixbeta}
 \title{The cumulative density function of a mixture of beta distributions}
 \usage{
-.pmixbeta(q, alphas, betas, weights = rep(1, length(alphas)), na.rm = FALSE)
+.pmixbeta(q, alphas, betas, weights = 1, na.rm = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}

@@ -4,7 +4,7 @@
 \alias{.pmixgamma}
 \title{The cumulative density function of a mixture of gamma distributions}
 \usage{
-.pmixgamma(q, shapes, rates, weights = rep(1, length(shapes)), na.rm = FALSE)
+.pmixgamma(q, shapes, rates, weights = 1, na.rm = FALSE)
 }
 \arguments{
 \item{q}{vector of quantiles.}

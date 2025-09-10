@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-cache.R
-# last-updated: 2023-11-08
+# last-updated: 2025-09-10
 # license: https://unlicense.org
 # imports:
 #    - usethis
@@ -16,7 +16,13 @@
 # ---
 
 .md5obj = function(obj) {
-  as.character(digest::digest(obj, algo="md5"))
+  as.character(digest::digest(obj, algo = "md5"))
+}
+
+.cache_loc = function() {
+  rappdirs::user_cache_dir(
+    if (is.null(utils::packageName())) "standalone" else utils::packageName()
+  )
 }
 
 #' A simple pass-through cache for complex or long running operations
@@ -34,43 +40,47 @@
 #' @concept cache
 #'
 #' @return the output of .expr which will usually be a value
-.cached = function (
+.cached = function(
   .expr,
   ...,
-  .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = .cache_loc(),
   .prefix = "cached",
-  .stale = Inf)
-{
-
+  .stale = Inf
+) {
   # .expr2 = rlang::enquo(.expr)
   hash = rlang::list2(...)
   code = deparse(substitute(.expr))
   md5code = .md5obj(code)
 
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
+  if (!stringr::str_ends(.cache, "/")) {
+    .cache = paste0(.cache, "/")
+  }
 
   dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
 
   md5params = NULL
-  if (!is.null(hash))
+  if (!is.null(hash)) {
     md5params = .md5obj(hash)
+  }
 
-  path = paste0(.cache,paste(.prefix,md5code,md5params,sep = "-"),".rda")
+  path = paste0(.cache, paste(.prefix, md5code, md5params, sep = "-"), ".rda")
 
-  if (.nocache) unlink(path)
+  if (.nocache) {
+    unlink(path)
+  }
 
   .cache_delete_stale(.cache = .cache, .prefix = .prefix, .stale = .stale)
 
   if (file.exists(path)) {
-    message("using cached item: ",path)
+    message("using cached item: ", path)
     obj = readRDS(path)
     #assign(path, obj, envir=.arear.cache)
   } else {
-    message("caching item: ",path)
+    message("caching item: ", path)
     obj = .expr #eval(.expr2)
-    attr(obj,"cache-path")=path
-    attr(obj,"cache-date")=Sys.time()
+    attr(obj, "cache-path") = path
+    attr(obj, "cache-date") = Sys.time()
     saveRDS(obj, path)
     #assign(path, obj, envir=.arear.cache)
   }
@@ -94,21 +104,25 @@
 #' @keywords internal
 #' @concept cache
 .cache_delete_stale = function(
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .cache = .cache_loc(),
   .prefix = ".*",
   .stale = Inf
 ) {
-
   modification_time = stale_time = path = NULL # remove global binding note
 
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
-  day_start = getOption("cache.time_day_starts", default=3)
+  if (!stringr::str_ends(.cache, "/")) {
+    .cache = paste0(.cache, "/")
+  }
+  day_start = getOption("cache.time_day_starts", default = 3)
 
   # if .stale==1 this is (by default) 2am on the current day.
   # something cached before 2am is deemed to be the previous day.
 
   fs::file_info(fs::dir_ls(.cache)) %>%
-    dplyr::mutate(stale_time = as.POSIXct(as.Date(modification_time)+.stale-1)+day_start*60*60) %>%
+    dplyr::mutate(
+      stale_time = as.POSIXct(as.Date(modification_time) + .stale - 1) +
+        day_start * 60 * 60
+    ) %>%
     dplyr::filter(Sys.time() > stale_time) %>%
     dplyr::pull(path) %>%
     unlink()
@@ -123,28 +137,30 @@
 #' @return nothing. called for side effects
 #' @keywords internal
 #' @concept cache
-.cache_clear = function (
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+.cache_clear = function(
+  .cache = .cache_loc(),
   .prefix = ".*",
   interactive = TRUE
 ) {
-
   paths = filename = NULL # remove global binding note
 
   if (!fs::dir_exists(.cache)) {
     warning("cache does not exist (yet)")
   } else {
-    files = tidyr::tibble(paths = fs::dir_ls(.cache,recurse=TRUE)) %>%
-      dplyr::mutate( filename = fs::path_file(paths)) %>%
-      dplyr::filter(stringr::str_starts(filename,.prefix))
+    files = tidyr::tibble(paths = fs::dir_ls(.cache, recurse = TRUE)) %>%
+      dplyr::mutate(filename = fs::path_file(paths)) %>%
+      dplyr::filter(stringr::str_starts(filename, .prefix))
 
-    if(!interactive) {
+    if (!interactive) {
       lapply(files$paths, unlink)
     } else {
-      message("About to delete ",nrow(files)," cached files.")
-      sure = utils::menu(c("Yes", "No"), title="Are you sure?")
-      if(sure==1) lapply(files$paths, unlink)
-      else message("operation aborted by the user")
+      message("About to delete ", nrow(files), " cached files.")
+      sure = utils::menu(c("Yes", "No"), title = "Are you sure?")
+      if (sure == 1) {
+        lapply(files$paths, unlink)
+      } else {
+        message("operation aborted by the user")
+      }
     }
   }
   invisible(NULL)
@@ -156,7 +172,7 @@
 #' makes sure it is reused.
 #'
 #' @param url the url to download
-#' @param ... passed to `utils::download.file()`
+#' @inheritDotParams utils::download.file -destfile -url
 #' @param .nocache if set to TRUE all caching is disabled
 #' @param .cache the location of the downloaded files
 #' @param .stale how long to leave this file before replacing it.
@@ -168,35 +184,37 @@
 .cache_download = function(
   url,
   ...,
-  .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = .cache_loc(),
   .stale = Inf,
   .extn = NULL
 ) {
-
   qualifier = basename(url) %>% stringr::str_extract("^[^?]*")
   if (!is.null(.extn)) {
     qualifier = qualifier %>% fs::path_ext_remove() %>% fs::path_ext_set(.extn)
   }
   md5 = .md5obj(url)
-  fname = paste0(md5,"-",qualifier)
+  fname = paste0(md5, "-", qualifier)
 
-  if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
+  if (!stringr::str_ends(.cache, "/")) {
+    .cache = paste0(.cache, "/")
+  }
   dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
-  path = normalizePath(paste0(.cache,fname), mustWork = FALSE)
+  path = normalizePath(paste0(.cache, fname), mustWork = FALSE)
 
-  if (.nocache) unlink(path)
+  if (.nocache) {
+    unlink(path)
+  }
 
   .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
 
   if (file.exists(path)) {
-    message("using cached item: ",path)
+    message("using cached item: ", path)
     return(path)
     #assign(path, obj, envir=.arear.cache)
   } else {
-    message("downloading item: ",qualifier)
-    utils::download.file(url,path, ...)
+    message("downloading item: ", qualifier)
+    utils::download.file(url = url, destfile = path, ...)
     return(path)
   }
-
 }

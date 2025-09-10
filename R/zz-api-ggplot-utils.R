@@ -62,6 +62,29 @@ gg_narrow = .gg_narrow
 #' @concept ggplot
 gg_resize_legend = .gg_resize_legend
 
+
+#' @inherit .gg_layer
+#' @concept ggplot
+#' @export
+#' @examples
+#' # top level function contains `...` and `mapping` extensions points:
+#' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
+#'     xCol = rlang::f_lhs(formula)
+#'     yCol = rlang::f_rhs(formula)
+#'     ggplot2::ggplot(data)+
+#'     gg_layer(
+#'       ggplot2::GeomPoint,
+#'       data = data,
+#'       mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
+#'       ...,
+#'       .default = list(size=10)
+#'      )
+#' }
+#' myPlot(iris, Sepal.Length~Sepal.Width, mapping = ggplot2::aes(colour=Species))
+#' myPlot(iris, Sepal.Length~Petal.Length, mapping = ggplot2::aes(colour=Species), shape="+", size=5)
+#' myPlot(mtcars, mpg~wt, mapping = ggplot2::aes(colour=as.factor(cyl), size=hp))
+gg_layer = .gg_layer
+
 # drawDetails.watermark <<- function(x, rot = 45, ...){
 # does this need to be global to work or is package scope ok?
 
@@ -177,6 +200,20 @@ scale_x_percent = .gg_scale_x_percent
 #' @export
 #' @concept ggplot
 scale_y_percent = .gg_scale_y_percent
+
+#' @inherit .gg_scale_consistent
+#' @export
+#' @concept ggplot
+scale_fill_consistent = function(plot, original_aesthetic = "fill", target_aesthetic = "fill", ... ) {
+  .gg_scale_consistent(plot,original_aesthetic,target_aesthetic,...)
+}
+
+#' @inherit .gg_scale_consistent
+#' @export
+#' @concept ggplot
+scale_colour_consistent = function(plot, original_aesthetic = "colour", target_aesthetic = "colour", ... ) {
+  .gg_scale_consistent(plot,original_aesthetic,target_aesthetic,...)
+}
 
 ## GGplot tables ----
 
@@ -539,25 +576,4 @@ scale_colour_subtype = function( subclasses, class_colour = "black", subclass_co
 }
 
 
-#' @inherit .gg_layer
-#' @export
-#' @examples
-#' # top level function contains `...` and `mapping` extensions points:
-#' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
-#'     xCol = rlang::f_lhs(formula)
-#'     yCol = rlang::f_rhs(formula)
-#'     ggplot2::ggplot(data)+
-#'     gg_layer(
-#'       ggplot2::GeomPoint,
-#'       data = data,
-#'       mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
-#'       ...,
-#'       .default = list(size=10)
-#'      )
-#' }
-#' myPlot(iris, Sepal.Length~Sepal.Width, mapping = ggplot2::aes(colour=Species))
-#' myPlot(iris, Sepal.Length~Petal.Length, mapping = ggplot2::aes(colour=Species), shape="+", size=5)
-#' myPlot(mtcars, mpg~wt, mapping = ggplot2::aes(colour=as.factor(cyl), size=hp))
-gg_layer = function(geom, data = NULL, mapping, ..., .default = list(), .switch_fill = inherits(geom,"GeomRibbon")) {
-  .gg_layer(geom,data,mapping,...,.default = .default, .switch_fill = .switch_fill)
-}
+

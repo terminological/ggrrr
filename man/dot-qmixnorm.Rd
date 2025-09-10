@@ -8,9 +8,9 @@
   p,
   means,
   sds,
-  weights = rep(1, length(means)),
+  weights = 1,
   na.rm = FALSE,
-  approx = TRUE,
+  method = c("exact", "samples", "moments"),
   ...
 )
 }
@@ -25,9 +25,9 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{approx}{use Cornish Fisher moment based approximation if available}
-
 \item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+
+\item{approx}{use Cornish Fisher moment based approximation if available}
 }
 \value{
 the value of the `p`th quantile

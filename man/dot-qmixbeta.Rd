@@ -8,9 +8,9 @@
   p,
   alphas,
   betas,
-  weights = rep(1, length(alphas)),
+  weights = 1,
   na.rm = FALSE,
-  approx = TRUE,
+  method = c("exact", "samples", "moments"),
   ...
 )
 }
@@ -25,9 +25,9 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{approx}{use Cornish Fisher moment based approximation if available}
+\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
 
-\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+\item{...}{passed on to internal function, `seed=XXX` to fix random seed}
 }
 \value{
 the value of the `p`th quantile
@@ -38,6 +38,7 @@ A quantile function for a mixture of gamma distributions
 \examples{
 try({
   .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
+  .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
 })
 }
 \concept{distributions}
