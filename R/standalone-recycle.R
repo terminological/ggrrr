@@ -6,8 +6,6 @@
 # imports: rlang
 # ---
 
-
-
 #' Strictly recycle function parameters
 #'
 #' `.recycle` is called within a function and ensures the parameters in the
@@ -23,7 +21,6 @@
 #' @param .env the environment to recycle within.
 #'
 #' @return the length of the longest variable
-#' @export
 #'
 #' @concept parameter_checks
 #' @keywords internal
@@ -45,12 +42,14 @@
 #' # inconsistent to have a zero length and a non zero length
 #' try(testfn(a=c("a","b"), b=integer(), c=NULL))
 #'
-.recycle = function(..., .min=1, .env=rlang::caller_env()) {
+.recycle = function(..., .min = 1, .env = rlang::caller_env()) {
   names = sapply(rlang::ensyms(...), rlang::as_label)
   dots = rlang::enexprs(...)
   env = .env
 
-  missing = sapply(names, function(x) !(exists(x, envir = env, inherits = FALSE)) || rlang::is_missing(env[[x]]) )
+  missing = sapply(names, function(x) {
+    !(exists(x, envir = env, inherits = FALSE)) || rlang::is_missing(env[[x]])
+  })
   # if (any(missing)) warning( paste0(names[missing],collapse=","), " "
   names = names[!missing]
   dots = dots[!missing]
@@ -60,30 +59,38 @@
   nulls = sapply(names, function(x) is.null(env[[x]]))
   lengths[nulls] = NA_integer_
 
-  if (all(is.na(lengths))) return(0) # all parameters are null
+  if (all(is.na(lengths))) {
+    return(0)
+  } # all parameters are null
 
-  if (all(lengths==0,na.rm = TRUE)) {
+  if (all(lengths == 0, na.rm = TRUE)) {
     ml = 0
   } else {
-    ml = max(c(lengths,.min),na.rm = TRUE)
+    ml = max(c(lengths, .min), na.rm = TRUE)
   }
 
-  if (!all(lengths %in% c(NA_integer_,1,ml))) {
-    names = names[!lengths %in% c(NA_integer_,1,ml)]
-    stop(sprintf("Parameter %s is/are the wrong lengths. They should be length %d%s",paste0("`",names,"`",collapse=","), ml, if(ml !=1) " (or 1)" else ""),call. = FALSE)
+  if (!all(lengths %in% c(NA_integer_, 1, ml))) {
+    names = names[!lengths %in% c(NA_integer_, 1, ml)]
+    stop(
+      sprintf(
+        "Parameter %s is/are the wrong lengths. They should be length %d%s",
+        paste0("`", names, "`", collapse = ","),
+        ml,
+        if (ml != 1) " (or 1)" else ""
+      ),
+      call. = FALSE
+    )
   }
 
-
-
-  if (ml>1) {
+  if (ml > 1) {
     for (i in seq_along(names)) {
       name = names[[i]]
       x = env[[name]]
-      if (length(x) == 1)
-        env[[name]] = rep(x,ml)
+      if (length(x) == 1) {
+        env[[name]] = rep(x, ml)
+      }
     }
   }
 
   return(ml)
-
 }

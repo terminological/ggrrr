@@ -1,5 +1,3 @@
-
-
 ## Data manipulation helpers ----
 
 #' Expand a data vector to the full range
@@ -16,8 +14,13 @@
 #'
 #' @examples
 #' # full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")
-full_seq_dates = function(dates, period="1 day", anchor="start", fmt = "%d %b") {
-  stop("deprecated: please switch to growthrates::full_seq()")
+full_seq_dates = function(
+  dates,
+  period = "1 day",
+  anchor = "start",
+  fmt = "%d %b"
+) {
+  stop("deprecated: please switch to ggoutbreak::full_seq()")
   # by = .period_to_string(period)
   # dates = trunc(as.Date(dates))
   # start = as.Date(min(dates,na.rm=TRUE),"1970-01-01")
@@ -111,16 +114,16 @@ full_seq_dates = function(dates, period="1 day", anchor="start", fmt = "%d %b") 
   # }
   #
   # return(out2)
-
 }
-
 
 
 # # guess the intervals between dates
 .day_interval = function(dates) {
   dates = sort(unique(dates))
-  if (length(dates) < 4) return(1)
-  interval = .gcd(stats::na.omit(as.numeric(dates-stats::lag(dates))))
+  if (length(dates) < 4) {
+    return(1)
+  }
+  interval = .gcd(stats::na.omit(as.numeric(dates - stats::lag(dates))))
   return(interval)
 }
 
@@ -188,7 +191,7 @@ full_seq_dates = function(dates, period="1 day", anchor="start", fmt = "%d %b") 
 #' # cut_date(dates2, fmt = "%d/%b", factor = TRUE, period = "-2 weeks", anchor="sun")
 #'
 cut_date = function(dates, full_seq = dates, factor = FALSE, ...) {
-  stop("deprecated: please switch to growthrates::cut_date()")
+  stop("deprecated: please switch to ggoutbreak::cut_date()")
   # f = attr(full_seq,"assign")
   # if (is.null(f)) {
   #   dots = rlang::list2(...)
@@ -216,8 +219,12 @@ cut_date = function(dates, full_seq = dates, factor = FALSE, ...) {
 #' # DEPRECATED
 #' # times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
 #' # dates = time_to_date(times)
-date_to_time = function(dates, unit = .day_interval(dates), day_zero = getOption("day_zero","2019-12-29")) {
-  stop("deprecated: please switch to growthrates::time_period")
+date_to_time = function(
+  dates,
+  unit = .day_interval(dates),
+  day_zero = getOption("day_zero", "2019-12-29")
+) {
+  stop("deprecated: please switch to ggoutbreak::time_period")
   # if (!lubridate::is.period(unit)) {
   #   if (is.numeric(unit)) unit = lubridate::period(sprintf("%1.0f days", unit))
   #   else unit = lubridate::period(unit)
@@ -245,8 +252,12 @@ date_to_time = function(dates, unit = .day_interval(dates), day_zero = getOption
 #' # DEPRECATED
 #' # times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
 #' # dates = time_to_date(times)
-time_to_date = function(timepoints, unit = attr(timepoints,"unit"), day_zero = getOption("day_zero","2019-12-29")) {
-  stop("deprecated: please switch to growthrates::full_seq()")
+time_to_date = function(
+  timepoints,
+  unit = attr(timepoints, "unit"),
+  day_zero = getOption("day_zero", "2019-12-29")
+) {
+  stop("deprecated: please switch to ggoutbreak::full_seq()")
   # if (is.null(unit)) stop("Cannot determine unit from timepoints input. You must specify unit.")
   # if (!lubridate::is.period(unit)) {
   #   if (is.numeric(unit)) unit = lubridate::period(sprintf("%1.0f days", unit))
@@ -276,8 +287,14 @@ time_to_date = function(timepoints, unit = attr(timepoints,"unit"), day_zero = g
 #' # DEPRECATED
 #' # times = date_to_time(as.Date("2019-12-29")+0:100, "1 week")
 #' # tmp = full_seq_times(times)
-full_seq_times = function(timepoints, period = unit, unit = attr(timepoints,"unit"), day_zero = attr(timepoints,"day_zero"), ...) {
-  stop("deprecated: please switch to growthrates::full_seq()")
+full_seq_times = function(
+  timepoints,
+  period = unit,
+  unit = attr(timepoints, "unit"),
+  day_zero = attr(timepoints, "day_zero"),
+  ...
+) {
+  stop("deprecated: please switch to ggoutbreak::full_seq()")
   # if (is.null(unit)) stop("Cannot determine unit from timepoints input. You must specify unit")
   # if (is.null(day_zero)) {
   #   warning("Cannot determine day_zero from timepoints input. Using defaults from getOption('day_zero')")
@@ -366,8 +383,15 @@ full_seq_times = function(timepoints, period = unit, unit = attr(timepoints,"uni
 #' #times2 - cut_time(times2, fmt = "%d/%b", factor = FALSE, period = "-2 weeks", anchor="sun")
 #'
 #'
-cut_time = function(timepoints, full_seq = timepoints, unit = attr(timepoints,"unit"), day_zero = attr(timepoints,"day_zero"), factor = FALSE, ...) {
-  stop("deprecated: please switch to growthrates::cut()")
+cut_time = function(
+  timepoints,
+  full_seq = timepoints,
+  unit = attr(timepoints, "unit"),
+  day_zero = attr(timepoints, "day_zero"),
+  factor = FALSE,
+  ...
+) {
+  stop("deprecated: please switch to ggoutbreak::cut()")
   # if (is.null(unit)) stop("Cannot determine unit from timepoints input. You must specify unit.")
   # if (is.null(day_zero)) {
   #   warning("Cannot determine day_zero from timepoints input. Using defaults from getOption('day_zero')")

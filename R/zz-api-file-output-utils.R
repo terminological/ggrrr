@@ -16,7 +16,7 @@ here = .here
 
 
 #' @inherit .gg_save_as
-#' @inheritDotParams .gg_save_as
+#' @inheritDotParams .gg_save_as -webfontFinder
 #' @export
 #' @concept output
 gg_save_as = function(...) {
@@ -39,11 +39,15 @@ gg_find_webfonts = function(plot) {
 }
 
 #' @inherit .hux_save_as
-#' @inheritDotParams .hux_save_as
+#' @inheritDotParams .hux_save_as -pdfConverter -webfontFinder
 #' @export
 #' @concept output
 hux_save_as = function(...) {
-  .hux_save_as(..., pdfConverter = html_pdf_converter, webfontFinder = .get_font_face)
+  .hux_save_as(
+    ...,
+    pdfConverter = html_pdf_converter,
+    webfontFinder = .get_font_face
+  )
 }
 
 #' Convert html to pdf depending on what is available on the platform
@@ -60,13 +64,14 @@ hux_save_as = function(...) {
 #' @export
 #' @concept output
 html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
-
-  if(rlang::is_installed("html2pdfr") && utils::packageVersion("html2pdfr") >= "0.4.0") {
-
+  if (
+    rlang::is_installed("html2pdfr") &&
+      utils::packageVersion("html2pdfr") >= "0.4.0"
+  ) {
     # get these functions without R CMD Check noticing that they might not be installed
     # since we check for these above we don't need to handle failure.
-    html_converter = optional_fn("html2pdfr","html_converter")
-    html_fragment_to_pdf = optional_fn("html2pdfr","html_fragment_to_pdf")
+    html_converter = optional_fn("html2pdfr", "html_converter")
+    html_fragment_to_pdf = optional_fn("html2pdfr", "html_fragment_to_pdf")
     conv = html_converter(
       unique(c(
         systemfonts::system_fonts()$path,
@@ -89,14 +94,15 @@ html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
     #   grDevices::embedFonts(withExt("pdf")),
     #   silent=TRUE
     # );
-
   } else {
-
-    .print_html_with_chrome(html, filename, maxWidth=maxWidth, maxHeight=maxHeight)
-
+    .print_html_with_chrome(
+      html,
+      filename,
+      maxWidth = maxWidth,
+      maxHeight = maxHeight
+    )
   }
   invisible(NULL)
-
 }
 
 
@@ -119,69 +125,89 @@ html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
 #' $write() which writes the collection of tables to the excel file.
 #' @export
 #' @concept output
-data_supplement = function(..., filename="supplementary-material.xlsx", out = ggrrr::outputter(...), nameGlue="Supplementary Table {index}") {
+data_supplement = function(
+  ...,
+  filename = "supplementary-material.xlsx",
+  out = ggrrr::outputter(...),
+  nameGlue = "Supplementary Table {index}"
+) {
   e1 = new.env(parent = environment())
   with(e1, {
-
     .out = out
     .wb = openxlsx::createWorkbook()
     .indexes = integer()
     .default_filename = filename
-    .catalog = tidyr::tibble(table=character(),description=character())
+    .catalog = tidyr::tibble(table = character(), description = character())
 
-    add_table = function(hux, caption, footnote = NULL, index=NULL, hide=getOption("hide.supplementary.tables",default=TRUE)) {
+    add_table = function(
+      hux,
+      caption,
+      footnote = NULL,
+      index = NULL,
+      hide = getOption("hide.supplementary.tables", default = TRUE)
+    ) {
       wb = .wb
       indexes = .indexes
-      if(is.null(index)) index = max(c(indexes,0))+1
+      if (is.null(index)) {
+        index = max(c(indexes, 0)) + 1
+      }
       sheetname = glue::glue(nameGlue)
-      if(sheetname %in% names(wb)) openxlsx::removeWorksheet(wb,sheet = sheetname)
+      if (sheetname %in% names(wb)) {
+        openxlsx::removeWorksheet(wb, sheet = sheetname)
+      }
 
       hux2 = hux %>% ggrrr::hux_auto_widths("xlsx")
 
-      hux2 = hux2 %>% ggrrr::hux_set_caption(paste0(sheetname," - ",caption))
+      hux2 = hux2 %>% ggrrr::hux_set_caption(paste0(sheetname, " - ", caption))
 
       if (!is.null(footnote)) {
         hux2 = hux2 %>% hux_set_footer(footnote)
       }
 
       wb = hux2 %>% huxtable::as_Workbook(Workbook = wb, sheet = sheetname)
-      openxlsx::setRowHeights(wb, sheetname, 1:nrow(hux2), heights=32)
-      .catalog <<- .catalog %>% dplyr::filter(table != sheetname) %>% dplyr::bind_rows(tidyr::tibble(table=sheetname,description=caption))
+      openxlsx::setRowHeights(wb, sheetname, 1:nrow(hux2), heights = 32)
+      .catalog <<- .catalog %>%
+        dplyr::filter(table != sheetname) %>%
+        dplyr::bind_rows(tidyr::tibble(
+          table = sheetname,
+          description = caption
+        ))
       .wb <<- wb
       # indexes keeps track of order in which sheets added and overwritten
-      .indexes <<- unique(c(indexes,index),fromLast = TRUE)
-      if(!hide) return(hux2 %>% huxtable::set_width("auto"))
+      .indexes <<- unique(c(indexes, index), fromLast = TRUE)
+      if (!hide) {
+        return(hux2 %>% huxtable::set_width("auto"))
+      }
       invisible(sheetname)
     }
 
     write = function(filename = .out(.default_filename)) {
-
       cat = .catalog %>%
         dplyr::mutate(.sort = dplyr::dense_rank(.indexes)) %>%
         dplyr::arrange(.sort) %>%
         dplyr::select(-.sort) %>%
-        huxtable::as_hux(add_colnames=TRUE) %>%
+        huxtable::as_hux(add_colnames = TRUE) %>%
         ggrrr::hux_default_layout() %>%
         hux_set_caption("Supplementary materials - table of contents") %>%
-        huxtable::set_col_width(c(0.2,0.8)) %>%
+        huxtable::set_col_width(c(0.2, 0.8)) %>%
         # 25 here is the desired with of the table of contents
-        huxtable::set_width((25 / 0.206) / (20*ncol(.catalog)))
+        huxtable::set_width((25 / 0.206) / (20 * ncol(.catalog)))
       # %>%
       # huxtable::set_height(nrow(.catalog)*20) %>%
       # huxtable::set_row_height(rep(1/(nrow(.catalog)+1),(nrow(.catalog)+1)))
 
       wb = .wb
       # add in new contents page
-      if("Contents" %in% names(wb)) openxlsx::removeWorksheet(wb,"Contents")
+      if ("Contents" %in% names(wb)) {
+        openxlsx::removeWorksheet(wb, "Contents")
+      }
       wb = cat %>% huxtable::as_Workbook(Workbook = wb, sheet = "Contents")
 
       # bring contents page to front. Order others by index.
-      openxlsx::worksheetOrder(wb) = order(c(.indexes,0))
-      openxlsx::saveWorkbook(wb,filename,overwrite = TRUE)
+      openxlsx::worksheetOrder(wb) = order(c(.indexes, 0))
+      openxlsx::saveWorkbook(wb, filename, overwrite = TRUE)
       invisible(filename)
     }
   })
   return(e1)
 }
-
-

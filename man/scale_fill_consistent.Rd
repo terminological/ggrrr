@@ -17,6 +17,58 @@ scale_fill_consistent(
 \item{original_aesthetic}{the original aesthetic we are cloning (fill or color)}
 
 \item{target_aesthetic}{the aesthetic in the new plot we want to match.}
+
+\item{...}{
+  Named arguments passed on to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual}}\describe{
+    \item{\code{...}}{
+  Arguments passed on to \code{\link[ggplot2:discrete_scale]{discrete_scale}}
+  \describe{
+    \item{\code{limits}}{One of:
+\itemize{
+\item \code{NULL} to use the default scale values
+\item A character vector that defines possible values of the scale and their
+order
+\item A function that accepts the existing (automatic) values and returns
+new ones. Also accepts rlang \link[rlang:as_function]{lambda} function
+notation.
+}}
+    \item{\code{drop}}{Should unused factor levels be omitted from the scale?
+The default, \code{TRUE}, uses the levels that appear in the data;
+\code{FALSE} includes the levels in the factor. Please note that to display
+every level in a legend, the layer should use \code{show.legend = TRUE}.}
+    \item{\code{na.translate}}{Unlike continuous scales, discrete scales can easily show
+missing values, and do so by default. If you want to remove missing values
+from a discrete scale, specify \code{na.translate = FALSE}.}
+    \item{\code{name}}{The name of the scale. Used as the axis or legend title. If
+\code{waiver()}, the default, the name of the scale is taken from the first
+mapping used for that aesthetic. If \code{NULL}, the legend title will be
+omitted.}
+    \item{\code{labels}}{One of:
+\itemize{
+\item \code{NULL} for no labels
+\item \code{waiver()} for the default labels computed by the
+transformation object
+\item A character vector giving labels (must be same length as \code{breaks})
+\item An expression vector (must be the same length as breaks). See ?plotmath for details.
+\item A function that takes the breaks as input and returns labels
+as output. Also accepts rlang \link[rlang:as_function]{lambda} function
+notation.
+}}
+    \item{\code{guide}}{A function used to create a guide or its name. See
+\code{\link[ggplot2:guides]{guides()}} for more information.}
+    \item{\code{call}}{The \code{call} used to construct the scale for reporting messages.}
+    \item{\code{super}}{The super class to use for the constructed scale}
+  }}
+\item{\code{breaks}}{One of:
+\itemize{
+\item \code{NULL} for no breaks
+\item \code{waiver()} for the default breaks (the scale limits)
+\item A character vector of breaks
+\item A function that takes the limits as input and returns breaks
+as output
+}}
+\item{\code{na.value}}{The aesthetic value to use for missing (\code{NA}) values}
+}}
 }
 \description{
 Multiple factor levels with custom labels are difficult to sync between

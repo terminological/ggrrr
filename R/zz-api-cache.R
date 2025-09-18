@@ -7,27 +7,33 @@
 #' {
 #'   iris[[colName]]
 #' } %>% cached(iris, colName, .prefix="example", .cache=tempdir())
-cached = function (
+cached = function(
   .expr,
   ...,
-  .nocache = getOption("cache.disable", default=FALSE),
-  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
-  .prefix = getOption("cache.item.prefix", default="cached"),
-  .stale = getOption("cache.stale", default=Inf))
-{
-   .cached(.expr,...,.nocache=.nocache,.cache=.cache,.prefix=.prefix,.stale=.stale)
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = getOption("cache.dir", default = rappdirs::user_cache_dir("ggrrr")),
+  .prefix = getOption("cache.item.prefix", default = "cached"),
+  .stale = getOption("cache.stale", default = Inf)
+) {
+  .cached(
+    .expr,
+    ...,
+    .nocache = .nocache,
+    .cache = .cache,
+    .prefix = .prefix,
+    .stale = .stale
+  )
 }
 
 #' @inherit .cache_delete_stale
 #' @concept cache
 #' @export
 cache_delete_stale = function(
-  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
+  .cache = getOption("cache.dir", default = rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
-  .stale = getOption("cache.stale", default=Inf)
+  .stale = getOption("cache.stale", default = Inf)
 ) {
-
-  .cache_delete_stale(.cache,.prefix,.stale)
+  .cache_delete_stale(.cache, .prefix, .stale)
 }
 
 # TODO:
@@ -39,12 +45,11 @@ cache_delete_stale = function(
 #' @export
 #' @examples
 #' cache_clear(.prefix="example", .cache=tempdir(), interactive=FALSE)
-cache_clear = function (
-  .cache = getOption("cache.dir", default=rappdirs::user_cache_dir("ggrrr")),
+cache_clear = function(
+  .cache = getOption("cache.dir", default = rappdirs::user_cache_dir("ggrrr")),
   .prefix = ".*",
   interactive = TRUE
 ) {
-
   .cache_clear(.cache, .prefix, interactive)
 }
 
@@ -54,12 +59,20 @@ cache_clear = function (
 cache_download = function(
   url,
   ...,
-  .nocache = getOption("cache.disable", default=FALSE),
-  .cache = getOption("cache.download.dir", default=rappdirs::user_cache_dir("ggrrr-download")),
-  .stale = getOption("cache.stale", default=Inf),
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = getOption(
+    "cache.download.dir",
+    default = rappdirs::user_cache_dir("ggrrr-download")
+  ),
+  .stale = getOption("cache.stale", default = Inf),
   .extn = NULL
 ) {
-
-  .cache_download(url, ..., .nocache=.nocache, .cache=.cache, .stale=.stale, .extn=.extn)
-
+  .cache_download(
+    url,
+    ...,
+    .nocache = .nocache,
+    .cache = .cache,
+    .stale = .stale,
+    .extn = .extn
+  )
 }

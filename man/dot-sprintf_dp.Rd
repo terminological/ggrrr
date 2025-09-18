@@ -14,6 +14,7 @@
     \item{\code{...}}{values to be passed into \code{fmt}.  Only logical,
     integer, real and character vectors are supported, but some coercion
     will be done: see the \sQuote{Details} section. Up to 100.}
+\item{\code{trim,domain}}{see \code{\link[base]{gettext}}.}
 }}
 
 \item{sep}{a character to use a decimal point.}

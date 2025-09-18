@@ -16,9 +16,6 @@ gg_save_as(...)
 \item{\code{maxHeight}}{maximum height in inches}
 \item{\code{aspectRatio}}{defaults to maxWidth/maxHeight}
 \item{\code{formats}}{some of svg, png, pdf, Rdata, eps, ...}
-\item{\code{webfontFinder}}{a function that takes a plot and returns a properly
-formatted css specification for webfonts in the plot. This is for internal
-use and does not need to be changed.}
 \item{\code{...}}{
   Named arguments passed on to \code{\link[svglite:svglite]{svglite::svglite}}\describe{
     \item{\code{pointsize}}{Default point size.}

@@ -726,7 +726,7 @@
   for (k in names(mapping)) {
     tmp = try(rlang::eval_tidy(mapping[[k]], df), silent = TRUE)
     if (
-      class(tmp) == "try-error" ||
+      inherits(tmp, "try-error") ||
         is.language(tmp) ||
         is.function(tmp) ||
         length(tmp) != nrow(df)

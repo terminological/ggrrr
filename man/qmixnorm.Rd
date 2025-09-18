@@ -25,6 +25,8 @@ qmixnorm(
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
+\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
+
 \item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
 }
 \value{

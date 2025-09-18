@@ -25,9 +25,9 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
 
-\item{approx}{use Cornish Fisher moment based approximation if available}
+\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
 }
 \value{
 the value of the `p`th quantile

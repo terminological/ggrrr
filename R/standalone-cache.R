@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-cache.R
-# last-updated: 2025-09-10
+# last-updated: 2025-09-16
 # license: https://unlicense.org
 # imports:
 #    - usethis
@@ -17,6 +17,9 @@
 
 .md5obj = function(obj) {
   as.character(digest::digest(obj, algo = "md5"))
+}
+.cache_message = function(...) {
+  if (getOption("cache.verbose", FALSE)) message(...)
 }
 
 .cache_loc = function() {
@@ -73,11 +76,11 @@
   .cache_delete_stale(.cache = .cache, .prefix = .prefix, .stale = .stale)
 
   if (file.exists(path)) {
-    message("using cached item: ", path)
+    .cache_message("using cached item: ", path)
     obj = readRDS(path)
     #assign(path, obj, envir=.arear.cache)
   } else {
-    message("caching item: ", path)
+    .cache_message("caching item: ", path)
     obj = .expr #eval(.expr2)
     attr(obj, "cache-path") = path
     attr(obj, "cache-date") = Sys.time()
@@ -145,7 +148,7 @@
   paths = filename = NULL # remove global binding note
 
   if (!fs::dir_exists(.cache)) {
-    warning("cache does not exist (yet)")
+    .cache_message("cache does not exist (yet)")
   } else {
     files = tidyr::tibble(paths = fs::dir_ls(.cache, recurse = TRUE)) %>%
       dplyr::mutate(filename = fs::path_file(paths)) %>%
@@ -172,7 +175,7 @@
 #' makes sure it is reused.
 #'
 #' @param url the url to download
-#' @inheritDotParams utils::download.file -destfile -url
+#' @inheritDotParams utils::download.file -url -destfile
 #' @param .nocache if set to TRUE all caching is disabled
 #' @param .cache the location of the downloaded files
 #' @param .stale how long to leave this file before replacing it.
@@ -208,13 +211,82 @@
 
   .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
 
-  if (file.exists(path)) {
-    message("using cached item: ", path)
+    if (file.exists(path)) {
+    .cache_message("using cached item: ", path)
     return(path)
     #assign(path, obj, envir=.arear.cache)
   } else {
-    message("downloading item: ", qualifier)
-    utils::download.file(url = url, destfile = path, ...)
+    .cache_message("downloading item: ", qualifier)
+    utils::download.file(
+      url,
+      path,
+      ...,
+      quiet = !getOption("cache.verbose", FALSE)
+    )
     return(path)
   }
+}
+
+
+#' Cache a post request
+#'
+#' @inherit .cache_download
+#' @param data a named list of POST data
+#' @param as how the response is delivered?
+#' @inheritDotParams httr::POST -url
+#'
+#' @returns the result of the query
+#' @keywords internal
+#' @concept cache
+.cache_post = function(
+  url,
+  body,
+  as = c("text", "raw", "parsed", "httr"),
+  ...,
+  .nocache = getOption("cache.disable", default = FALSE),
+  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .stale = Inf
+) {
+  as = match.arg(as)
+
+  md5 = .md5obj(url)
+  md52 = .md5obj(body)
+
+  qualifier = basename(url) %>% stringr::str_extract("^[^?]*")
+  qualifier = qualifier %>%
+    fs::path_ext_remove() %>%
+    fs::path_ext_set("Rdata")
+
+  fname = paste0(md5, "-", md52, "-", qualifier)
+
+  if (!stringr::str_ends(.cache, "/")) {
+    .cache = paste0(.cache, "/")
+  }
+  dir.create(.cache, recursive = TRUE, showWarnings = FALSE)
+  path = normalizePath(paste0(.cache, fname), mustWork = FALSE)
+
+  if (.nocache) {
+    unlink(path)
+  }
+
+  .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
+
+  if (file.exists(path)) {
+    .cache_message("using cached item: ", path)
+    res = readRDS(file = path)
+  } else {
+    res = httr::POST(url = url, body = body, ...)
+    if (httr::status_code(res) == 200) {
+      .cache_message("caching item: ", path)
+      saveRDS(res, file = path)
+    } else {
+      warning("POST failed with status: ", status, ", returning raw response.")
+      return(res)
+    }
+  }
+  if (as == "httr") {
+    return(res)
+  }
+  res = httr::content(res, as = as)
+  return(res)
 }
