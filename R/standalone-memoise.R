@@ -1,13 +1,17 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-memoise.R
-# last-updated: 2025-09-11
+# last-updated: '2025-09-19'
 # license: https://unlicense.org
-# imports: rlang
+# imports:
+# - fastmap
+# - rlang
+# - stats
 # ---
 
 # This is a fairly close reimplementation of
 # https://github.com/r-lib/memoise/blob/main/R/memoise.R
+# 2025-09-19: updated to use fastmap for key value store
 
 .memoise_cache = rlang::new_environment(
   data = list(fns = list(), memoised = list())
@@ -58,25 +62,24 @@
     return(fn)
   }
 
-  # have we memoised this function before?
-  # this implementation only allows one cache per function.
-  `_fn` = rlang::as_function(fn)
-
   `_matches` = sapply(.memoise_cache$fns, identical, fn)
   if (any(`_matches`)) {
     return(.memoise_cache$memoised[`_matches`][[1]])
   }
 
+  # have we memoised this function before?
+  # this implementation only allows one cache per function.
+  `_fn` = rlang::as_function(fn)
+
   # no? lets define a memoised function for this function.
   # this is a function generating function.
   # this is the encl environment. We create a data cache in this environment:
-
   `_fn_formals` = formals(`_fn`)
 
   # This is the result cache:
   `_memoise_data` = rlang::new_environment(
     data = list(
-      items = list(),
+      items = fastmap::fastmap(),
       defaults = Filter(
         function(x) !identical(x, quote(expr = )),
         `_fn_formals`
@@ -100,7 +103,7 @@
       message(
         encl$`_memoise_data`$fn_name,
         ": ",
-        length(encl$`_memoise_data`$items),
+        encl$`_memoise_data`$items$size(),
         " cached items. ",
         appendLF = FALSE
       )
@@ -132,9 +135,9 @@
         if (debug) {
           message("remove cached item. hash: ", hsh)
         }
-        encl$`_memoise_data`$items[[hsh]] = NULL
+        encl$`_memoise_data`$items$remove(hsh)
       }
-      result = encl$`_memoise_data`$items[[hsh]]
+      result = encl$`_memoise_data`$items$get(hsh)
       if (debug) {
         if (is.null(result)) {
           message("cache miss. hash: ", hsh)
@@ -182,7 +185,7 @@
               message("caching. hash: ", hsh)
             }
           }
-          encl$`_memoise_data`$items[[hsh]] = result
+          encl$`_memoise_data`$items$set(hsh, result)
         }
       } else {
         # globally disabled cache. Should we be clearing existing values?
@@ -261,4 +264,3 @@
   }
   return(fn)
 }
-

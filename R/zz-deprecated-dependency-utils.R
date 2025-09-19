@@ -12,16 +12,27 @@
 #'
 #' @examples
 #' # ggrrr::unstable()
-unstable = function(pkg = "ggrrr", org="terminological") {
-  lifecycle::deprecate_stop("0.0.0.9024","ggrrr::unstable()","pkgtools::unstable")
-  if (pkg %in% rownames(utils::installed.packages())) try({devtools::unload(pkg)},silent = TRUE)
-  local = sprintf("~/Git/%s",pkg)
+unstable = function(pkg = "ggrrr", org = "terminological") {
+  lifecycle::deprecate_stop(
+    "0.0.0.9024",
+    "ggrrr::unstable()",
+    "pkgtools::unstable"
+  )
+  if (pkg %in% rownames(utils::installed.packages())) {
+    try(
+      {
+        devtools::unload(pkg)
+      },
+      silent = TRUE
+    )
+  }
+  local = sprintf("~/Git/%s", pkg)
   if (file.exists(local)) {
     devtools::install_deps(local, upgrade = "never")
     devtools::document(pkg = local, quiet = TRUE)
-    devtools::install_local(path = local, force=TRUE,upgrade = FALSE)
+    devtools::install_local(path = local, force = TRUE, upgrade = FALSE)
   } else {
-    devtools::install_github(sprintf("%s/%s",org, pkg),upgrade = "never")
+    devtools::install_github(sprintf("%s/%s", org, pkg), upgrade = "never")
   }
 }
 
@@ -35,7 +46,7 @@ unstable = function(pkg = "ggrrr", org="terminological") {
 #' @examples
 #' # cran("tidyverse")
 cran = function(cran_deps) {
-  lifecycle::deprecate_warn("0.0.0.9024","ggrrr::cran()")
+  lifecycle::deprecate_warn("0.0.0.9024", "ggrrr::cran()")
   for (package in cran_deps) {
     if (!rlang::is_installed(package)) {
       utils::install.packages(package)
@@ -59,17 +70,21 @@ cran = function(cran_deps) {
 #'
 #' @examples
 #' # non_cran("patchwork", "thomasp85/patchwork")
-non_cran = function(name,github,force=FALSE,subdir="",...) {
-  lifecycle::deprecate_stop("0.0.0.9024","ggrrr::non_cran()")
-  if (force | !name %in% c(devtools::dev_packages(),rownames(utils::installed.packages()))) {
-    local = paste0("~/Git/",name,"/",subdir)
+non_cran = function(name, github, force = FALSE, subdir = "", ...) {
+  lifecycle::deprecate_stop("0.0.0.9024", "ggrrr::non_cran()")
+  if (
+    force |
+      !name %in%
+        c(devtools::dev_packages(), rownames(utils::installed.packages()))
+  ) {
+    local = paste0("~/Git/", name, "/", subdir)
     if (fs::dir_exists(local)) {
       devtools::load_all(local)
     } else {
-      if(subdir != "") {
-        devtools::install_github(github,subdir = subdir,...)
+      if (subdir != "") {
+        devtools::install_github(github, subdir = subdir, ...)
       } else {
-        devtools::install_github(github,...)
+        devtools::install_github(github, ...)
       }
     }
   }
@@ -78,6 +93,3 @@ non_cran = function(name,github,force=FALSE,subdir="",...) {
 #' @inherit .optional_fn
 #' @export
 optional_fn = .optional_fn
-
-
-

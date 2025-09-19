@@ -11,11 +11,15 @@ cache_clear(
 )
 }
 \arguments{
-\item{.cache}{the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}
+\item{.cache}{the location of the cache as a directory. May get its value
+from options("ggrrr.cache.dir") or the default value of
+rappdirs::user_cache_dir("ggrrr")}
 
-\item{.prefix}{a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.}
+\item{.prefix}{a regular expression matching the prefix of the cached item,
+so that do selective clean up operations. defaults to everything.}
 
-\item{interactive}{suppress `are you sure?` warning with a FALSE value (defaults to TRUE)}
+\item{interactive}{suppress `are you sure?` warning with a FALSE value
+(defaults to TRUE)}
 }
 \value{
 nothing. called for side effects

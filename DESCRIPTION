@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9026
+Version: 0.0.0.9027
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -25,7 +25,6 @@ Imports:
     rlang,
     tibble,
     tidyr,
-    digest,
     rappdirs,
     fs,
     ggplot2,
@@ -67,8 +66,6 @@ Suggests:
     Cairo
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3.9007
-Roxygen: list(roclets = c("collate", "rd", "namespace", 
-              "doctest::dt_roclet"), packages = "doctest") 
 URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr, https://terminological.github.io/ggrrr/
 BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3

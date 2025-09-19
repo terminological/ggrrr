@@ -1,11 +1,10 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-cache.R
-# last-updated: 2025-09-16
+# last-updated: 2025-09-20
 # license: https://unlicense.org
 # imports:
 #    - usethis
-#    - digest
 #    - rappdirs
 #    - utils
 #    - rlang
@@ -15,9 +14,8 @@
 #    - tidyr
 # ---
 
-.md5obj = function(obj) {
-  as.character(digest::digest(obj, algo = "md5"))
-}
+# 2025-09-19: switched to rlang::hash - will probably invalidate existing caches
+
 .cache_message = function(...) {
   if (getOption("cache.verbose", FALSE)) message(...)
 }
@@ -30,15 +28,24 @@
 
 #' A simple pass-through cache for complex or long running operations
 #'
-#' executes expr and saves the output as an RDS file indexed by has of code in expr
-#' and the hash of input variables (which should contain any variable inputs)
+#' executes `expr` and saves the output as an RDS file indexed by has of code in
+#' expr and the hash of specified input variables (in `...`,  which should
+#' contain any variable inputs)
 #'
-#' @param .expr the code the output of which requires caching. Other than a return value this should not create side effects or change global variables.
-#' @param ... inputs that the code in expr depends on and changes in which require the code re-running, Could be Sys.Date()
-#' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
-#' @param .nocache an option to defeat the caching which can be set globally as options("cache.disable"=TRUE)
-#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
-#' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("cache.stale")
+#' @param .expr the code the output of which requires caching. Other than a
+#'   return value this should not create side effects or change global
+#'   variables.
+#' @param ... inputs that the code in `expr` depends on and changes in which
+#'   require the code re-running, Could be Sys.Date()
+#' @param .prefix a name of the operation so that you can namespace the cached
+#'   files and do selective clean up operations on them
+#' @param .nocache an option to defeat the caching which can be set globally as
+#'   options("cache.disable"=TRUE)
+#' @param .cache the location of the cache as a directory. May get its value
+#'   from options("cache.dir") or the default value of
+#'   rappdirs::user_cache_dir("ggrrr")
+#' @param .stale the length of time in days to keep cached data before
+#'   considering it as stale. can also be set by options("cache.stale")
 #' @keywords internal
 #' @concept cache
 #'
@@ -54,7 +61,7 @@
   # .expr2 = rlang::enquo(.expr)
   hash = rlang::list2(...)
   code = deparse(substitute(.expr))
-  md5code = .md5obj(code)
+  md5code = rlang::hash(code)
 
   if (!stringr::str_ends(.cache, "/")) {
     .cache = paste0(.cache, "/")
@@ -64,7 +71,7 @@
 
   md5params = NULL
   if (!is.null(hash)) {
-    md5params = .md5obj(hash)
+    md5params = rlang::hash(hash)
   }
 
   path = paste0(.cache, paste(.prefix, md5code, md5params, sep = "-"), ".rda")
@@ -93,15 +100,20 @@
 
 #' Delete stale files in a cache
 #'
-#' Staleness is determined by the number of days from 2am on the current day in the current time-zone.
-#' A item cached for only one day becomes stale at 2am the day after it is cached.
-#' The time is configurable and option(cache.time_day_starts = 0) would be midnight.
-#' Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
-#' it may end up using old data.
+#' Staleness is determined by the number of days from 2am on the current day in
+#' the current time-zone. A item cached for only one day becomes stale at 2am
+#' the day after it is cached. The time is configurable and
+#' option(cache.time_day_starts = 0) would be midnight. Automated analysis using
+#' caches and updated data should ensure that analysis does not cross this time
+#' point otherwise it may end up using old data.
 #'
-#' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
-#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
-#' @param .stale the length of time in days to keep cached data before considering it as stale.
+#' @param .prefix a name of the operation so that you can namespace the cached
+#'   files and do selective clean up operations on them
+#' @param .cache the location of the cache as a directory. May get its value
+#'   from options("cache.dir") or the default value of
+#'   rappdirs::user_cache_dir("ggrrr")
+#' @param .stale the length of time in days to keep cached data before
+#'   considering it as stale.
 #'
 #' @return nothing. called for side effects.
 #' @keywords internal
@@ -133,9 +145,13 @@
 
 #' Clear data from the passthrough cache for complex or long running operations
 #'
-#' @param .prefix a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.
-#' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
-#' @param interactive suppress `are you sure?` warning with a FALSE value (defaults to TRUE)
+#' @param .prefix a regular expression matching the prefix of the cached item,
+#'   so that do selective clean up operations. defaults to everything.
+#' @param .cache the location of the cache as a directory. May get its value
+#'   from options("ggrrr.cache.dir") or the default value of
+#'   rappdirs::user_cache_dir("ggrrr")
+#' @param interactive suppress `are you sure?` warning with a FALSE value
+#'   (defaults to TRUE)
 #'
 #' @return nothing. called for side effects
 #' @keywords internal
@@ -196,7 +212,7 @@
   if (!is.null(.extn)) {
     qualifier = qualifier %>% fs::path_ext_remove() %>% fs::path_ext_set(.extn)
   }
-  md5 = .md5obj(url)
+  md5 = rlang::hash(url)
   fname = paste0(md5, "-", qualifier)
 
   if (!stringr::str_ends(.cache, "/")) {
@@ -211,7 +227,7 @@
 
   .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
 
-    if (file.exists(path)) {
+  if (file.exists(path)) {
     .cache_message("using cached item: ", path)
     return(path)
     #assign(path, obj, envir=.arear.cache)
@@ -231,7 +247,7 @@
 #' Cache a post request
 #'
 #' @inherit .cache_download
-#' @param data a named list of POST data
+#' @param body a named list of POST data
 #' @param as how the response is delivered?
 #' @inheritDotParams httr::POST -url
 #'
@@ -249,8 +265,8 @@
 ) {
   as = match.arg(as)
 
-  md5 = .md5obj(url)
-  md52 = .md5obj(body)
+  md5 = rlang::hash(url)
+  md52 = rlang::hash(body)
 
   qualifier = basename(url) %>% stringr::str_extract("^[^?]*")
   qualifier = qualifier %>%

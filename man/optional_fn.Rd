@@ -29,6 +29,6 @@ be installed as part of your package and you don't want to reference it
 as part of the Imports or Suggests fields in a package DESCRIPTION.
 }
 \examples{
-fn = .optional_fn("openssl", "md5", digest::digest)
+fn = .optional_fn("openssl::md5", rlang::hash)
 as.character(fn(as.raw(c(1,2,3))))
 }

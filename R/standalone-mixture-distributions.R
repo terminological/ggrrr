@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-mixture-distributions.R
-# last-updated: 2025-07-17
+# last-updated: 2025-09-18
 # license: https://unlicense.org
 # imports:
 # - purrr
@@ -274,15 +274,15 @@
 #' # a single mixture with vectorised input:
 #' .pmix("norm", seq(-5,5,1), param1=c(-1,0,1), param2=c(1,1,1))
 #' # a dataframe of mixture distributions
-#' tmp = tibble(
+#' tmp = dplyr::tibble(
 #'   x = 1:3,
 #'   param1 = list(c(1,2),c(3,4,5),c(6,7,8,9)),
 #'   param2 = list(1,2,3)
 #' )
-#' tmp %>% mutate(
+#' tmp %>% dplyr::mutate(
 #'   pX = .pmix(pnorm, x, param1, param2),
 #'   qX = .qmixnorm(pX, param1,param2)
-#' ) %>% glimpse()
+#' ) %>% dplyr::glimpse()
 #'
 #' # same as last row above
 #' .pmix("norm", c(3,5,10), param1=c(6,7,8,9), param2=3)
@@ -359,7 +359,7 @@
   if (length(p) > 1) {
     stop(".qmixlist only can process a single quantile at a time")
   }
-  tmp = purrr::map2_dbl(.x = param1list, .y = param2list, .f = \(x, y) {
+  tmp = purrr::map2_dbl(.x = param1list, .y = param2list, .f = function(x, y) {
     .qmix(
       dist = dist,
       p = p,
@@ -551,14 +551,14 @@
     }
 
     # E[X^k] = scale^k * Gamma(shape + k) / Gamma(shape)
-    # arr = sapply(1:n, \(k) scale^k * exp(lgamma(shape + k) - lgamma(shape)))
+    # arr = sapply(1:n, function(k) scale^k * exp(lgamma(shape + k) - lgamma(shape)))
   } else if (dist_type == "lnorm") {
     # Log-normal distribution moments
     meanlog <- param1
     sdlog <- param2
 
     # E[X^k] = exp(k*meanlog + k^2*sdlog^2/2)
-    arr = sapply(1:n, \(k) exp(k * meanlog + k^2 * sdlog^2 / 2))
+    arr = sapply(1:n, function(k) exp(k * meanlog + k^2 * sdlog^2 / 2))
   } else if (dist_type == "beta") {
     # Beta distribution moments (assuming support [0,1])
     alpha <- param1
@@ -572,12 +572,12 @@
     }
 
     # E[X^k] = B(alpha+k, beta) / B(alpha, beta)
-    # arr = sapply(1:n, \(k) exp( lbeta(alpha + k, beta) - lbeta(alpha, beta) ) )
+    # arr = sapply(1:n, function(k) exp( lbeta(alpha + k, beta) - lbeta(alpha, beta) ) )
   } else {
     # Numerical integration fallback for unknown distributions
     stop("Analytical moments not defined: ", dist_type)
   }
 
-  arr = apply(arr, MARGIN = 2, \(x) sum(x * weights))
+  arr = apply(arr, MARGIN = 2, function(x) sum(x * weights))
   return(arr)
 }

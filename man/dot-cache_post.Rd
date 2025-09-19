@@ -17,6 +17,8 @@
 \arguments{
 \item{url}{the url to download}
 
+\item{body}{a named list of POST data}
+
 \item{as}{how the response is delivered?}
 
 \item{...}{
@@ -28,21 +30,6 @@ See \code{\link[httr:config]{config()}} for full details and list of helpers.}
 \item{\code{...}}{Further named parameters, such as \code{query}, \code{path}, etc,
 passed on to \code{\link[httr:modify_url]{modify_url()}}. Unnamed parameters will be combined
 with \code{\link[httr:config]{config()}}.}
-\item{\code{body}}{One of the following:
-\itemize{
-\item \code{FALSE}: No body. This is typically not used with \code{POST},
-\code{PUT}, or \code{PATCH}, but can be useful if you need to send a
-bodyless request (like \code{GET}) with \code{VERB()}.
-\item \code{NULL}: An empty body
-\item \code{""}: A length 0 body
-\item \code{upload_file("path/")}: The contents of a file.  The mime
-type will be guessed from the extension, or can be supplied explicitly
-as the second argument to \code{upload_file()}
-\item A character or raw vector: sent as is in body. Use
-\code{\link[httr:content_type]{content_type()}} to tell the server what sort of data
-you are sending.
-\item A named list: See details for encode.
-}}
 \item{\code{encode}}{If the body is a named list, how should it be encoded? Can be
 one of form (application/x-www-form-urlencoded), multipart,
 (multipart/form-data), or json (application/json).
@@ -68,8 +55,6 @@ details.}
 \item{.cache}{the location of the downloaded files}
 
 \item{.stale}{how long to leave this file before replacing it.}
-
-\item{data}{a named list of POST data}
 }
 \value{
 the result of the query

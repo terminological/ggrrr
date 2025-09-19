@@ -22,13 +22,12 @@
 #' @keywords internal
 #' @concept cache
 #'
-#' @doctest
+#' @examples
 #'
 #' fixed_rnorm = .singleton(rnorm(10))
 #' a = fixed_rnorm()
-#'
-#' @expect equal(a)
 #' b = fixed_rnorm()
+#' identical(a,b)
 #'
 .singleton = function(
   expr,
