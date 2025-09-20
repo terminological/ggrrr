@@ -28,18 +28,4 @@ depending on the context return the correct format for a document.
 The basic output here is to use HTML as an output if possible and convert it to an image or a PDF that can then
 be included into a latex document for example.
 }
-\examples{
-try({
- hux = iris \%>\% huxtable::as_hux() \%>\%
-   huxtable::theme_mondrian(font="Roboto")
- out = .hux_save_as(hux, tempfile())
- # browseURL(out$html)
-
- out2 = .hux_save_as(hux, tempfile(), formats=c("pdf","png"))
- as.character(out2)
-
- # The resulting pdf has fonts embedded & is multipage.
-})
-
-}
 \concept{output}

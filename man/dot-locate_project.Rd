@@ -19,10 +19,5 @@ this should work where the `here` package does not
 (particularly when knitting in CRAN checks for example, or running in a
 non package project)
 }
-\examples{
-try({
-.locate_project()
-})
-}
 \concept{output}
 \keyword{internal}

@@ -26,10 +26,5 @@ the formatted huxtable.
 \description{
 The main aim is to get something that works with google docs when you copy and paste.
 }
-\examples{
-try({
-hux = iris \%>\% .hux_default_layout()
-})
-}
 \concept{huxtable}
 \keyword{internal}

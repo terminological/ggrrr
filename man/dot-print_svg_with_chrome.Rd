@@ -29,21 +29,5 @@ the pdf file path
 \description{
 Create a the same size as the SVG file using chrome or chromium
 }
-\examples{
-try({
- plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
-   ggplot2::geom_point()+
-   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
-   ggplot2::labs(tag = "A")+
-   ggplot2::xlab("Carat\u2082")+
-   ggplot2::ylab("price\u2265")
-
- res = plot \%>\% .gg_save_as(filename=tempfile(), formats=c("svg"))
- tmp = .print_svg_with_chrome(res$svg)
-
- # browseURL(tmp)
- # The resulting pdf has fonts embedded.
-})
-}
 \concept{output}
 \keyword{internal}

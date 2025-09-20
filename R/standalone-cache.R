@@ -263,6 +263,7 @@
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .stale = Inf
 ) {
+  status = NULL
   as = match.arg(as)
 
   md5 = rlang::hash(url)

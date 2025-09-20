@@ -32,15 +32,5 @@ the pdf path
 \description{
 Print a HTML fragment using chrome
 }
-\examples{
-try({
- hux = iris \%>\% huxtable::as_hux() \%>\% huxtable::theme_mondrian(font="Roboto")
- html = hux \%>\% huxtable::to_html()
- tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
-
- # browseURL(tmp)
- # The resulting pdf has fonts embedded & is multipage.
-})
-}
 \concept{output}
 \keyword{internal}

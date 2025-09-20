@@ -29,11 +29,4 @@ replaces decimal points with a `sep` character of your choice, sensible choices
 for which are `,` or `UTF8+00B7`. It will not try and replace things that are
 not syntactially numbers.
 }
-\examples{
-try({
-.sprintf_dp("\%1.2f",1:3/3, sep="\u00B7")
-.sprintf_dp("\%1.2f-\%1.2f", 1:3/3, 1:3, sep="\u00B7")
-.sprintf_dp("\%s \%1.2f-\%1.2f", "A.1.2", 1:3/3, 1:3, sep="\u00B7")
-})
-}
 \keyword{internal}

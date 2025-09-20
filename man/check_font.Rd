@@ -23,7 +23,6 @@ viewers. In practice this is a bit hit and miss.
 }
 \examples{
 check_font(c("Roboto","Arial","Kings","EB Garamond"))
-extrafont::fonts()
 fonts_available(c("Roboto","Arial","Kings","EB Garamond"))
 
 plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+

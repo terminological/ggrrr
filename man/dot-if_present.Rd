@@ -54,9 +54,4 @@ a vector of character values
 \description{
 Format a value omitting NA values
 }
-\examples{
-try({
-.if_present( c(1,2,NA,4,5)/3, digits=2 )
-})
-}
 \keyword{internal}

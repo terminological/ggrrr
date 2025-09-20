@@ -23,11 +23,11 @@
 #' @concept cache
 #'
 #' @examples
-#'
+#' @unit
 #' fixed_rnorm = .singleton(rnorm(10))
 #' a = fixed_rnorm()
 #' b = fixed_rnorm()
-#' identical(a,b)
+#' testthat::expect_equal(a,b)
 #'
 .singleton = function(
   expr,

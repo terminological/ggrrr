@@ -26,23 +26,5 @@ the longer ones, and it throws more informative errors.
 \details{
 NULL values are not recycled, missing values are ignored.
 }
-\examples{
-testfn = function(a, b, c) {
-  n = .recycle(a,b,c)
-  print(a)
-  print(b)
-  print(c)
-  print(n)
-}
-
-testfn(a=c(1,2,3), b="needs recycling", c=NULL)
-try(testfn(a=c(1,2,3), c=NULL))
-
-testfn(a=character(), b=integer(), c=NULL)
-
-# inconsistent to have a zero length and a non zero length
-try(testfn(a=c("a","b"), b=integer(), c=NULL))
-
-}
 \concept{parameter_checks}
 \keyword{internal}

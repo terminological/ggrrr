@@ -35,12 +35,5 @@ the value of the `p`th quantile
 \description{
 A quantile function for a mixture of log normal distributions
 }
-\examples{
-try({
-  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
-  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
-  .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
-})
-}
 \concept{distributions}
 \keyword{internal}

@@ -35,11 +35,5 @@ the value of the `p`th quantile
 \description{
 A quantile function for a mixture of gamma distributions
 }
-\examples{
-try({
-  .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
-  .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
-})
-}
 \concept{distributions}
 \keyword{internal}

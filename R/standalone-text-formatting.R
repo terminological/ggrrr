@@ -16,7 +16,6 @@
 # ---
 # This set of functions involve formatting
 
-
 #' `sprintf` with a list(ish) input
 #'
 #' A variant of sprintf that work well with inputs that are in the format of a list
@@ -32,8 +31,8 @@
 #' @keywords internal
 #'
 #' @examples
+#' @unit
 #' # generate an IQR from data
-#' try({
 #' iris %>%
 #'   dplyr::group_by(Species) %>%
 #'   dplyr::summarise(
@@ -50,14 +49,13 @@
 #' .sprintf_data("%1.2f - %1.2f", tibble::tibble(low = c(1,2,NA,4,5), high = c(5,4,3,2,NA)), sep=",")
 #' .sprintf_data("%1.2f - %1.2f", list(low = 1, high = 5))
 #' .sprintf_data("%1.2f - %1.2f", c(1,5))
-#' })
 #' # this is an error because this is the sprintf syntax of enumerated items
 #' try(.sprintf_data("%1.2f - %1.2f", 1, 5))
-.sprintf_data = function(fmt, params, ..., na.replace="\u2015") {
+.sprintf_data = function(fmt, params, ..., na.replace = "\u2015") {
   dots = rlang::list2(...)
-  anyNa = Reduce(`|`,lapply(params,is.na))
+  anyNa = Reduce(`|`, lapply(params, is.na))
   tmp = do.call(.sprintf_dp, c(as.list(fmt), as.list(params), dots))
-  ifelse(anyNa,na.replace,tmp)
+  ifelse(anyNa, na.replace, tmp)
 }
 
 
@@ -71,13 +69,16 @@
 #' @keywords internal
 #'
 #' @examples
-#' try({
+#' @unit
 #' .if_na( c(1,2,NA,4,5)/3, digits=2 )
-#' })
-.if_na = function(x, na.replace="\u2015", ...) {
-  if (is.null(x)) return(character())
+.if_na = function(x, na.replace = "\u2015", ...) {
+  if (is.null(x)) {
+    return(character())
+  }
   dots = rlang::dots_list(...)
-  if (any(names(dots)=="")) stop("extra `...` parameters must be named")
+  if (any(names(dots) == "")) {
+    stop("extra `...` parameters must be named")
+  }
   ifelse(is.na(x), na.replace, format(x, ...))
 }
 
@@ -91,11 +92,10 @@
 #' @keywords internal
 #'
 #' @examples
-#' try({
+#' @unit
 #' .if_present( c(1,2,NA,4,5)/3, digits=2 )
-#' })
 .if_present = function(x, ...) {
-  return(.if_na(x, na.replace="", ...))
+  return(.if_na(x, na.replace = "", ...))
 }
 
 #' Replaces decimal points in sprintf output.
@@ -114,15 +114,20 @@
 #' @keywords internal
 #'
 #' @examples
-#' try({
+#' @unit
 #' .sprintf_dp("%1.2f",1:3/3, sep="\u00B7")
 #' .sprintf_dp("%1.2f-%1.2f", 1:3/3, 1:3, sep="\u00B7")
 #' .sprintf_dp("%s %1.2f-%1.2f", "A.1.2", 1:3/3, 1:3, sep="\u00B7")
-#' })
-.sprintf_dp = function(fmt, ..., sep=getOption("OutDec",".")) {
-  c = sprintf(fmt,...)
-  if (sep==".") return(c)
-  c %>% stringr::str_replace_all("([^A-Za-z0-9.]|\\s|^)([0-9]*)\\.([0-9]+)(?!\\.)", paste0("\\1\\2",sep,"\\3"))
+.sprintf_dp = function(fmt, ..., sep = getOption("OutDec", ".")) {
+  c = sprintf(fmt, ...)
+  if (sep == ".") {
+    return(c)
+  }
+  c %>%
+    stringr::str_replace_all(
+      "([^A-Za-z0-9.]|\\s|^)([0-9]*)\\.([0-9]+)(?!\\.)",
+      paste0("\\1\\2", sep, "\\3")
+    )
 }
 
 
@@ -142,22 +147,17 @@
 #'
 #' @return the same string or a non UTF alternative if currently using the
 #'   legacy pdf device
-#' @noRd
+#' @keywords internal
 #'
 #' @examples
-#' try({
+#' @unit
 #' .pdf_safe("test")
 #' .pdf_safe("\u00B1\u221E")
 #' ggplot2::ggplot()+ggplot2::xlab(.pdf_safe("\u00B1\u221E"))
-#' })
-.pdf_safe = function(label, alt=label) {
-  if (names(grDevices::dev.cur())=="pdf") {
+.pdf_safe = function(label, alt = label) {
+  if (names(grDevices::dev.cur()) == "pdf") {
     alt = iconv(alt, from = 'UTF-8', to = 'ASCII//TRANSLIT')
     return(alt)
   }
   return(label)
 }
-
-
-
-

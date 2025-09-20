@@ -35,11 +35,5 @@ the value of the `p`th quantile
 \description{
 A quantile function for a mixture of gamma distributions
 }
-\examples{
-try({
-  .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
-  .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
-})
-}
 \concept{distributions}
 \keyword{internal}

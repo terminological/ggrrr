@@ -17,13 +17,5 @@ a ggplot theme
 \description{
 A ggplot theme with minimal fluff and with the defaults set small.
 }
-\examples{
-try({
-  ggplot2::ggplot(ggplot2::diamonds,
-    ggplot2::aes(x=carat,y=price,color=color))+
-    ggplot2::geom_point()+
-    .gg_tiny_theme()
-})
-}
 \concept{ggplot}
 \keyword{internal}

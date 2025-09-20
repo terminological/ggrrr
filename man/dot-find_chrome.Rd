@@ -22,9 +22,5 @@ licensed. We note that there is no check made on MacOS that the path is
 correct, and since it may be installed elsewhere this is a potential point
 of failure. Must assume that calls to chrome may fail.
 }
-\examples{
-try(.find_chrome())
-
-}
 \concept{output}
 \keyword{internal}

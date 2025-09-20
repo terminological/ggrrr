@@ -119,9 +119,8 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #' @examples
-#' try({
+#' @unit
 #' .this_script()
-#' })
 .this_script = function() {
   if (.is_knitting()) {
     return(knitr::current_input(dir = TRUE))
@@ -171,9 +170,8 @@ std_size = list(
 #' @concept output
 #'
 #' @examples
-#' try({
+#' @unit
 #' .locate_project()
-#' })
 .locate_project = function(inputFile = .this_script()) {
   . = NULL
   absPath = inputFile %>% fs::path_expand()
@@ -254,7 +252,8 @@ std_size = list(
 #' @concept output
 #'
 #' @examples
-#' try(.here("vignettes"))
+#' @unit
+#' .here("vignettes")
 .here = function(..., projRoot = .locate_project()) {
   return(fs::path(projRoot, ...))
 }
@@ -278,8 +277,8 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #' @examples
-#' try(.find_chrome())
-#'
+#' @unit
+#' .find_chrome()
 .find_chrome = function() {
   switch(
     .Platform$OS.type,
@@ -327,6 +326,7 @@ std_size = list(
 # tmpout = tempfile(fileext = ".pdf")
 # readr::write_file("sdkljfsdlkfjsdl", tmpbad)
 # .print_svg_with_chrome(tmpbad, tmpout)
+
 #' Print an SVG file to pdf using chrome
 #'
 #' Create a the same size as the SVG file using chrome or chromium
@@ -341,20 +341,20 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #' @examples
-#' try({
-#'  plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+#' @unit
+#' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
 #'    ggplot2::geom_point()+
 #'    ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
 #'    ggplot2::labs(tag = "A")+
 #'    ggplot2::xlab("Carat\u2082")+
 #'    ggplot2::ylab("price\u2265")
 #'
-#'  res = plot %>% .gg_save_as(filename=tempfile(), formats=c("svg"))
-#'  tmp = .print_svg_with_chrome(res$svg)
+#' res = plot %>% .gg_save_as(filename=tempfile(), formats=c("svg"))
+#' tmp = .print_svg_with_chrome(res$svg)
 #'
-#'  # browseURL(tmp)
-#'  # The resulting pdf has fonts embedded.
-#' })
+#' # browseURL(tmp)
+#' # The resulting pdf has fonts embedded.
+#'
 .print_svg_with_chrome = function(
   svgFile,
   pdfFile = tempfile(fileext = ".pdf"),
@@ -432,14 +432,13 @@ window.onload = init;
 #' @concept output
 #'
 #' @examples
-#' try({
-#'  hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Roboto")
-#'  html = hux %>% huxtable::to_html()
-#'  tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
+#' @unit
+#' hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Roboto")
+#' html = hux %>% huxtable::to_html()
+#' tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
 #'
-#'  # browseURL(tmp)
-#'  # The resulting pdf has fonts embedded & is multipage.
-#' })
+#' # browseURL(tmp)
+#' # The resulting pdf has fonts embedded & is multipage.
 .print_html_with_chrome = function(
   htmlFragment,
   pdfFile = tempfile(fileext = ".pdf"),
@@ -516,12 +515,11 @@ window.onload = init;
 #' @concept output
 #'
 #' @examples
-#' try({
-#'  hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Arial")
-#'  html = hux %>% huxtable::to_html()
-#'  tmp = .print_html_with_chrome(html,maxWidth = std_size$A4$width,maxHeight = std_size$A4$height)
-#'  pngs = .convert_pdf_to_pngs(tmp)
-#' })
+#' @unit
+#' hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Arial")
+#' html = hux %>% huxtable::to_html()
+#' tmp = .print_html_with_chrome(html,maxWidth = std_size$A4$width,maxHeight = std_size$A4$height)
+#' pngs = .convert_pdf_to_pngs(tmp)
 .convert_pdf_to_pngs = function(pdfFile) {
   pages = pdftools::pdf_length(pdfFile)
   out = pdfFile %>%
@@ -674,8 +672,7 @@ window.onload = init;
 #' @keywords internal
 #' @concept output
 #' @examples
-#'
-#' try({
+#' @unit
 #' .gg_pedantic(fontSize = 6)
 #' p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) +
 #'   ggplot2::geom_point()
@@ -693,7 +690,6 @@ window.onload = init;
 #' res = plot %>% .gg_save_as(filename=tempfile(), formats=c("png","eps"))
 #' as.character(res)
 #' res
-#' })
 .gg_save_as = function(
   plot,
   filename = tempfile(),
@@ -808,7 +804,7 @@ window.onload = init;
       dpi = 300,
       ...
     )
-    # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("png"), format="png", page=1, verbose = FALSE))
+
     out$png = withExt("png")
   }
 
@@ -823,7 +819,7 @@ window.onload = init;
       dpi = 300,
       ...
     )
-    # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("jpg"), format="jpg", page=1, verbose = FALSE))
+
     out$jpg = withExt("jpg")
   }
 
@@ -838,7 +834,7 @@ window.onload = init;
       dpi = 300,
       ...
     )
-    # suppressWarnings(pdftools::pdf_convert(pdf_loc, dpi = 300,filenames = withExt("tiff"), format="tiff", page=1, verbose = FALSE))
+
     out$tiff = withExt("tiff")
   }
 
@@ -995,17 +991,15 @@ knit_print.rendered_plot = function(x, options, ...) {
 #' @keywords internal
 #' @concept output
 #' @examples
-#' try({
-#'  hux = iris %>% huxtable::as_hux() %>%
-#'    huxtable::theme_mondrian(font="Roboto")
-#'  out = .hux_save_as(hux, tempfile())
-#'  # browseURL(out$html)
+#' @unit
+#' hux = iris %>% huxtable::as_hux() %>%
+#'   huxtable::theme_mondrian(font="Roboto")
+#' out = .hux_save_as(hux, tempfile())
+#' # browseURL(out$html)
 #'
-#'  out2 = .hux_save_as(hux, tempfile(), formats=c("pdf","png"))
-#'  as.character(out2)
-#'
-#'  # The resulting pdf has fonts embedded & is multipage.
-#' })
+#' out2 = .hux_save_as(hux, tempfile(), formats=c("pdf","png"))
+#' as.character(out2)
+#' # The resulting pdf has fonts embedded & is multipage.
 #'
 .hux_save_as = function(
   hux,
@@ -1255,10 +1249,6 @@ knit_print.rendered_table = function(x, ...) {
 #' @return a named vector
 #' @export
 #' @concept output
-#' @examples
-#' hux = iris %>% hux_default_layout()
-#' tmp = hux %>% hux_save_as(tempfile())
-#' as.character(tmp)
 as.character.rendered_table = function(x, ...) {
   tmp = x[!names(x) %in% c("hux", "width", "height")]
   out = sprintf("a huxtable with %d outputs:", length(tmp))

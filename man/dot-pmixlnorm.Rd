@@ -23,10 +23,5 @@ the pdf of the mixture distribution.
 \description{
 The cumulative density function of a mixture of log normal distributions
 }
-\examples{
-try({
-.pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
-})
-}
 \concept{distributions}
 \keyword{internal}

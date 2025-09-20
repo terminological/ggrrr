@@ -40,7 +40,6 @@ Imports:
     stringr,
     tidyselect,
     systemfonts,
-    extrafont,
     scales,
     colorspace,
     svglite,
@@ -55,15 +54,17 @@ Imports:
     lifecycle,
     pdftools,
     interfacer,
-    PDQutils
+    PDQutils,
+    fastmap,
+    httr
 Suggests: 
     tidyverse,
     rmarkdown,
     gt,
     rJava,
     testthat (>= 3.0.0),
-    Rttf2pt1 (>= 1.3.12),
-    Cairo
+    Cairo.
+    pkgtools
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3.9007
 URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr, https://terminological.github.io/ggrrr/

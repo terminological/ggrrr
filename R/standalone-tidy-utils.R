@@ -16,7 +16,6 @@
 # - utils
 # ---
 
-
 ## Summarisation helpers ----
 
 #' Bind rows for colums with factors
@@ -36,20 +35,40 @@
 #'  dplyr::pull(Species) %>%
 #'  levels()
 bind_rows_with_factors <- function(...) {
-
   name = value = NULL # remove global binding note
 
   # Identify all factors, and all their levels and
   dots = rlang::list2(...)
-  factors = unique(unlist(purrr::map(dots, ~ .x %>% dplyr::ungroup() %>% dplyr::select(tidyselect::where(is.factor)) %>% colnames())))
-  factorLevels = dplyr::bind_rows(purrr::map(dots, ~ purrr::map(.x %>% dplyr::ungroup() %>% dplyr::select(tidyselect::where(is.factor)), ~ .x %>% levels()) %>% tibble::enframe() %>% tidyr::unnest(c(value))))
+  factors = unique(unlist(purrr::map(
+    dots,
+    ~ .x %>%
+      dplyr::ungroup() %>%
+      dplyr::select(tidyselect::where(is.factor)) %>%
+      colnames()
+  )))
+  factorLevels = dplyr::bind_rows(purrr::map(
+    dots,
+    ~ purrr::map(
+      .x %>% dplyr::ungroup() %>% dplyr::select(tidyselect::where(is.factor)),
+      ~ .x %>% levels()
+    ) %>%
+      tibble::enframe() %>%
+      tidyr::unnest(c(value))
+  ))
   # convert factors to character, bind dataframes, convert characters back to factors
-  dots2 = purrr::map(dots, ~ .x %>% dplyr::mutate(dplyr::across(tidyselect::where(is.factor),as.character)))
+  dots2 = purrr::map(
+    dots,
+    ~ .x %>%
+      dplyr::mutate(dplyr::across(tidyselect::where(is.factor), as.character))
+  )
   out = dplyr::bind_rows(dots2)
   for (col in factors) {
     # combine the factors. This will tend to keep the order of the levels the first time a factor is encountered
-    l = factorLevels %>% dplyr::filter(name==col) %>% dplyr::pull(value) %>% unique()
-    out[[col]] = factor(out[[col]],levels = l)
+    l = factorLevels %>%
+      dplyr::filter(name == col) %>%
+      dplyr::pull(value) %>%
+      unique()
+    out[[col]] = factor(out[[col]], levels = l)
   }
   return(out)
 }
@@ -79,12 +98,21 @@ bind_rows_with_factors <- function(...) {
 #'     mpg = sprintf("%1.1f \u00B1 %1.1f", mean(price), stats::sd(price)),
 #'     .total = "Overall"
 #'  )
-summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .total_first = FALSE) {
+summarise_with_totals = function(
+  .data,
+  ...,
+  .groups = NULL,
+  .total = "Total",
+  .total_first = FALSE
+) {
   grps = .data %>% dplyr::groups()
-  last_col = (utils::tail(grps,1)[[1]])
-  first_level = .data %>% dplyr::summarise(...,.groups=.groups)
+  last_col = (utils::tail(grps, 1)[[1]])
+  first_level = .data %>% dplyr::summarise(..., .groups = .groups)
   grps_out = first_level %>% dplyr::groups()
-  totals = .data %>% dplyr::ungroup() %>% dplyr::group_by(!!!(grps %>% utils::head(-1))) %>% dplyr::summarise(...,.groups=.groups)
+  totals = .data %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(!!!(grps %>% utils::head(-1))) %>%
+    dplyr::summarise(..., .groups = .groups)
 
   if (.data %>% dplyr::pull(!!last_col) %>% is.factor()) {
     if (.data %>% dplyr::pull(!!last_col) %>% is.ordered()) {
@@ -99,11 +127,12 @@ summarise_with_totals = function(.data, ..., .groups = NULL, .total="Total", .to
     }
   } else {
     totals = totals %>% dplyr::mutate(!!last_col := .total %>% factor())
-    first_level = first_level %>% dplyr::mutate(!!last_col := as.character(!!last_col))
+    first_level = first_level %>%
+      dplyr::mutate(!!last_col := as.character(!!last_col))
     if (.total_first) {
-      out = dplyr::bind_rows(totals,first_level)
+      out = dplyr::bind_rows(totals, first_level)
     } else {
-      out = dplyr::bind_rows(first_level,totals)
+      out = dplyr::bind_rows(first_level, totals)
     }
   }
   return(out %>% dplyr::group_by(!!!grps_out))
@@ -133,7 +162,9 @@ intersecting_group_by = function(.data, ..., .colname) {
 
 #' @export
 intersecting_group_by.default = function(.data, ..., .colname) {
-  stop("Only dataframes and tracked dataframes are supported by intersecting_group_by")
+  stop(
+    "Only dataframes and tracked dataframes are supported by intersecting_group_by"
+  )
 }
 
 #' @export
@@ -146,25 +177,39 @@ intersecting_group_by.data.frame = function(.data, ..., .colname = "group") {
     predicate = rlang::f_lhs(form)
     .data %>% dplyr::filter(!!predicate) %>% dplyr::mutate(!!.colname := value)
   })) %>%
-  dplyr::group_by(!!!grps, !!.colname)
+    dplyr::group_by(!!!grps, !!.colname)
 }
 
 #' @export
-intersecting_group_by.trackr_df = function(.data, ..., .colname = "group", .headline = "Create overlapping subsets", .messages="{.count.out} items") {
+intersecting_group_by.trackr_df = function(
+  .data,
+  ...,
+  .colname = "group",
+  .headline = "Create overlapping subsets",
+  .messages = "{.count.out} items"
+) {
   .colname = rlang::ensym(.colname)
   grps = .data %>% dplyr::groups()
 
   # wrap this is a group modify for tracked dataframes.
-  .data %>% dplyr::ungroup(.messages="") %>% dplyr::group_modify(function(d,g,...) {
-    dots = rlang::list2(...)
-    dplyr::bind_rows(lapply(dots, function(form) {
-      value = rlang::f_rhs(form)
-      predicate = rlang::f_lhs(form)
-      d %>% dplyr::filter(!!predicate) %>% dplyr::mutate(!!.colname := value)
-    }))
-
-  }, ..., .headline = .headline, .messages=.messages) %>%
-    dplyr::group_by(!!!grps, !!.colname, .messages="")
+  .data %>%
+    dplyr::ungroup(.messages = "") %>%
+    dplyr::group_modify(
+      function(d, g, ...) {
+        dots = rlang::list2(...)
+        dplyr::bind_rows(lapply(dots, function(form) {
+          value = rlang::f_rhs(form)
+          predicate = rlang::f_lhs(form)
+          d %>%
+            dplyr::filter(!!predicate) %>%
+            dplyr::mutate(!!.colname := value)
+        }))
+      },
+      ...,
+      .headline = .headline,
+      .messages = .messages
+    ) %>%
+    dplyr::group_by(!!!grps, !!.colname, .messages = "")
 }
 
 # .maybe = function(expr) {
@@ -241,7 +286,7 @@ intersecting_group_by.trackr_df = function(.data, ..., .colname = "group", .head
 #' ) %>%
 #' dplyr::glimpse()
 #' )
-rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
+rowwise_mutate = function(.data, ..., .onerror = function(e, ...) NA) {
   out = .data
   list = rlang::enexprs(...)
   env = rlang::caller_env()
@@ -251,14 +296,20 @@ rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
 
   for (i in 1:nrow(out)) {
     input = lapply(.data, `[[`, i)
-    env = list2env(input, envir=env)
+    env = list2env(input, envir = env)
 
     for (var in names(list)) {
       expr = list[[var]]
-      result = tryCatch(rlang::eval_bare(expr,env = env),error = function(e,...) {
-        errors <<- unique(c(errors,sprintf("`%s`: evaluating %s", e$message, var)))
-        .onerror(e,...)
-      })
+      result = tryCatch(
+        rlang::eval_bare(expr, env = env),
+        error = function(e, ...) {
+          errors <<- unique(c(
+            errors,
+            sprintf("`%s`: evaluating %s", e$message, var)
+          ))
+          .onerror(e, ...)
+        }
+      )
       tmp[[var]][[i]] = result
     }
   }
@@ -276,18 +327,20 @@ rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
     }
   }
 
-  if (length(errors) > 0) warning("errors occurred (max 10 shown):\n",paste0(utils::head(errors,10),collapse = "\n"))
+  if (length(errors) > 0) {
+    warning(
+      "errors occurred (max 10 shown):\n",
+      paste0(utils::head(errors, 10), collapse = "\n")
+    )
+  }
 
   return(out)
-
 }
-
-
 
 
 # wrap functions that chuck an error
 .opt = function(expr) {
-  tryCatch(expr,error=function(e) NA_real_)
+  tryCatch(expr, error = function(e) NA_real_)
 }
 
 
@@ -309,36 +362,65 @@ rowwise_mutate = function(.data, ..., .onerror = function(e,...) NA) {
 #' @examples
 #' cut_integer(stats::rbinom(20,20,0.5), c(5,10,15))
 #' cut_integer(floor(stats::runif(100,-10,10)), cut_points = c(2,3,4,6), lower_limit=0, upper_limit=10)
-cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, upper_limit = Inf, ...) {
-
+cut_integer = function(
+  x,
+  cut_points,
+  glue = "{label}",
+  lower_limit = -Inf,
+  upper_limit = Inf,
+  ...
+) {
   next_low = NULL # remove global binding note
 
-  if (!all(as.integer(x)==x,na.rm = TRUE)) warning("input to cut_integer(...) has been coerced to integer values")
+  if (!all(as.integer(x) == x, na.rm = TRUE)) {
+    warning("input to cut_integer(...) has been coerced to integer values")
+  }
   x = floor(x)
-  if (!all(as.integer(cut_points)==cut_points)) stop("cut_points must be integer valued, and define the lower end of each category.")
-  if (any(cut_points <= lower_limit | cut_points >= upper_limit)) warning("cut_point values should be between lower_limit (",lower_limit,") and upper_limit (",upper_limit,").")
+  if (!all(as.integer(cut_points) == cut_points)) {
+    stop(
+      "cut_points must be integer valued, and define the lower end of each category."
+    )
+  }
+  if (any(cut_points <= lower_limit | cut_points >= upper_limit)) {
+    warning(
+      "cut_point values should be between lower_limit (",
+      lower_limit,
+      ") and upper_limit (",
+      upper_limit,
+      ")."
+    )
+  }
   # make sure the limits are not included.
   cut_points = cut_points[cut_points > lower_limit & cut_points < upper_limit]
   # sort and uniquify
   #
-  breaks = unique(sort(c(lower_limit,cut_points,upper_limit+1)))
+  breaks = unique(sort(c(lower_limit, cut_points, upper_limit + 1)))
   labels = tibble::tibble(
-    low = utils::head(breaks,-1),
-    next_low = utils::head(dplyr::lead(breaks,n = 1),-1),
-    high = ifelse(next_low != upper_limit, next_low-1, upper_limit)
-  ) %>% dplyr::mutate(
-    label = dplyr::case_when(
-      low == high ~ sprintf("%1.0f",low),
-      low == -Inf ~ sprintf("<%1.0f",next_low),
-      high == Inf ~ sprintf("\u2265%1.0f",low),
-      TRUE ~ sprintf("%1.0f\u2012%1.0f",low, high)
+    low = utils::head(breaks, -1),
+    next_low = utils::head(dplyr::lead(breaks, n = 1), -1),
+    high = ifelse(next_low != upper_limit, next_low - 1, upper_limit)
+  ) %>%
+    dplyr::mutate(
+      label = dplyr::case_when(
+        low == high ~ sprintf("%1.0f", low),
+        low == -Inf ~ sprintf("<%1.0f", next_low),
+        high == Inf ~ sprintf("\u2265%1.0f", low),
+        TRUE ~ sprintf("%1.0f\u2012%1.0f", low, high)
+      )
+    ) %>%
+    dplyr::mutate(
+      label2 = glue::glue(glue)
     )
-  ) %>% dplyr::mutate(
-    label2 = glue::glue(glue)
-  )
 
   return(
-    cut(x,include.lowest = TRUE,breaks = breaks, labels=labels$label2, ordered_result = TRUE, right=FALSE)
+    cut(
+      x,
+      include.lowest = TRUE,
+      breaks = breaks,
+      labels = labels$label2,
+      ordered_result = TRUE,
+      right = FALSE
+    )
   )
 }
 
@@ -347,15 +429,15 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
 #' @noRd
 #' @examples
 #' # example code
-#' f_m <- function(x) {message("this is a message"); str(x)}
-#' f_w <- function(x) {warning("this is a warning"); str(x)}
+#' f_m <- function(x) {message("this is a message"); utils::str(x)}
+#' f_w <- function(x) {warning("this is a warning"); utils::str(x)}
 #' f_e <- function() {stop("This is an error")}
 #'
 #' pure_fm <- purely(f_m)
 #' pure_fw <- purely(f_w)
 #' pure_fe <- purely(f_e)
-purely <- function(.f){
-  function(..., .log = "Log start..."){
+purely <- function(.f) {
+  function(..., .log = "Log start...") {
     res <- rlang::try_fetch(
       rlang::eval_tidy(.f(...)),
       error = function(err) err,
@@ -368,13 +450,17 @@ purely <- function(.f){
       log = NULL
     )
 
-    final_result$result <- if(any(c("error", "warning", "message") %in% class(res))){
+    final_result$result <- if (
+      any(c("error", "warning", "message") %in% class(res))
+    ) {
       NA
     } else {
       res
     }
 
-    final_result$log <- if(any(c("error", "warning", "message") %in% class(res))){
+    final_result$log <- if (
+      any(c("error", "warning", "message") %in% class(res))
+    ) {
       res$message
     } else {
       NA
@@ -385,7 +471,6 @@ purely <- function(.f){
 
 
 ## Dataset description helpers ----
-
 
 #' Get a value set list of a dataframe
 #'
@@ -411,18 +496,18 @@ get_value_sets = function(df) {
       names(node) = node
     } else if (is.numeric(df[[x]])) {
       node = list(
-        min = min(df[[x]],na.rm = TRUE),
-        max = max(df[[x]],na.rm = TRUE),
-        mean = mean(df[[x]],na.rm = TRUE)
+        min = min(df[[x]], na.rm = TRUE),
+        max = max(df[[x]], na.rm = TRUE),
+        mean = mean(df[[x]], na.rm = TRUE)
       )
     } else {
       node = list()
     }
-    class(node) = c("checked_list",class(node))
+    class(node) = c("checked_list", class(node))
     return(node)
   })
   names(v) = colnames(df)
-  class(v) = c("checked_list",class(v))
+  class(v) = c("checked_list", class(v))
   return(v)
 }
 
@@ -443,10 +528,8 @@ get_value_sets = function(df) {
   } else {
     ylab <- deparse(substitute(y))
   }
-  if(!ylab %in% names(x)) {
-    stop("The value `",ylab,"` is not a valid entry") # for ",xlab)
+  if (!ylab %in% names(x)) {
+    stop("The value `", ylab, "` is not a valid entry") # for ",xlab)
   }
   NextMethod()
 }
-
-

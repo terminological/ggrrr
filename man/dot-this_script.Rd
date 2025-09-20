@@ -14,10 +14,5 @@ command is executed outside of a script.
 Gives you the file input path regardless of whether you are running the
 script in rstudio, knitr or on the console.
 }
-\examples{
-try({
-.this_script()
-})
-}
 \concept{output}
 \keyword{internal}

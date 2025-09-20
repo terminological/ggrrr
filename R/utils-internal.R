@@ -10,6 +10,7 @@
 #'
 #' @return the function you want if available or the alternative
 #' @keywords internal
+#' @export
 #'
 #' @examples
 #' fn = .optional_fn("openssl::md5", rlang::hash)

@@ -23,10 +23,5 @@ the pdf of the mixture distribution.
 \description{
 The cumulative density function of a mixture of beta distributions
 }
-\examples{
-try({
-  .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
-})
-}
 \concept{distributions}
 \keyword{internal}

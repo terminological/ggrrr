@@ -29,9 +29,10 @@
 #'   outside of its own parameters, and should be deterministic.
 #'
 #' @returns a function that takes the
-#' @noRd
+#' @keywords internal
 #'
 #' @examples
+#' @unit
 #' lmmem = .memoise(stats::lm)
 #' lmmem2 = .memoise(stats::lm)
 #' identical(lmmem, lmmem2)
@@ -228,26 +229,7 @@
 #'
 #' @returns the unmemoised function if it was found. If the function was not
 #'   found then the input is returned with a message.
-#' @noRd
-#'
-#' @examples
-#' lmmem = .memoise(stats::lm)
-#' identical(lmmem, stats::lm)
-#' # The memoised and unmemoised functions are different
-#'
-#' lmmem = .unmemoise(lmmem)
-#' identical(lmmem, stats::lm)
-#' # The unmemoised functions has been restored. At this point the
-#' # memoised function's cache is gone.
-#'
-#' # it also works to use the original function:
-#' lmmem = .memoise(stats::lm)
-#' lmmem = .unmemoise(stats::lm)
-#' identical(lmmem, stats::lm)
-#'
-#' # If the function was not memoised it is returned as is
-#' lmmem2 = .unmemoise(stats::quantile)
-#' identical(lmmem2, stats::quantile)
+#' @keywords internal
 .unmemoise = function(fn) {
   # have we memoised this function before?
   fn_name = rlang::as_label(rlang::enexpr(fn))

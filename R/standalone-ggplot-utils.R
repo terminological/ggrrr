@@ -164,12 +164,11 @@
 #' @concept ggplot
 #'
 #' @examples
-#' try({
-#'   ggplot2::ggplot(ggplot2::diamonds,
-#'     ggplot2::aes(x=carat,y=price,color=color))+
-#'     ggplot2::geom_point()+
-#'     .gg_tiny_theme()
-#' })
+#' @unit
+#' ggplot2::ggplot(ggplot2::diamonds,
+#'   ggplot2::aes(x=carat,y=price,color=color))+
+#'   ggplot2::geom_point()+
+#'   .gg_tiny_theme()
 .gg_tiny_theme = function(baseSize = 8, font = "Roboto") {
   font = .gg_substitute_fonts(font)
   ggplot2::theme_bw(base_size = baseSize) +
@@ -224,7 +223,8 @@
 #' @concept ggplot
 #'
 #' @examples
-#' gg_set_size_defaults(lineSize = 0.25)
+#' @unit
+#' .gg_set_size_defaults(lineSize = 0.25)
 .gg_set_size_defaults = function(
   lineSize = 0.5,
   fontSizePts = 4 + lineSize * 8,
@@ -303,9 +303,8 @@
 #' @concept ggplot
 #'
 #' @examples
-#' try({
+#' @unit
 #' .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
-#' })
 .gg_substitute_fonts = function(family) {
   weight = path = NULL
 
@@ -358,10 +357,9 @@
 #' @concept ggplot
 #'
 #' @examples
-#' try({
-#'   .gg_fonts_missing("Arial")
-#'   .gg_fonts_missing(c("Roboto","Kings","ASDASDAS"))
-#' })
+#' @unit
+#' .gg_fonts_missing("Arial")
+#' .gg_fonts_missing(c("Roboto","Kings","ASDASDAS"))
 .gg_fonts_missing = function(family) {
   return(suppressWarnings({
     tmp = .gg_substitute_fonts(family)
@@ -378,7 +376,6 @@
 #'   ggplot2::labs(tag = "A")+
 #'   ggplot2::xlab("Carat\u2082")+
 #'   ggplot2::ylab("price\u2265")
-#'
 #' .gg_used_fonts(plot)
 .gg_used_fonts = function(plot) {
   theme = purrr::possibly(~ .x$theme$text$family)(plot)
@@ -401,11 +398,10 @@
 #' @concept ggplot
 #'
 #' @examples
-#' try({
+#' @unit
 #' ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=price))+
 #'   ggplot2::geom_density()+
 #'   ggplot2::scale_x_continuous(trans="log1p", breaks=.gg_breaks_log1p())
-#' })
 .gg_breaks_log1p = function(n = 5, base = 10) {
   n_default = n
   function(x, n = n_default) {
@@ -428,12 +424,11 @@
 #' @keywords internal
 #' @concept ggplot
 #' @examples
-#' try({
+#' @unit
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
 #'  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
 #'  ggplot2::geom_point() +
 #'  ggplot2::scale_y_continuous(transform= .gg_transform_logit())
-#' })
 .gg_transform_logit = function(n = 5, ...) {
   trans = stats::qlogis
   inv = stats::plogis
@@ -468,7 +463,6 @@
 #' @param original_aesthetic the original aesthetic we are cloning (fill or color)
 #' @param target_aesthetic the aesthetic in the new plot we want to match.
 #' @inheritDotParams ggplot2::scale_fill_manual -values -aesthetics
-#'
 .gg_scale_consistent = function(
   plot,
   original_aesthetic = c("fill", "color"),
@@ -541,7 +535,7 @@
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
 #'  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
 #'  ggplot2::geom_point() +
-#'  scale_y_logit(n=8)
+#'  .gg_scale_y_logit(n=8)
 .gg_scale_y_logit = function(..., n = 5, sf = 2) {
   return(ggplot2::scale_y_continuous(
     trans = .gg_transform_logit(n),
@@ -654,24 +648,23 @@
 #' @keywords internal
 #'
 #' @examples
+#' @unit
 #' # top level function contains `...` and `mapping` extensions points:
-#' try({
-#'   myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
-#'     xCol = rlang::f_lhs(formula)
-#'     yCol = rlang::f_rhs(formula)
-#'     ggplot2::ggplot(data)+
-#'     .gg_layer(
-#'       ggplot2::GeomPoint,
-#'       data = data,
-#'       mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
-#'       ...,
-#'       .default = list(size=10)
-#'      )
-#'   }
-#'   myPlot(iris, Sepal.Length~Sepal.Width, mapping=ggplot2::aes(colour=Species))
-#'   myPlot(iris, Sepal.Length~Petal.Length, mapping=ggplot2::aes(colour=Species), shape="+", size=5)
-#'   myPlot(mtcars, mpg~wt, mapping=ggplot2::aes(colour=as.factor(cyl), size=hp))
-#' })
+#' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
+#'   xCol = rlang::f_lhs(formula)
+#'   yCol = rlang::f_rhs(formula)
+#'   ggplot2::ggplot(data)+
+#'   .gg_layer(
+#'     ggplot2::GeomPoint,
+#'     data = data,
+#'     mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
+#'     ...,
+#'     .default = list(size=10)
+#'    )
+#' }
+#' myPlot(iris, Sepal.Length~Sepal.Width, mapping=ggplot2::aes(colour=Species))
+#' myPlot(iris, Sepal.Length~Petal.Length, mapping=ggplot2::aes(colour=Species), shape="+", size=5)
+#' myPlot(mtcars, mpg~wt, mapping=ggplot2::aes(colour=as.factor(cyl), size=hp))
 .gg_layer = function(
   geom,
   data = NULL,
@@ -737,26 +730,26 @@
   return(mapping)
 }
 
-#' # TODO: needs evaluation in correct environment
-#' #' Merge aesthetic mappings and deduplicate the result
-#' #'
-#' #' @param ... a set of `name=value`, and `aes(...)` specifications
-#' #'
-#' #' @return a single deduplicated set. `name=value` pairs take precedence
-#' #' @keywords internal
-#' #'
-#' #' @examples
-#' #' m1 = aes(x=a,y=b,colour=class)
-#' #' .gg_merge_aes(x=A,y=BB,m1)
-#' .gg_merge_aes = function(...) {
-#'   dots = rlang::enexprs(...)
-#'   aess = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))=="uneval"]
-#'   others = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))!="uneval"]
-#'   out = aes(!!!others)
-#'   for (a in aess) {
-#'     browser()
-#'     a = eval(a)[!names(eval(a)) %in% names(out)]
-#'     out = aes(!!!out, !!!a)
-#'   }
-#'   return(out)
-#' }
+# # TODO: needs evaluation in correct environment
+# #' Merge aesthetic mappings and deduplicate the result
+# #'
+# #' @param ... a set of `name=value`, and `aes(...)` specifications
+# #'
+# #' @return a single deduplicated set. `name=value` pairs take precedence
+# #' @keywords internal
+# #'
+# #' @examples
+# #' m1 = aes(x=a,y=b,colour=class)
+# #' .gg_merge_aes(x=A,y=BB,m1)
+# .gg_merge_aes = function(...) {
+#   dots = rlang::enexprs(...)
+#   aess = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))=="uneval"]
+#   others = dots[sapply(dots,\(x) try(class(eval(x)),silent = TRUE))!="uneval"]
+#   out = aes(!!!others)
+#   for (a in aess) {
+#     browser()
+#     a = eval(a)[!names(eval(a)) %in% names(out)]
+#     out = aes(!!!out, !!!a)
+#   }
+#   return(out)
+# }

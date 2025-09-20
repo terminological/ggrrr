@@ -17,8 +17,5 @@ a path
 \description{
 Drop in replacement for `here` (`here` pkg)
 }
-\examples{
-try(.here("vignettes"))
-}
 \concept{output}
 \keyword{internal}

@@ -25,7 +25,9 @@
 #' @concept parameter_checks
 #' @keywords internal
 #'
+#'
 #' @examples
+#' @unit
 #' testfn = function(a, b, c) {
 #'   n = .recycle(a,b,c)
 #'   print(a)

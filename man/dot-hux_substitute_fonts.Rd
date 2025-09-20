@@ -16,10 +16,5 @@ a mapping as a named list of font families that are present on the
 \description{
 Pick a locally installed font family that matches requested
 }
-\examples{
-try({
-.hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
-})
-}
 \concept{huxtable}
 \keyword{internal}

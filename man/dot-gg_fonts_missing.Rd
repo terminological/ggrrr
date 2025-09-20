@@ -15,11 +15,5 @@
 \description{
 Check if any fonts listed are missing
 }
-\examples{
-try({
-  .gg_fonts_missing("Arial")
-  .gg_fonts_missing(c("Roboto","Kings","ASDASDAS"))
-})
-}
 \concept{ggplot}
 \keyword{internal}

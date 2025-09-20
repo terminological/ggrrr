@@ -17,12 +17,5 @@ a function for ggplot scale breaks
 \description{
 A scales breaks generator for log1p scales
 }
-\examples{
-try({
-ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=price))+
-  ggplot2::geom_density()+
-  ggplot2::scale_x_continuous(trans="log1p", breaks=.gg_breaks_log1p())
-})
-}
 \concept{ggplot}
 \keyword{internal}

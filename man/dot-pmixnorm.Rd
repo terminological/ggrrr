@@ -23,10 +23,5 @@ the pdf of the mixture distribution.
 \description{
 The cumulative density function of a mixture of normal distributions
 }
-\examples{
-try({
-.pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
-})
-}
 \concept{distributions}
 \keyword{internal}

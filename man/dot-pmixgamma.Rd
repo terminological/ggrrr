@@ -23,10 +23,5 @@ the pdf of the mixture distribution.
 \description{
 The cumulative density function of a mixture of gamma distributions
 }
-\examples{
-try({
-  .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
-})
-}
 \concept{distributions}
 \keyword{internal}

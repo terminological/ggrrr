@@ -26,13 +26,5 @@ that is calculated once on first use and stored for the rest of the session.
 If the expression throws an uncaught error the value is not stored. The
 expression is evaluated in the environment it is first called in.
 }
-\examples{
-
-fixed_rnorm = .singleton(rnorm(10))
-a = fixed_rnorm()
-b = fixed_rnorm()
-identical(a,b)
-
-}
 \concept{cache}
 \keyword{internal}

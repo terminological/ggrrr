@@ -37,9 +37,8 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
+#' @unit
 #' .pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
-#' })
 .pmixnorm = function(q, means, sds, weights = 1, na.rm = FALSE) {
   return(.pmix("norm", q, means, sds, weights, na.rm))
 }
@@ -59,9 +58,8 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
+#' @unit
 #' .qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
-#' })
 .qmixnorm = function(
   p,
   means,
@@ -90,9 +88,8 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
+#' @unit
 #' .pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
-#' })
 .pmixlnorm = function(q, meanlogs, sdlogs, weights = 1, na.rm = FALSE) {
   return(.pmix("lnorm", q, meanlogs, sdlogs, weights, na.rm))
 }
@@ -112,11 +109,11 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
-#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
-#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
-#'   .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
-#' })
+#' @unit
+#' .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
+#' .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
+#' .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
+#'
 .qmixlnorm = function(
   p,
   meanlogs,
@@ -146,9 +143,8 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
-#'   .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
-#' })
+#' @unit
+#' .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
 .pmixgamma = function(q, shapes, rates, weights = 1, na.rm = FALSE) {
   return(.pmix("gamma", q, shapes, rates, weights, na.rm))
 }
@@ -168,10 +164,9 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
-#'   .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
-#'   .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
-#' })
+#' @unit
+#' .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
+#' .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
 .qmixgamma = function(
   p,
   shapes,
@@ -201,9 +196,8 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
-#'   .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
-#' })
+#' @unit
+#' .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
 .pmixbeta = function(q, alphas, betas, weights = 1, na.rm = FALSE) {
   return(.pmix("beta", q, alphas, betas, weights, na.rm))
 }
@@ -223,10 +217,9 @@
 #' @concept distributions
 #'
 #' @examples
-#' try({
-#'   .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
-#'   .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
-#' })
+#' @unit
+#' .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
+#' .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
 .qmixbeta = function(
   p,
   alphas,
