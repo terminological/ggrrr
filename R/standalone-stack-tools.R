@@ -1,9 +1,11 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-stack-tools.R
-# last-updated: '2025-09-20'
+# last-updated: '2025-09-21'
 # license: https://unlicense.org
-# imports: []
+# imports:
+# - rlang
+# - testthat
 # ---
 
 #' Permissive as_function replacement.
@@ -136,8 +138,8 @@
 #' @examples
 #' @unit
 #'
-#' env = .find_namespace(ggrrr::cached)
-#' testthat::expect_equals(getNamespaceName(env),"ggrrr")
+#' env = .find_namespace(rlang::abort)
+#' testthat::expect_equals(getNamespaceName(env),"rlang")
 #'
 #' f = function() {"test"}
 #' testthat::expect_null(.find_namespace(f))
