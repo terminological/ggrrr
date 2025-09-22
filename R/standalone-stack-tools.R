@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-stack-tools.R
-# last-updated: '2025-09-21'
+# last-updated: 2025-09-22
 # license: https://unlicense.org
 # imports:
 # - rlang
@@ -18,7 +18,6 @@
 #' @returns the function or primitive
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #'
 #' f1 = .lax_as_function(tolower)
@@ -42,7 +41,6 @@
 #' @returns the name as a string, as the function was defined
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #'
 #' f = tolower
@@ -88,7 +86,6 @@
 #' @returns a `.class` object
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #'
 #' h = function() {
@@ -135,11 +132,10 @@
 #' @returns a namespaced package environment
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #'
 #' env = .find_namespace(rlang::abort)
-#' testthat::expect_equals(getNamespaceName(env),"rlang")
+#' testthat::expect_equal(unname(getNamespaceName(env)), "rlang")
 #'
 #' f = function() {"test"}
 #' testthat::expect_null(.find_namespace(f))

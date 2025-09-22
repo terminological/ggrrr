@@ -77,29 +77,31 @@
 #'
 #' input = c(
 #'   "before",
-#'   "# test start ----",
+#'   "#TEST test start ----",
 #'   "# test original",
-#'   "# test end ----",
-#'   "# insert before ----",
+#'   "#TEST test end ----",
+#'   "#TEST insert before ----",
 #'   "end"
 #' )
 #'
 #' input = .update_fenced_block(
 #'   input, template, name = "test", status = "update",
-#'   .start_glue = "# {name} start ----",
-#'   .end_glue = "# {name} end ----"
+#'   .start_glue = "#TEST {name} start ----",
+#'   .end_glue = "#TEST {name} end ----",
+#'   .insert_before = "#TEST insert before ----",
 #' )
 #'
 #' input = .update_fenced_block(
 #'   input, template, name = "test2", status = "update",
-#'   .start_glue = "# {name} start ----",
-#'   .end_glue = "# {name} end ----"
+#'   .start_glue = "#TEST {name} start ----",
+#'   .end_glue = "#TEST {name} end ----",
+#'   .insert_before = "#TEST insert before ----",
 #' )
 #'
 #' .update_fenced_block(
 #'   input, template, name = "test", status = "update",
 #'   .start_glue = 2,
-#'   .end_glue = "# {name} end ----"
+#'   .end_glue = "#TEST {name} end ----",
 #' )
 #'
 #'
