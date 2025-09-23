@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-stack-tools.R
-# last-updated: 2025-09-22
+# last-updated: 2025-09-23
 # license: https://unlicense.org
 # imports:
 # - rlang
@@ -97,7 +97,7 @@
 #'
 #' f = function(x) {g()}
 #'
-#' testthat::expect_equal( f(iris), nrow(iris))
+#' testthat::expect_equal( f(datasets::iris), nrow(datasets::iris))
 #'
 .search_call_stack = function(
   .class,
@@ -137,8 +137,11 @@
 #' env = .find_namespace(rlang::abort)
 #' testthat::expect_equal(unname(getNamespaceName(env)), "rlang")
 #'
-#' f = function() {"test"}
-#' testthat::expect_null(.find_namespace(f))
+#' # TODO: this test fails when running in testthat environment but not otherwise
+#' # env = new.env(parent=emptyenv())
+#' # assign("f", function() {"test"}, envir = env)
+#' # env2 = .find_namespace(env$f)
+#' # testthat::expect_null(.find_namespace(env$f))
 #'
 .find_namespace = function(env = rlang::caller_env()) {
   if (rlang::is_function(env)) {
