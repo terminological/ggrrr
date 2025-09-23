@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-codegen.R
-# last-updated: 2025-09-22
+# last-updated: 2025-09-23
 # license: https://unlicense.org
 # imports:
 # - dplyr
@@ -196,7 +196,7 @@
 
   # Parse existing content and add to template input:
   parsed = .parse_fn(trimws(input_matched))
-  tmpl_list = modifyList(parsed, tmpl_list)
+  tmpl_list = utils::modifyList(parsed, tmpl_list)
 
   new_block = whisker::whisker.render(template_content, tmpl_list)
   new_block_lines = unlist(stringr::str_split(new_block, "\\n"))
