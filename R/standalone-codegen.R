@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-codegen.R
-# last-updated: '2025-09-22'
+# last-updated: 2025-09-22
 # license: https://unlicense.org
 # imports:
 # - dplyr
@@ -91,12 +91,16 @@
 #'   .insert_before = "#TEST insert before ----",
 #' )
 #'
+#' testthat::expect_equal(input[3], "# test update")
+#'
 #' input = .update_fenced_block(
 #'   input, template, name = "test2", status = "update",
 #'   .start_glue = "#TEST {name} start ----",
 #'   .end_glue = "#TEST {name} end ----",
 #'   .insert_before = "#TEST insert before ----",
 #' )
+#'
+#' testthat::expect_equal(input[6], "# test2 update")
 #'
 #' .update_fenced_block(
 #'   input, template, name = "test", status = "update",
@@ -325,7 +329,7 @@
 #' @unit
 #' glue_spec = "# {name}, {value1} and {value2} ----"
 #' output = rep("  # one, two and three ----",5)
-#' tmp = .recover_pieces(glue_spec,output)
+#' tmp = .glue_recover_pieces(glue_spec,output)
 #'
 #' testthat::expect_equal(nrow(tmp), 5)
 #' testthat::expect_equal(trimws(output), glue::glue_data(tmp,glue_spec))
