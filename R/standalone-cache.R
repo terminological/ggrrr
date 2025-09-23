@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-cache.R
-# last-updated: 2025-09-20
+# last-updated: 2025-09-23
 # license: https://unlicense.org
 # imports:
 #    - usethis
@@ -21,6 +21,9 @@
 }
 
 .cache_loc = function() {
+  if (!isFALSE(getOption("cache.path", FALSE))) {
+    return(getOption("cache.path"))
+  }
   rappdirs::user_cache_dir(
     if (is.null(utils::packageName())) "standalone" else utils::packageName()
   )
