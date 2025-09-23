@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-singleton.R
-# last-updated: 2025-09-22
+# last-updated: 2025-09-23
 # license: https://unlicense.org
 # imports: rlang
 # ---
