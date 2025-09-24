@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
     <li><a class="dropdown-item" href="../../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../../articles/web/table-functions.html">Table functions</a></li>
   </ul>
 </li>
@@ -78,7 +78,19 @@
 <p>There are quite a few systems for font management in R. A key part of
 our work is trying to make graphs and tables cross platform
 reproducible, and consistent. This means dealing with fonts across
-different platforms.</p>
+different platforms. Some of the older parts of R are designed around
+the use of Adobe Type 1 fonts which are generally no longer in
+mainstream use. Packages like <code>extrafont</code> are attempting to
+keep this working, but the main problem is the outdated font support in
+the default graphics devices. Newer devices in the <code>ragg</code> and
+<code>svglite</code> packages provide better font support for bitmap and
+svg. The non default <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">grDevices::cairo_pdf</a></code> and
+<code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">grDevices::cairo_ps</a></code> work better for pdf and postscript
+respectively. It is however, in our view, best to adopt an svg-first
+workflow and make us of the wide ecosystem of modern web delivered
+fonts. For pdf and postscript files exporting from the svg using
+<code>rsvg</code> or a headless chrome browser recovers a better output
+that the native graphics devices.</p>
 <div class="section level3">
 <h3 id="transparently-ensure-a-font-is-available">Transparently ensure a font is available<a class="anchor" aria-label="anchor" href="#transparently-ensure-a-font-is-available"></a>
 </h3>
@@ -86,11 +98,10 @@ different platforms.</p>
 ggplot, we can use a <code><a href="../../reference/check_font.html">check_font()</a></code> call which tries to find
 the font on your system and if not available downloads it from Google
 fonts or Brick and registers it with <code>systemfonts</code>, returning
-the family name.</p>
-<p>ggplot rendering uses <code>systemfonts</code> and attempts to make
-the output portable for use by embedding webfonts into the svg outputs.
-if the <code>sub</code> option is <code>TRUE</code>,
-<code><a href="../../reference/check_font.html">check_font()</a></code> will guess an alternative.</p>
+the family name. This will happen transparently.</p>
+<p>We then recommend that ggplot rendering is done via SVG which uses
+<code>systemfonts</code> and we attempt to make the output portable for
+use by embedding web fonts into the svg outputs.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   Helvetica </span></span>
@@ -117,7 +128,7 @@ Currently supported are <code>google</code> and <code>brick</code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># clears any registered fonts</span></span>
 <span><span class="fu"><a href="../../reference/reset_fonts.html">reset_fonts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## This wipes font databases created by `systemfonts`, `extrafonts` and `ggrrr`.</span></span>
+<pre><code><span><span class="co">## This wipes font databases created by `systemfonts` and `ggrrr`.</span></span>
 <span><span class="co">## These will be rebuilt on demand by `ggrrr`.</span></span>
 <span><span class="co">## N.b. This will NOT remove any custom fonts installed on your system by `ggrrr`.Are you sure? (yes/No/cancel)</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -130,6 +141,99 @@ Currently supported are <code>google</code> and <code>brick</code></p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 0 × 7</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 7 variables: path &lt;chr&gt;, index &lt;int&gt;, family &lt;chr&gt;, style &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   weight &lt;ord&gt;, italic &lt;lgl&gt;, features &lt;list&gt;</span></span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="legacy-default-graphics-devices-support">Legacy (default graphics devices) support<a class="anchor" aria-label="anchor" href="#legacy-default-graphics-devices-support"></a>
+</h2>
+<p>If for some reason you really must use the legacy devices then
+check_font can try and install the fonts you want to use in
+<code>grDevices</code>. This is complex and requires converting modern
+fonts to Type 1 fonts, which is only possible for (locally) installed
+<code>.ttf</code> fonts. Your mileage may vary and UTF-8 support will be
+patchy. <code>check_fonts</code> will try and load the fonts but even if
+a font is listed in <code><a href="https://rdrr.io/r/grDevices/postscriptFonts.html" class="external-link">grDevices::pdfFonts()</a></code> or
+<code><a href="https://rdrr.io/r/grDevices/postscriptFonts.html" class="external-link">grDevices::postscriptFonts()</a></code> things are still not
+guaranteed to work. TLDR; don’t use the legacy devices.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Arial"</span>,<span class="st">"Kings"</span>,<span class="st">"EB Garamond"</span><span class="op">)</span>, .legacy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        Roboto         Arial         Kings   EB Garamond </span></span>
+<span><span class="co">##      "Roboto"       "Arial"       "Kings" "EB Garamond"</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="comparing-devices">Comparing devices<a class="anchor" aria-label="anchor" href="#comparing-devices"></a>
+</h2>
+<p>The following code can be used to test out the capabilites of the
+different graphics devices:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/check_font.html">check_font</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Roboto"</span>,<span class="st">"Kings"</span>,<span class="st">"EB Garamond"</span><span class="op">)</span>, .legacy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        Roboto         Kings   EB Garamond </span></span>
+<span><span class="co">##      "Roboto"       "Kings" "EB Garamond"</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plot</span> <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span>base_family<span class="op">=</span><span class="st">"Roboto"</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>margins <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">14</span>,<span class="fl">0</span>,<span class="fl">14</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"label"</span>,x<span class="op">=</span><span class="fl">0</span>,y<span class="op">=</span><span class="fl">0</span>,label<span class="op">=</span><span class="st">"Kings: Em dash: \u2014 hello world"</span>, family<span class="op">=</span><span class="st">"Kings"</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>,x<span class="op">=</span><span class="fl">0</span>,y<span class="op">=</span><span class="fl">1</span>,label<span class="op">=</span><span class="st">"Roboto: UTF-8 subscript 2: \u2082"</span>, family<span class="op">=</span><span class="st">"Roboto"</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>,x<span class="op">=</span><span class="fl">0</span>,y<span class="op">=</span><span class="fl">2</span>,label<span class="op">=</span><span class="st">"EB Garamond: UTF-8 gte: \u2265"</span>, family<span class="op">=</span><span class="st">"EB Garamond"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Does not work - "invalid font type"  &amp; "font family 'Kings' not found in PostScript font database"</span></span>
+<span>  <span class="co"># Native pdf device: font but no unicode support</span></span>
+<span>  </span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".pdf"</span><span class="op">)</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span>, units<span class="op">=</span><span class="st">"in"</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Cairo PDF: font and unicode support / Mac support limited</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".pdf"</span><span class="op">)</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">cairo_pdf</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span>, units<span class="op">=</span><span class="st">"in"</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Native png device: font and unicode support</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span>, units<span class="op">=</span><span class="st">"in"</span>, res<span class="op">=</span><span class="fl">300</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># RAGG png: font and unicode support</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span></span>
+<span>  <span class="fu">ragg</span><span class="fu">::</span><span class="fu"><a href="https://ragg.r-lib.org/reference/agg_png.html" class="external-link">agg_png</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span>, units<span class="op">=</span><span class="st">"in"</span>, res<span class="op">=</span><span class="fl">300</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># SVGLite: font and unicode support</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".svg"</span><span class="op">)</span></span>
+<span>  <span class="fu">svglite</span><span class="fu">::</span><span class="fu"><a href="https://svglite.r-lib.org/reference/svglite.html" class="external-link">svglite</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  </span>
+<span>  <span class="co"># Native postscript:</span></span>
+<span>  <span class="co"># Does not work - "family 'Roboto' not included in postscript() device"</span></span>
+<span>  <span class="co"># however:  names(grDevices::postscriptFonts()) includes Roboto</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".eps"</span><span class="op">)</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/postscript.html" class="external-link">postscript</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># font and unicode support</span></span>
+<span>  <span class="co"># Cairo Postscript: font and unicode support / Mac support limited</span></span>
+<span>  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".eps"</span><span class="op">)</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">cairo_ps</a></span><span class="op">(</span><span class="va">tmp</span>, width<span class="op">=</span><span class="fl">3</span>, height <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">plot</span></span>
+<span>  <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -21,3 +21,12 @@ non package project)
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+testthat::expect_no_error(
+ suppressWarnings(.locate_project())
+)
+}\if{html}{\out{</div>}}
+}
+

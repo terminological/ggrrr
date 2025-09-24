@@ -17,3 +17,13 @@ Convert a single pdf to multiple pngs one per page
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+hux = iris \%>\% huxtable::as_hux() \%>\% huxtable::theme_mondrian(font="Arial")
+html = hux \%>\% huxtable::to_html()
+tmp = .print_html_with_chrome(html,maxWidth = std_size$A4$width,maxHeight = std_size$A4$height)
+pngs = .convert_pdf_to_pngs(tmp)
+}\if{html}{\out{</div>}}
+}
+

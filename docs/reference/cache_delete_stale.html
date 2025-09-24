@@ -17,7 +17,7 @@ point otherwise it may end up using old data."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@ point otherwise it may end up using old data."><meta property="og:image" content
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -76,18 +76,19 @@ point otherwise it may end up using old data.</p>
 
 <dl><dt id="arg--cache">.cache<a class="anchor" aria-label="anchor" href="#arg--cache"></a></dt>
 <dd><p>the location of the cache as a directory. May get its value
-from options("cache.dir") or the default value of
-rappdirs::user_cache_dir("ggrrr")</p></dd>
+from `getOption("cache.path")` or the default value which is
+`rappdirs::user_cache_dir(&lt;package_name&gt;)`</p></dd>
 
 
 <dt id="arg--prefix">.prefix<a class="anchor" aria-label="anchor" href="#arg--prefix"></a></dt>
-<dd><p>a name of the operation so that you can namespace the cached
-files and do selective clean up operations on them</p></dd>
+<dd><p>(optional) a name of the operation so that you can namespace
+the cached files and do selective clean up operations on them with
+.cache_clear()</p></dd>
 
 
 <dt id="arg--stale">.stale<a class="anchor" aria-label="anchor" href="#arg--stale"></a></dt>
-<dd><p>the length of time in days to keep cached data before
-considering it as stale.</p></dd>
+<dd><p>the length of time in days before considering cached data as
+stale.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -17,11 +17,4 @@ a ggplot scale
 \description{
 A percentage y scale
 }
-\examples{
-
-tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) \%>\%
- ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
- ggplot2::geom_point() +
- scale_y_percent()
-}
 \concept{ggplot}

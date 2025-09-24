@@ -55,3 +55,10 @@ a vector of character values
 Format a value omitting NA values
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.if_present( c(1,2,NA,4,5)/3, digits=2 )
+}\if{html}{\out{</div>}}
+}
+

@@ -20,3 +20,21 @@ was called with a object of `.class`. This can be used to find
 dataframe parameters in tidy calls
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+h = function() {
+ df = .search_call_stack(.class = "data.frame")
+ return(nrow(df))
+}
+
+g = function() {h()}
+
+f = function(x) {g()}
+
+testthat::expect_equal( f(datasets::iris), nrow(datasets::iris))
+
+}\if{html}{\out{</div>}}
+}
+

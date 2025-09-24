@@ -20,3 +20,28 @@ Options to control:
 - options(".memoise.recalculate"):
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+lmmem = .memoise(stats::lm)
+lmmem2 = .memoise(stats::lm)
+testthat::expect_identical(lmmem, lmmem2)
+
+result1 = lmmem(Petal.Width ~ Petal.Length, iris)
+result2 = lmmem2(Petal.Width ~ Petal.Length, iris)
+
+# attr(result1,"cache")
+# attr(result2,"cache")
+
+testthat::expect_identical(result1,result2)
+
+# memoise a purrr style lambda:
+plus = .memoise(~ .x + .y)
+testthat::expect_equal(plus(2,2),4)
+
+
+tmp = .memoise(function(x,y) {z})
+testthat::expect_error(tmp(1,2))
+}\if{html}{\out{</div>}}
+}
+

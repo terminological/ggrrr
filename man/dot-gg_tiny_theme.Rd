@@ -19,3 +19,13 @@ A ggplot theme with minimal fluff and with the defaults set small.
 }
 \concept{ggplot}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+ggplot2::ggplot(ggplot2::diamonds,
+  ggplot2::aes(x=carat,y=price,color=color))+
+  ggplot2::geom_point()+
+  .gg_tiny_theme()
+}\if{html}{\out{</div>}}
+}
+

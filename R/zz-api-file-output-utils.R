@@ -26,7 +26,7 @@ gg_save_as = function(...) {
 #' Find webfonts for a ggplot
 #'
 #' Resolves any missing fonts in a ggplot and tries to resolve them
-#' against webfont providers (Brick and Google Fonts) locally cacheing
+#' against webfont providers (Brick and Google Fonts) locally caching
 #' them. This function is the default for `gg_save_as`
 #'
 #' @param plot a ggplot
@@ -108,14 +108,17 @@ html_pdf_converter = function(html, filename, maxWidth, maxHeight) {
 
 # Collecting a data supplement ----
 
-#' Create a function list that allows for supplementary tables (as huxtables) to be added to a XLSX output file.
+#' Create a function list that allows for supplementary tables (as huxtables) to
+#' be added to a XLSX output file.
 #'
-#' This function encapsulates a excel output file as a destination for data tables. With the output of this
-#' function you can add extra data to the supplement as a new sheet, or you can write the spreadsheet to disk.
-#' When each data table is written either the table can be written silently or returned so that it is included
-#' in a knitr document. This is controlled by `option("hide.supplementary.tables"=TRUE)`.
+#' This function encapsulates a excel output file as a destination for data
+#' tables. With the output of this function you can add extra data to the
+#' supplement as a new sheet, or you can write the spreadsheet to disk. When
+#' each data table is written either the table can be written silently or
+#' returned so that it is included in a knitr document. This is controlled by
+#' `option("hide.supplementary.tables"=TRUE)`.
 #'
-#' @param ... output location options will be passed to outputter(...) to define the location of the file
+#' @inheritDotParams .outputter
 #' @param filename the xlsx filename
 #' @param out an outputter (defaults to a default outputter )
 #' @param nameGlue What will the tables be named

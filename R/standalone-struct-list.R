@@ -682,7 +682,7 @@ pmap_struct = function(.l, .f, ..., .progress = FALSE) {
   return(
     purrr::map(
       as.list.struct_list(.l),
-      \(item) do.call(.f, item),
+      function(item) do.call(.f, item),
       ...,
       .progress = .progress
     ) %>%

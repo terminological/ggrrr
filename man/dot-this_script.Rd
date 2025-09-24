@@ -16,3 +16,12 @@ script in rstudio, knitr or on the console.
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+testthat::expect_no_error(
+  suppressWarnings(.this_script())
+)
+}\if{html}{\out{</div>}}
+}
+

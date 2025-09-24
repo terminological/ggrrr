@@ -15,7 +15,7 @@ the longer ones, and it throws more informative errors."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@ the longer ones, and it throws more informative errors."><meta property="og:imag
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -87,31 +87,34 @@ the longer ones, and it throws more informative errors.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>NULL values are not recycled, missing values are ignored.</p>
     </div>
-
     <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">testfn</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">c</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">n</span> <span class="op">=</span> <span class="fu">.recycle</span><span class="op">(</span><span class="va">a</span>,<span class="va">b</span>,<span class="va">c</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">testfn</span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, b<span class="op">=</span><span class="st">"needs recycling"</span>, c<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .recycle(a, b, c):</span> could not find function ".recycle"</span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">testfn</span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, c<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in .recycle(a, b, c) : could not find function ".recycle"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">testfn</span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, c<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .recycle(a, b, c):</span> could not find function ".recycle"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># inconsistent to have a zero length and a non zero length</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">testfn</span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>, c<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in .recycle(a, b, c) : could not find function ".recycle"</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <h2 id="unit-tests">Unit tests<a class="anchor" aria-label="anchor" href="#unit-tests"></a></h2>
+    <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>testfn <span class="ot">=</span> <span class="cf">function</span>(a, b, c) {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">.recycle</span>(a,b,c)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="at">a=</span>a, <span class="at">b=</span>b, <span class="at">c=</span>c, <span class="at">n=</span>n</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  ))</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>}</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>tmp <span class="ot">=</span> <span class="fu">testfn</span>(<span class="at">a=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">b=</span><span class="st">"needs recycling"</span>, <span class="at">c=</span><span class="cn">NULL</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_equal</span>(tmp<span class="sc">$</span>n, <span class="dv">3</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_null</span>(tmp<span class="sc">$</span>c)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_equal</span>(<span class="fu">length</span>(tmp<span class="sc">$</span>a), <span class="fu">length</span>(tmp<span class="sc">$</span>b))</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co"># no parameter</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_error</span>(<span class="fu">testfn</span>(<span class="at">a=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">c=</span><span class="cn">NULL</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>tmp <span class="ot">=</span> <span class="fu">testfn</span>(<span class="at">a=</span><span class="fu">character</span>(), <span class="at">b=</span><span class="fu">integer</span>(), <span class="at">c=</span><span class="cn">NULL</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_equal</span>(tmp<span class="sc">$</span>n,<span class="dv">0</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co"># inconsistent to have a zero length and a non zero length</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">expect_error</span>(<span class="fu">testfn</span>(<span class="at">a=</span><span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>), <span class="at">b=</span><span class="fu">integer</span>(), <span class="at">c=</span><span class="cn">NULL</span>))</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span></code></pre><p></p></div>
     </div>
+
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

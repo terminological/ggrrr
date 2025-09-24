@@ -15,7 +15,7 @@ code_snip_by_line(type, filename, starts = 1, ends = Inf, sep = "\\n...\\n")
 
 \item{ends}{a vector of end indices ( as line numbers )}
 
-\item{sep}{a seperator}
+\item{sep}{a separator}
 }
 \value{
 a formatted string based on the file

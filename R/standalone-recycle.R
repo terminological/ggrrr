@@ -26,23 +26,29 @@
 #' @keywords internal
 #'
 #'
-#' @examples
 #' @unit
 #' testfn = function(a, b, c) {
 #'   n = .recycle(a,b,c)
-#'   print(a)
-#'   print(b)
-#'   print(c)
-#'   print(n)
+#'   return(list(
+#'     a=a, b=b, c=c, n=n
+#'   ))
 #' }
 #'
-#' testfn(a=c(1,2,3), b="needs recycling", c=NULL)
-#' try(testfn(a=c(1,2,3), c=NULL))
+#' tmp = testfn(a=c(1,2,3), b="needs recycling", c=NULL)
 #'
-#' testfn(a=character(), b=integer(), c=NULL)
+#' testthat::expect_equal(tmp$n, 3)
+#' testthat::expect_null(tmp$c)
+#' testthat::expect_equal(length(tmp$a), length(tmp$b))
+#'
+#' # no parameter
+#' testthat::expect_error(testfn(a=c(1,2,3), c=NULL))
+#'
+#'
+#' tmp = testfn(a=character(), b=integer(), c=NULL)
+#' testthat::expect_equal(tmp$n,0)
 #'
 #' # inconsistent to have a zero length and a non zero length
-#' try(testfn(a=c("a","b"), b=integer(), c=NULL))
+#' testthat::expect_error(testfn(a=c("a","b"), b=integer(), c=NULL))
 #'
 .recycle = function(..., .min = 1, .env = rlang::caller_env()) {
   names = sapply(rlang::ensyms(...), rlang::as_label)

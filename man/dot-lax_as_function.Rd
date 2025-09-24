@@ -17,3 +17,18 @@ like `rlang::as_function` but only interprets functions or formulae
 and ignores primitives and characters.
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+f1 = .lax_as_function(tolower)
+f2 = .lax_as_function(~ tolower(.x))
+f3 = .lax_as_function("hello world")
+
+testthat::expect_equal(f1, tolower)
+testthat::expect_equal(f2("HELLO WORLD"), f1("HELLO WORLD"))
+testthat::expect_equal(f3, f1("HELLO WORLD"))
+
+}\if{html}{\out{</div>}}
+}
+

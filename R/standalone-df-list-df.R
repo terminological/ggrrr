@@ -38,6 +38,8 @@
 #' )
 #'
 .df_to_list_of_lists = function(df) {
+  .id = NULL
+
   if (nrow(df) == 1) {
     list = as.list(df)
     for (i in seq_along(list)) {

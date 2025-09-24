@@ -9,7 +9,17 @@ vignette: >
 
 There are quite a few systems for font management in R. A key part of our work
 is trying to make graphs and tables cross platform reproducible, and consistent.
-This means dealing with fonts across different platforms.
+This means dealing with fonts across different platforms. Some of the older
+parts of R are designed around the use of Adobe Type 1 fonts which are generally
+no longer in mainstream use. Packages like `extrafont` are attempting to keep
+this working, but the main problem is the outdated font support in the default
+graphics devices. Newer devices in the `ragg` and `svglite` packages provide
+better font support for bitmap and svg. The non default `grDevices::cairo_pdf`
+and `grDevices::cairo_ps` work better for pdf and postscript respectively. It is
+however, in our view, best to adopt an svg-first workflow and make us of the wide
+ecosystem of modern web delivered fonts. For pdf and postscript files exporting
+from the svg using `rsvg` or a headless chrome browser recovers a better output
+that the native graphics devices.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -21,11 +31,11 @@ library(ggrrr)
 Instead of specifying a font family as a character in a call to ggplot, we can
 use a `check_font()` call which tries to find the font on your system and if not
 available downloads it from Google fonts or Brick and registers it with `systemfonts`,
-returning the family name. 
+returning the family name. This will happen transparently.
 
-ggplot rendering uses `systemfonts` and attempts
-to make the output portable for use by embedding webfonts into the svg outputs.
-if the `sub` option is `TRUE`, `check_font()` will guess an alternative. 
+We then recommend that ggplot rendering is done via SVG which uses `systemfonts`
+and we attempt to make the output portable for use by embedding web fonts into the
+svg outputs. 
 
 ```{r}
 check_font("Helvetica")
@@ -59,3 +69,92 @@ check_font(c("Roboto","Arial","Kings","EB Garamond"))
 systemfonts::registry_fonts()
 ```
 
+# Legacy (default graphics devices) support
+
+If for some reason you really must use the legacy devices then check_font can try
+and install the fonts you want to use in `grDevices`. This is complex and requires
+converting modern fonts to Type 1 fonts, which is only possible for (locally)
+installed `.ttf` fonts. Your mileage may vary and UTF-8 support will be patchy.
+`check_fonts` will try and load the fonts but even if a font is listed in 
+`grDevices::pdfFonts()` or `grDevices::postscriptFonts()` things are still not 
+guaranteed to work. TLDR; don't use the legacy devices.
+
+```{r}
+check_font(c("Roboto","Arial","Kings","EB Garamond"), .legacy=TRUE)
+```
+
+# Comparing devices
+
+The following code can be used to test out the capabilites of the different
+graphics devices:
+
+```{r}
+
+check_font(c("Roboto","Kings","EB Garamond"), .legacy=TRUE)
+
+plot = ggplot2::ggplot()+
+ggplot2::theme_void(base_family="Roboto")+
+ggplot2::geom_point()+ggplot2::theme(margins = ggplot2::margin(14,0,14,0))+
+ggplot2::annotate("label",x=0,y=0,label="Kings: Em dash: \u2014 hello world", family="Kings")+
+ggplot2::annotate("text",x=0,y=1,label="Roboto: UTF-8 subscript 2: \u2082", family="Roboto")+
+ggplot2::annotate("text",x=0,y=2,label="EB Garamond: UTF-8 gte: \u2265", family="EB Garamond")
+
+if (FALSE) {
+
+  # Does not work - "invalid font type"  & "font family 'Kings' not found in PostScript font database"
+  # Native pdf device: font but no unicode support
+  
+  tmp = tempfile(fileext = ".pdf")
+  grDevices::pdf(tmp, width=3, height = 1, units="in")
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  # Cairo PDF: font and unicode support / Mac support limited
+  tmp = tempfile(fileext = ".pdf")
+  grDevices::cairo_pdf(tmp, width=3, height = 1, units="in")
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  # Native png device: font and unicode support
+  tmp = tempfile(fileext = ".png")
+  grDevices::png(tmp, width=3, height = 1, units="in", res=300)
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  # RAGG png: font and unicode support
+  tmp = tempfile(fileext = ".png")
+  ragg::agg_png(tmp, width=3, height = 1, units="in", res=300)
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  # SVGLite: font and unicode support
+  tmp = tempfile(fileext = ".svg")
+  svglite::svglite(tmp, width=3, height = 1)
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  
+  # Native postscript:
+  # Does not work - "family 'Roboto' not included in postscript() device"
+  # however:  names(grDevices::postscriptFonts()) includes Roboto
+  tmp = tempfile(fileext = ".eps")
+  grDevices::postscript(tmp, width=3, height = 1)
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+  # font and unicode support
+  # Cairo Postscript: font and unicode support / Mac support limited
+  tmp = tempfile(fileext = ".eps")
+  grDevices::cairo_ps(tmp, width=3, height = 1)
+  plot
+  grDevices::dev.off()
+  utils::browseURL(tmp)
+
+}
+```

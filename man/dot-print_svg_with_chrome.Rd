@@ -31,3 +31,30 @@ Create a the same size as the SVG file using chrome or chromium
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+tryCatch(.find_chrome(), error = function(e) testthat::skip())
+
+plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+   ggplot2::geom_point()+
+   ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+   ggplot2::labs(tag = "A")+
+   ggplot2::xlab("Carat\u2082")+
+   ggplot2::ylab("price\u2265")
+
+res = plot \%>\% .gg_save_as(filename=tempfile(), formats=c("svg"))
+
+# res_content = readr::read_file_raw(res$svg)
+# testthat::expect_equal(rlang::hash(res_content), "99e7c62601699705bbb13dacf621caca")
+
+testthat::expect_no_error({
+  .print_svg_with_chrome(res$svg)
+})
+
+# exact binary copy may depend on versions of chrome etc:
+
+}\if{html}{\out{</div>}}
+}
+

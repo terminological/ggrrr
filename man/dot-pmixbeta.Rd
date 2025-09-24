@@ -25,3 +25,10 @@ The cumulative density function of a mixture of beta distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
+}\if{html}{\out{</div>}}
+}
+

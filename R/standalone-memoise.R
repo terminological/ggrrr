@@ -31,11 +31,10 @@
 #' @returns a function that takes the
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #' lmmem = .memoise(stats::lm)
 #' lmmem2 = .memoise(stats::lm)
-#' identical(lmmem, lmmem2)
+#' testthat::expect_identical(lmmem, lmmem2)
 #'
 #' result1 = lmmem(Petal.Width ~ Petal.Length, iris)
 #' result2 = lmmem2(Petal.Width ~ Petal.Length, iris)
@@ -43,14 +42,15 @@
 #' # attr(result1,"cache")
 #' # attr(result2,"cache")
 #'
-#' result2
-#' identical(result1,result2)
+#' testthat::expect_identical(result1,result2)
 #'
 #' # memoise a purrr style lambda:
 #' plus = .memoise(~ .x + .y)
+#' testthat::expect_equal(plus(2,2),4)
+#'
 #'
 #' tmp = .memoise(function(x,y) {z})
-#' fn = function(x,y=2,z=x) {z+y}
+#' testthat::expect_error(tmp(1,2))
 .memoise = function(fn, .cache_errors = FALSE, .debug = FALSE) {
   `_fn_name` = rlang::as_label(rlang::enexpr(fn))
 

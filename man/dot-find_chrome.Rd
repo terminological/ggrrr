@@ -24,3 +24,11 @@ of failure. Must assume that calls to chrome may fail.
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+# no test possible: this will be skipped
+try(.find_chrome())
+}\if{html}{\out{</div>}}
+}
+

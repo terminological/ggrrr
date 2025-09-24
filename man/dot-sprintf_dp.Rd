@@ -30,3 +30,12 @@ for which are `,` or `UTF8+00B7`. It will not try and replace things that are
 not syntactially numbers.
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.sprintf_dp("\%1.2f",1:3/3, sep="\u00B7")
+.sprintf_dp("\%1.2f-\%1.2f", 1:3/3, 1:3, sep="\u00B7")
+.sprintf_dp("\%s \%1.2f-\%1.2f", "A.1.2", 1:3/3, 1:3, sep="\u00B7")
+}\if{html}{\out{</div>}}
+}
+

@@ -358,6 +358,8 @@ gg_formatted_table = function(
     textheight = height = topBorderWeight = size = bottomBorderWeight = leftBorderWeight = rightBorderWeight =
       xpos = ypos = vjust = hjust = fontFace = x = y = xend = yend = NULL # remove global binding note
 
+  lines = ar = NULL
+
   font = ggrrr::check_font(font)
   if (!("long_format_table" %in% class(longFormatTable))) {
     longFormatTable = ggrrr::as.long_format_table(

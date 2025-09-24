@@ -50,11 +50,15 @@ requests to the same host. See \code{\link[httr:handle_pool]{handle_pool()}} for
 details.}
 }}
 
-\item{.nocache}{if set to TRUE all caching is disabled}
+\item{.nocache}{an option to defeat the cacheing which can be set globally as
+`options("cache.disable"=TRUE)`}
 
-\item{.cache}{the location of the downloaded files}
+\item{.cache}{the location of the cache as a directory. May get its value
+from `getOption("cache.path")` or the default value which is
+`rappdirs::user_cache_dir(<package_name>)`}
 
-\item{.stale}{how long to leave this file before replacing it.}
+\item{.stale}{the length of time in days before considering cached data as
+stale.}
 }
 \value{
 the result of the query

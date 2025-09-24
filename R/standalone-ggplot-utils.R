@@ -163,7 +163,6 @@
 #' @keywords internal
 #' @concept ggplot
 #'
-#' @examples
 #' @unit
 #' ggplot2::ggplot(ggplot2::diamonds,
 #'   ggplot2::aes(x=carat,y=price,color=color))+
@@ -222,7 +221,6 @@
 #' @keywords internal
 #' @concept ggplot
 #'
-#' @examples
 #' @unit
 #' .gg_set_size_defaults(lineSize = 0.25)
 .gg_set_size_defaults = function(
@@ -302,9 +300,12 @@
 #' @keywords internal
 #' @concept ggplot
 #'
-#' @examples
 #' @unit
-#' .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+#' testthat::expect_no_error({
+#'   suppressWarnings(
+#'    .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+#'   )
+#' })
 .gg_substitute_fonts = function(family) {
   weight = path = NULL
 
@@ -332,8 +333,8 @@
 
   if (any(tmp$family != tmp$sub)) {
     missing = tmp %>%
-      filter(family != sub) %>%
-      pull(family) %>%
+      dplyr::filter(family != sub) %>%
+      dplyr::pull(family) %>%
       paste0(collapse = ", ")
     rlang::warn(
       sprintf(
@@ -356,7 +357,6 @@
 #' @keywords internal
 #' @concept ggplot
 #'
-#' @examples
 #' @unit
 #' .gg_fonts_missing("Arial")
 #' .gg_fonts_missing(c("Roboto","Kings","ASDASDAS"))
@@ -368,7 +368,7 @@
 }
 
 #' @noRd
-#' @examples
+#' @unit
 #' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
 #'   ggplot2::theme_minimal(base_family=check_font("Roboto"))+
 #'   ggplot2::geom_point()+
@@ -397,7 +397,6 @@
 #' @keywords internal
 #' @concept ggplot
 #'
-#' @examples
 #' @unit
 #' ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=price))+
 #'   ggplot2::geom_density()+
@@ -423,7 +422,6 @@
 #'
 #' @keywords internal
 #' @concept ggplot
-#' @examples
 #' @unit
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
 #'  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
@@ -531,7 +529,7 @@
 #' @return a ggplot scale
 #' @keywords internal
 #' @concept ggplot
-#' @examples
+#' @unit
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
 #'  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
 #'  ggplot2::geom_point() +
@@ -570,7 +568,7 @@
 #' @return a ggplot scale
 #' @keywords internal
 #' @concept ggplot
-#' @examples
+#' @unit
 #'
 #' tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) %>%
 #'  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
@@ -647,24 +645,25 @@
 #' @return a ggplot layer.
 #' @keywords internal
 #'
-#' @examples
 #' @unit
 #' # top level function contains `...` and `mapping` extensions points:
 #' myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
-#'   xCol = rlang::f_lhs(formula)
-#'   yCol = rlang::f_rhs(formula)
-#'   ggplot2::ggplot(data)+
+#' xCol = rlang::as_quosure(rlang::f_lhs(formula), env = rlang::caller_env())
+#' yCol = rlang::as_quosure(rlang::f_rhs(formula), env = rlang::caller_env())
+#' ggplot2::ggplot(data) +
 #'   .gg_layer(
 #'     ggplot2::GeomPoint,
 #'     data = data,
-#'     mapping=ggplot2::aes(x=!!xCol, y=!!yCol, !!!mapping),
+#'     mapping = ggplot2::aes(x = !!xCol, y = !!yCol, !!!mapping),
 #'     ...,
-#'     .default = list(size=10)
-#'    )
+#'     .default = list(size = 10)
+#'   )
 #' }
 #' myPlot(iris, Sepal.Length~Sepal.Width, mapping=ggplot2::aes(colour=Species))
 #' myPlot(iris, Sepal.Length~Petal.Length, mapping=ggplot2::aes(colour=Species), shape="+", size=5)
 #' myPlot(mtcars, mpg~wt, mapping=ggplot2::aes(colour=as.factor(cyl), size=hp))
+#' # check we made it this far without calling expect_no_errors
+#' testthat::expect_equal(1,1)
 .gg_layer = function(
   geom,
   data = NULL,
@@ -738,7 +737,7 @@
 # #' @return a single deduplicated set. `name=value` pairs take precedence
 # #' @keywords internal
 # #'
-# #' @examples
+# #' @unit
 # #' m1 = aes(x=a,y=b,colour=class)
 # #' .gg_merge_aes(x=A,y=BB,m1)
 # .gg_merge_aes = function(...) {

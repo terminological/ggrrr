@@ -37,3 +37,11 @@ A quantile function for a mixture of gamma distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
+.qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
+}\if{html}{\out{</div>}}
+}
+

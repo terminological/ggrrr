@@ -44,3 +44,27 @@ to a set of layers filtering them so they are relevant to the geom. I almost
 never want `inherit.aes` to be true.
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+# top level function contains `...` and `mapping` extensions points:
+myPlot = function(data, formula, ..., mapping = .gg_check_for_aes(...)) {
+xCol = rlang::as_quosure(rlang::f_lhs(formula), env = rlang::caller_env())
+yCol = rlang::as_quosure(rlang::f_rhs(formula), env = rlang::caller_env())
+ggplot2::ggplot(data) +
+  .gg_layer(
+    ggplot2::GeomPoint,
+    data = data,
+    mapping = ggplot2::aes(x = !!xCol, y = !!yCol, !!!mapping),
+    ...,
+    .default = list(size = 10)
+  )
+}
+myPlot(iris, Sepal.Length~Sepal.Width, mapping=ggplot2::aes(colour=Species))
+myPlot(iris, Sepal.Length~Petal.Length, mapping=ggplot2::aes(colour=Species), shape="+", size=5)
+myPlot(mtcars, mpg~wt, mapping=ggplot2::aes(colour=as.factor(cyl), size=hp))
+# check we made it this far without calling expect_no_errors
+testthat::expect_equal(1,1)
+}\if{html}{\out{</div>}}
+}
+

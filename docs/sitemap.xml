@@ -9,6 +9,7 @@
 <url><loc>https://terminological.github.io/ggrrr/articles/web/font-functions.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/articles/web/getting-started.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/articles/web/other-table-formats.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/articles/web/struct-lists.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/articles/web/table-functions.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/authors.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/index.html</loc></url>
@@ -47,8 +48,13 @@
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-cache_post.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-cached.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-convert_pdf_to_pngs.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-create_skeleton.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-delete_fenced_block.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-df_to_list_of_lists.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-embed_fonts.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-find_chrome.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-find_namespace.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-get_fn_name.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_breaks_log1p.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_fonts_missing.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_hide_X_axis.html</loc></url>
@@ -72,6 +78,8 @@
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_substitute_fonts.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_tiny_theme.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-gg_transform_logit.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-glue_detect_output.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-glue_recover_pieces.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-here.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-hux_bind_rows.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-hux_default_layout.html</loc></url>
@@ -94,9 +102,13 @@
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-is_running_in_console.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-is_unknown_output.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-is_viewer_available.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-lax_as_function.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-list_of_lists_to_df.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-locate_project.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-memoise.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-optional_fn.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-outputter.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-pdf_safe.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-pmixbeta.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-pmixgamma.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-pmixlnorm.html</loc></url>
@@ -108,11 +120,14 @@
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-qmixlnorm.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-qmixnorm.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-recycle.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-search_call_stack.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-singleton.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-sprintf_data.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-sprintf_dp.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-substitute_fonts.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dot-this_script.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-unmemoise.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/dot-update_fenced_block.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/drawDetails.watermark.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/dwedge.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/fit_col_widths.html</loc></url>
@@ -136,6 +151,7 @@
 <url><loc>https://terminological.github.io/ggrrr/reference/gg_simple_table.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/gg_tiny_theme.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/gg_watermark.html</loc></url>
+<url><loc>https://terminological.github.io/ggrrr/reference/glyphmap.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/here.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/html_pdf_converter.html</loc></url>
 <url><loc>https://terminological.github.io/ggrrr/reference/hux_auto_widths.html</loc></url>

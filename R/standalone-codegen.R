@@ -55,13 +55,13 @@
 #' @param name a name for the block
 #' @param ... additional named parameters supplied to the whisker template
 #' @param .start_glue a glue specification for the marker of the start of the
-#'   block to be replaced. May use any of the whisker variables e.g. `"# {name}
-#'   start ----"`. This can also be given as a numeric index, were particularly
+#'   block to be replaced. May use any of the whisker variables e.g.
+#'   `"# \{name\} start ----"`. This can also be given as a numeric index, were particularly
 #'   0 is the beginning of the input and -1 is the end. If numeric it is start
 #'   inclusive.
 #' @param .end_glue a glue specification for the marker of the end of the
 #'   block to be replaced. May use any of the whisker variables e.g.
-#'   `"# {name} end ----"` or numeric as above. If numeric it is end inclusive.
+#'   `"# \{name\} end ----"` or numeric as above. If numeric it is end inclusive.
 #' @param .insert_before a marker for where in the file to insert a block if no
 #'   matching start and end markers are found.
 #' @param .parse_fn a function that takes the matching block in the source and

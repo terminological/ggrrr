@@ -37,3 +37,13 @@ A quantile function for a mixture of log normal distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
+.qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
+.qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
+
+}\if{html}{\out{</div>}}
+}
+

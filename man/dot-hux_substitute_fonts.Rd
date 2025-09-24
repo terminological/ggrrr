@@ -18,3 +18,13 @@ Pick a locally installed font family that matches requested
 }
 \concept{huxtable}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+tmp = suppressWarnings(
+  .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+)
+testthat::expect_equal(tmp[[1]],"Roboto")
+}\if{html}{\out{</div>}}
+}
+

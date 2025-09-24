@@ -29,3 +29,10 @@ to get a single consistent look and feel.
 }
 \concept{ggplot}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.gg_set_size_defaults(lineSize = 0.25)
+}\if{html}{\out{</div>}}
+}
+

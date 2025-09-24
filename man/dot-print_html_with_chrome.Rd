@@ -34,3 +34,24 @@ Print a HTML fragment using chrome
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+tryCatch(.find_chrome(), error = function(e) testthat::skip())
+
+hux = iris \%>\% huxtable::as_hux() \%>\% huxtable::theme_mondrian(font="Roboto")
+html = hux \%>\% huxtable::to_html()
+
+testthat::expect_no_error({
+  tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
+})
+# browseURL(tmp)
+
+# exact binary copy may depend on versions of chrome etc:
+
+
+# The resulting pdf has fonts embedded & is multipage.
+}\if{html}{\out{</div>}}
+}
+

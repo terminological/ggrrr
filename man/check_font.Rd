@@ -4,10 +4,12 @@
 \alias{check_font}
 \title{Ensures a font is available.}
 \usage{
-check_font(family)
+check_font(family, .legacy = FALSE)
 }
 \arguments{
 \item{family}{a font family name or names}
+
+\item{.legacy}{should we try and register fonts}
 }
 \value{
 the font family name if it can be located or an alternative if not.
@@ -25,72 +27,76 @@ viewers. In practice this is a bit hit and miss.
 check_font(c("Roboto","Arial","Kings","EB Garamond"))
 fonts_available(c("Roboto","Arial","Kings","EB Garamond"))
 
-plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
-  ggplot2::theme_minimal(base_family="Roboto")+
-  ggplot2::geom_point()+
-  ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
-  ggplot2::labs(tag = "A")+
-  ggplot2::xlab("Carat\u2082")+
-  ggplot2::ylab("price\u2265")
+plot = ggplot2::ggplot()+
+ggplot2::theme_void(base_family="Roboto")+
+ggplot2::geom_point()+ggplot2::theme(margins = ggplot2::margin(14,0,14,0))+
+ggplot2::annotate("label",x=0,y=0,label="Kings: Em dash: \u2014 hello world", family="Kings")+
+ggplot2::annotate("text",x=0,y=1,label="Roboto: UTF-8 subscript 2: \u2082", family="Roboto")+
+ggplot2::annotate("text",x=0,y=2,label="EB Garamond: UTF-8 gte: \u2265", family="EB Garamond")
 
 
 if (FALSE) {
 
+
+  # Does not work - "invalid font type"  & "font family 'Kings'
+  # not found in PostScript font database"
   # font but no unicode support
+  check_font(c("Roboto","Kings","EB Garamond"), .legacy=TRUE)
   tmp = tempfile(fileext = ".pdf")
-  pdf(tmp)
+  grDevices::pdf(tmp, width=3, height = 1, units="in")
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
   # font and unicode support
   tmp = tempfile(fileext = ".pdf")
-  cairo_pdf(tmp)
+  grDevices::cairo_pdf(tmp, width=3, height = 1, units="in")
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
   # font and unicode support
   tmp = tempfile(fileext = ".png")
-  png(tmp)
+  grDevices::png(tmp, width=3, height = 1, units="in", res=300)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
   # font and unicode support
   tmp = tempfile(fileext = ".png")
-  ragg::agg_png(tmp)
+  ragg::agg_png(tmp, width=3, height = 1, units="in", res=300)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
   # font and unicode support
   tmp = tempfile(fileext = ".svg")
-  svglite::svglite(tmp)
+  svglite::svglite(tmp, width=3, height = 1)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
-  # Does not work - "family 'Roboto' not included in postscript() device"
+  # Does not work - "family 'Roboto'
+  # not included in postscript() device"
   # however:  names(grDevices::postscriptFonts()) includes Roboto
   tmp = tempfile(fileext = ".eps")
-  postscript(tmp)
+  grDevices::postscript(tmp, width=3, height = 1)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
-  # This does work but rasterises output at low fidelity
+  # font and unicode support
   tmp = tempfile(fileext = ".eps")
-  cairo_ps(tmp)
+  grDevices::cairo_ps(tmp, width=3, height = 1)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
-  # This fully works
+  # font and partial unicode support
   tmp = tempfile(fileext = ".ps")
-  Cairo::CairoPS(tmp)
+  Cairo::CairoPS(tmp, width=3, height = 1)
   plot
-  dev.off()
+  grDevices::dev.off()
   utils::browseURL(tmp)
 
 }

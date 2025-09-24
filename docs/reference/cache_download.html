@@ -9,7 +9,7 @@ makes sure it is reused."><meta property="og:image" content="https://terminologi
 
     <a class="navbar-brand me-2" href="../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,7 @@ makes sure it is reused."><meta property="og:image" content="https://terminologi
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -111,15 +111,19 @@ makes sure it is reused.</p>
 
 
 <dt id="arg--nocache">.nocache<a class="anchor" aria-label="anchor" href="#arg--nocache"></a></dt>
-<dd><p>if set to TRUE all caching is disabled</p></dd>
+<dd><p>an option to defeat the cacheing which can be set globally as
+`options("cache.disable"=TRUE)`</p></dd>
 
 
 <dt id="arg--cache">.cache<a class="anchor" aria-label="anchor" href="#arg--cache"></a></dt>
-<dd><p>the location of the downloaded files</p></dd>
+<dd><p>the location of the cache as a directory. May get its value
+from `getOption("cache.path")` or the default value which is
+`rappdirs::user_cache_dir(&lt;package_name&gt;)`</p></dd>
 
 
 <dt id="arg--stale">.stale<a class="anchor" aria-label="anchor" href="#arg--stale"></a></dt>
-<dd><p>how long to leave this file before replacing it.</p></dd>
+<dd><p>the length of time in days before considering cached data as
+stale.</p></dd>
 
 
 <dt id="arg--extn">.extn<a class="anchor" aria-label="anchor" href="#arg--extn"></a></dt>

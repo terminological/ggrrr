@@ -85,3 +85,26 @@ webfont support, and editable SVG or PDF.
 \concept{output}
 \keyword{internal}
 \keyword{plot}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.gg_pedantic(fontSize = 6)
+p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) +
+  ggplot2::geom_point()
+# p \%>\% .gg_save_as(filename="~/tmp/plot_example",maxWidth=4,maxHeight=4)
+p \%>\% .gg_save_as(filename=tempfile(),maxWidth=2,maxHeight=1.5)
+
+plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
+  ggplot2::geom_point()+
+  ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
+  ggplot2::labs(tag = "A")+
+  ggplot2::xlab("Carat\u2082")+
+  ggplot2::ylab("price\u2265")
+
+# plot \%>\% .gg_save_as(filename="~/tmp/plot_example_2")
+res = plot \%>\% .gg_save_as(filename=tempfile(), formats=c("png","eps"))
+as.character(res)
+res
+}\if{html}{\out{</div>}}
+}
+

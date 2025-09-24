@@ -2,7 +2,8 @@
 % Please edit documentation in R/zz-api-file-output-utils.R
 \name{data_supplement}
 \alias{data_supplement}
-\title{Create a function list that allows for supplementary tables (as huxtables) to be added to a XLSX output file.}
+\title{Create a function list that allows for supplementary tables (as huxtables) to
+be added to a XLSX output file.}
 \usage{
 data_supplement(
   ...,
@@ -12,7 +13,13 @@ data_supplement(
 )
 }
 \arguments{
-\item{...}{output location options will be passed to outputter(...) to define the location of the file}
+\item{...}{
+  Named arguments passed on to \code{\link[=.outputter]{.outputter}}\describe{
+    \item{\code{directory}}{the root of the output}
+\item{\code{...}}{not used must be empty}
+\item{\code{datedFile}}{do you want the filename to have the date appended?}
+\item{\code{datedSubdirectory}}{do you want the files to be placed in a dated subdirectory?}
+}}
 
 \item{filename}{the xlsx filename}
 
@@ -26,9 +33,11 @@ $add_table(hux, caption, footnote, index), which takes a huxtable, caption, and 
 $write() which writes the collection of tables to the excel file.
 }
 \description{
-This function encapsulates a excel output file as a destination for data tables. With the output of this
-function you can add extra data to the supplement as a new sheet, or you can write the spreadsheet to disk.
-When each data table is written either the table can be written silently or returned so that it is included
-in a knitr document. This is controlled by `option("hide.supplementary.tables"=TRUE)`.
+This function encapsulates a excel output file as a destination for data
+tables. With the output of this function you can add extra data to the
+supplement as a new sheet, or you can write the spreadsheet to disk. When
+each data table is written either the table can be written silently or
+returned so that it is included in a knitr document. This is controlled by
+`option("hide.supplementary.tables"=TRUE)`.
 }
 \concept{output}

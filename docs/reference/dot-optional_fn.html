@@ -11,7 +11,7 @@ as part of the Imports or Suggests fields in a package DESCRIPTION."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@ as part of the Imports or Suggests fields in a package DESCRIPTION."><meta prope
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -88,9 +88,8 @@ as part of the Imports or Suggests fields in a package DESCRIPTION.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fn</span> <span class="op">=</span> <span class="fu">.optional_fn</span><span class="op">(</span><span class="st">"openssl::md5"</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="va"><a href="https://rlang.r-lib.org/reference/hash.html" class="external-link">hash</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .optional_fn("openssl::md5", rlang::hash):</span> could not find function ".optional_fn"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">fn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/raw.html" class="external-link">as.raw</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fn(as.raw(c(1, 2, 3))):</span> could not find function "fn"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "5289df737df57326fcdd22597afb1fac"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -35,3 +35,20 @@ the date.
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+# default appends date to filename:
+out = .outputter(tempdir())
+tmp = out("test.pdf")
+testthat::expect_match(tmp, "^.*/test-[0-9]{4}-[0-9]{2}-[0-9]{2}.pdf$")
+
+# default appends date to filename:
+out2 = .outputter(tempdir(),datedSubdirectory=TRUE)
+tmp2 = out2("test.pdf")
+testthat::expect_match(tmp2, "^.*/[0-9]{4}-[0-9]{2}-[0-9]{2}/test.pdf$")
+
+}\if{html}{\out{</div>}}
+}
+

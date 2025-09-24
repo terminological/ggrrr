@@ -74,6 +74,18 @@ std_size = list(
 #' (allowing for libraries that refuse to overwrite existing files)
 #' @keywords internal
 #' @concept output
+#' @unit
+#'
+#' # default appends date to filename:
+#' out = .outputter(tempdir())
+#' tmp = out("test.pdf")
+#' testthat::expect_match(tmp, "^.*/test-[0-9]{4}-[0-9]{2}-[0-9]{2}.pdf$")
+#'
+#' # default appends date to filename:
+#' out2 = .outputter(tempdir(),datedSubdirectory=TRUE)
+#' tmp2 = out2("test.pdf")
+#' testthat::expect_match(tmp2, "^.*/[0-9]{4}-[0-9]{2}-[0-9]{2}/test.pdf$")
+#'
 .outputter = function(
   directory = .here("output"),
   ...,
@@ -118,9 +130,10 @@ std_size = list(
 #' command is executed outside of a script.
 #' @keywords internal
 #' @concept output
-#' @examples
 #' @unit
-#' .this_script()
+#' testthat::expect_no_error(
+#'   suppressWarnings(.this_script())
+#' )
 .this_script = function() {
   if (.is_knitting()) {
     return(knitr::current_input(dir = TRUE))
@@ -169,9 +182,10 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #'
-#' @examples
 #' @unit
-#' .locate_project()
+#' testthat::expect_no_error(
+#'  suppressWarnings(.locate_project())
+#' )
 .locate_project = function(inputFile = .this_script()) {
   . = NULL
   absPath = inputFile %>% fs::path_expand()
@@ -251,9 +265,10 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #'
-#' @examples
 #' @unit
-#' .here("vignettes")
+#' testthat::expect_no_error(
+#'  suppressWarnings(.here("vignettes"))
+#' )
 .here = function(..., projRoot = .locate_project()) {
   return(fs::path(projRoot, ...))
 }
@@ -276,9 +291,9 @@ std_size = list(
 #' @return A character string with the path of chrome or an error.
 #' @keywords internal
 #' @concept output
-#' @examples
 #' @unit
-#' .find_chrome()
+#' # no test possible: this will be skipped
+#' try(.find_chrome())
 .find_chrome = function() {
   switch(
     .Platform$OS.type,
@@ -340,8 +355,10 @@ std_size = list(
 #' @return the pdf file path
 #' @keywords internal
 #' @concept output
-#' @examples
 #' @unit
+#'
+#' tryCatch(.find_chrome(), error = function(e) testthat::skip())
+#'
 #' plot = ggplot2::ggplot(ggplot2::diamonds, ggplot2::aes(x=carat,y=price,color = color))+
 #'    ggplot2::geom_point()+
 #'    ggplot2::annotate("label",x=2,y=10000,label="Hello \u2014 world", family="Kings")+
@@ -350,10 +367,15 @@ std_size = list(
 #'    ggplot2::ylab("price\u2265")
 #'
 #' res = plot %>% .gg_save_as(filename=tempfile(), formats=c("svg"))
-#' tmp = .print_svg_with_chrome(res$svg)
 #'
-#' # browseURL(tmp)
-#' # The resulting pdf has fonts embedded.
+#' # res_content = readr::read_file_raw(res$svg)
+#' # testthat::expect_equal(rlang::hash(res_content), "99e7c62601699705bbb13dacf621caca")
+#'
+#' testthat::expect_no_error({
+#'   .print_svg_with_chrome(res$svg)
+#' })
+#'
+#' # exact binary copy may depend on versions of chrome etc:
 #'
 .print_svg_with_chrome = function(
   svgFile,
@@ -403,6 +425,7 @@ window.onload = init;
     # args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile), tmp_html),
     args = c(
       "--headless",
+      "--print-to-pdf-no-header",
       "--no-pdf-header-footer",
       sprintf("--print-to-pdf=%s", pdfFile),
       tmp_html
@@ -431,13 +454,21 @@ window.onload = init;
 #' @keywords internal
 #' @concept output
 #'
-#' @examples
 #' @unit
+#'
+#' tryCatch(.find_chrome(), error = function(e) testthat::skip())
+#'
 #' hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Roboto")
 #' html = hux %>% huxtable::to_html()
-#' tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
 #'
+#' testthat::expect_no_error({
+#'   tmp = .print_html_with_chrome(html,maxWidth = 5,maxHeight = std_size$A4$height)
+#' })
 #' # browseURL(tmp)
+#'
+#' # exact binary copy may depend on versions of chrome etc:
+#'
+#'
 #' # The resulting pdf has fonts embedded & is multipage.
 .print_html_with_chrome = function(
   htmlFragment,
@@ -514,7 +545,6 @@ window.onload = init;
 #' @keywords internal
 #' @concept output
 #'
-#' @examples
 #' @unit
 #' hux = iris %>% huxtable::as_hux() %>% huxtable::theme_mondrian(font="Arial")
 #' html = hux %>% huxtable::to_html()
@@ -671,7 +701,6 @@ window.onload = init;
 #'   a link to the png file for embedding, if latex a link to the pdf file.
 #' @keywords internal
 #' @concept output
-#' @examples
 #' @unit
 #' .gg_pedantic(fontSize = 6)
 #' p = ggplot2::ggplot(mtcars, ggplot2::aes(mpg, wt, colour=as.factor(cyl))) +
@@ -990,7 +1019,6 @@ knit_print.rendered_plot = function(x, options, ...) {
 #' @return the output depends on if the function is called in a knitr session. It maybe the HTML or a link to the pdf output for example.
 #' @keywords internal
 #' @concept output
-#' @examples
 #' @unit
 #' hux = iris %>% huxtable::as_hux() %>%
 #'   huxtable::theme_mondrian(font="Roboto")

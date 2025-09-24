@@ -26,3 +26,12 @@ runtime and provide a transliterated alternative for the `pdf` device in the
 context of a function example in a CRAN check.
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.pdf_safe("test")
+.pdf_safe("\u00B1\u221E")
+ggplot2::ggplot()+ggplot2::xlab(.pdf_safe("\u00B1\u221E"))
+}\if{html}{\out{</div>}}
+}
+

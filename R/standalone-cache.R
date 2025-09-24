@@ -4,14 +4,12 @@
 # last-updated: 2025-09-23
 # license: https://unlicense.org
 # imports:
-#    - usethis
 #    - rappdirs
 #    - utils
 #    - rlang
 #    - stringr
 #    - fs
 #    - dplyr
-#    - tidyr
 # ---
 
 # 2025-09-19: switched to rlang::hash - will probably invalidate existing caches
@@ -29,30 +27,46 @@
   )
 }
 
-#' A simple pass-through cache for complex or long running operations
+#' A simple pass-through filesystem cache for complex or long running operations
 #'
-#' executes `expr` and saves the output as an RDS file indexed by has of code in
-#' expr and the hash of specified input variables (in `...`,  which should
-#' contain any variable inputs)
+#' executes `.expr` and saves the output as an RDS file indexed by hash of code in
+#' `.expr` and the hash of specified input variables (in `...`,  which should
+#' contain any inputs that influence `.expr`). The expression is evaluated in the
+#' current environment and it is up to the user to ensure all significant
+#' environmental factors are accounted for in `...`
 #'
 #' @param .expr the code the output of which requires caching. Other than a
 #'   return value this should not create side effects or change global
 #'   variables.
-#' @param ... inputs that the code in `expr` depends on and changes in which
-#'   require the code re-running, Could be Sys.Date()
-#' @param .prefix a name of the operation so that you can namespace the cached
-#'   files and do selective clean up operations on them
-#' @param .nocache an option to defeat the caching which can be set globally as
-#'   options("cache.disable"=TRUE)
+#' @param ... inputs that the code in `.expr` depends on and changes in which
+#'   require the code re-running.
+#' @param .prefix (optional) a name of the operation so that you can namespace
+#'   the cached files and do selective clean up operations on them with
+#'   .cache_clear()
+#' @param .nocache an option to defeat the cacheing which can be set globally as
+#'   `options("cache.disable"=TRUE)`
 #' @param .cache the location of the cache as a directory. May get its value
-#'   from options("cache.dir") or the default value of
-#'   rappdirs::user_cache_dir("ggrrr")
-#' @param .stale the length of time in days to keep cached data before
-#'   considering it as stale. can also be set by options("cache.stale")
+#'   from `getOption("cache.path")` or the default value which is
+#'   `rappdirs::user_cache_dir(<package_name>)`
+#' @param .stale the length of time in days before considering cached data as
+#'   stale.
 #' @keywords internal
 #' @concept cache
 #'
-#' @return the output of .expr which will usually be a value
+#' @return the output of `.expr` which will usually be a value
+#' @unit
+#'
+#' # we use `rnorm` here to prove that the cache is working but in reality
+#' # you would normally only use something deterministic in `.expr`:
+#' x = 100
+#' tmp = .cached(stats::rnorm(x), x)
+#' tmp2 = .cached(stats::rnorm(x), x)
+#' testthat::expect_equal(tmp, tmp2)
+#'
+#' x = 200
+#' tmp3 = .cached(stats::rnorm(x), x)
+#' testthat::expect_equal(x, length(tmp3))
+#'
 .cached = function(
   .expr,
   ...,
@@ -110,13 +124,7 @@
 #' caches and updated data should ensure that analysis does not cross this time
 #' point otherwise it may end up using old data.
 #'
-#' @param .prefix a name of the operation so that you can namespace the cached
-#'   files and do selective clean up operations on them
-#' @param .cache the location of the cache as a directory. May get its value
-#'   from options("cache.dir") or the default value of
-#'   rappdirs::user_cache_dir("ggrrr")
-#' @param .stale the length of time in days to keep cached data before
-#'   considering it as stale.
+#' @inheritParams .cached
 #'
 #' @return nothing. called for side effects.
 #' @keywords internal
@@ -148,11 +156,7 @@
 
 #' Clear data from the passthrough cache for complex or long running operations
 #'
-#' @param .prefix a regular expression matching the prefix of the cached item,
-#'   so that do selective clean up operations. defaults to everything.
-#' @param .cache the location of the cache as a directory. May get its value
-#'   from options("ggrrr.cache.dir") or the default value of
-#'   rappdirs::user_cache_dir("ggrrr")
+#' @inheritParams .cached
 #' @param interactive suppress `are you sure?` warning with a FALSE value
 #'   (defaults to TRUE)
 #'
@@ -169,7 +173,7 @@
   if (!fs::dir_exists(.cache)) {
     .cache_message("cache does not exist (yet)")
   } else {
-    files = tidyr::tibble(paths = fs::dir_ls(.cache, recurse = TRUE)) %>%
+    files = dplyr::tibble(paths = fs::dir_ls(.cache, recurse = TRUE)) %>%
       dplyr::mutate(filename = fs::path_file(paths)) %>%
       dplyr::filter(stringr::str_starts(filename, .prefix))
 
@@ -195,9 +199,7 @@
 #'
 #' @param url the url to download
 #' @inheritDotParams utils::download.file -url -destfile
-#' @param .nocache if set to TRUE all caching is disabled
-#' @param .cache the location of the downloaded files
-#' @param .stale how long to leave this file before replacing it.
+#' @inheritParams .cached
 #' @param .extn the file name extension
 #'
 #' @return the path to the downloaded file

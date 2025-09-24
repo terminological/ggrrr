@@ -25,3 +25,10 @@ The cumulative density function of a mixture of normal distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
+}\if{html}{\out{</div>}}
+}
+

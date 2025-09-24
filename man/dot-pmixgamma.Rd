@@ -25,3 +25,10 @@ The cumulative density function of a mixture of gamma distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
+}\if{html}{\out{</div>}}
+}
+

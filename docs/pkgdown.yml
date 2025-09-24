@@ -7,9 +7,9 @@ articles:
   web/font-functions: web/font-functions.html
   web/getting-started: web/getting-started.html
   web/other-table-formats: web/other-table-formats.html
-  struct-lists: struct-lists.html
+  web/struct-lists: web/struct-lists.html
   web/table-functions: web/table-functions.html
-last_built: 2025-09-19T23:54Z
+last_built: 2025-09-24T22:49Z
 urls:
   reference: https://terminological.github.io/ggrrr/reference
   article: https://terminological.github.io/ggrrr/articles

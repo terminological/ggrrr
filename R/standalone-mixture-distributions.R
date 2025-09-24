@@ -36,7 +36,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
 .pmixnorm = function(q, means, sds, weights = 1, na.rm = FALSE) {
@@ -57,7 +56,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
 .qmixnorm = function(
@@ -87,7 +85,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
 .pmixlnorm = function(q, meanlogs, sdlogs, weights = 1, na.rm = FALSE) {
@@ -108,7 +105,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
 #' .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
@@ -142,7 +138,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
 .pmixgamma = function(q, shapes, rates, weights = 1, na.rm = FALSE) {
@@ -163,7 +158,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
 #' .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
@@ -195,7 +189,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
 .pmixbeta = function(q, alphas, betas, weights = 1, na.rm = FALSE) {
@@ -216,7 +209,6 @@
 #' @keywords internal
 #' @concept distributions
 #'
-#' @examples
 #' @unit
 #' .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
 #' .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
@@ -241,6 +233,7 @@
     -10
   }
 ) {
+  means = unlist(means)
   if (any(is.na(means))) {
     return(all(is.na(means)))
   }
@@ -261,23 +254,18 @@
 #'
 #' @return a vector of probabilities the same length as input `x`
 #' @keywords internal
-#' @noRd
+#' @unit
 #'
-#' @examples
 #' # a single mixture with vectorised input:
 #' .pmix("norm", seq(-5,5,1), param1=c(-1,0,1), param2=c(1,1,1))
-#' # a dataframe of mixture distributions
-#' tmp = dplyr::tibble(
-#'   x = 1:3,
-#'   param1 = list(c(1,2),c(3,4,5),c(6,7,8,9)),
-#'   param2 = list(1,2,3)
-#' )
-#' tmp %>% dplyr::mutate(
-#'   pX = .pmix(pnorm, x, param1, param2),
-#'   qX = .qmixnorm(pX, param1,param2)
-#' ) %>% dplyr::glimpse()
 #'
-#' # same as last row above
+#' # `.pmix` does not support a list of lists as an input
+#' # i.e. it is vectorised over the input x, but each mixture distribution
+#' # is specified individually with a vector `param1` and `param2`, and it is
+#' # not vectorised on `param1` and `param2`. # This is a bit different to pnorm
+#' # for example # where multiple `mean`/`sd` values are supported and vectorised as well
+#' # as the x input.
+#'
 #' .pmix("norm", c(3,5,10), param1=c(6,7,8,9), param2=3)
 #'
 .pmix = function(dist, x, param1, param2, weights = 1, na.rm = FALSE) {
@@ -322,7 +310,7 @@
 
   tmp = sapply(
     seq_along(param1),
-    FUN = function(i) {
+    function(i) {
       return(pfn(x, param1[i], param2[i]))
     }
   )
@@ -352,7 +340,7 @@
   if (length(p) > 1) {
     stop(".qmixlist only can process a single quantile at a time")
   }
-  tmp = purrr::map2_dbl(.x = param1list, .y = param2list, .f = function(x, y) {
+  tmp = purrr::map2_dbl(.x = param1list, .y = param2list, function(x, y) {
     .qmix(
       dist = dist,
       p = p,

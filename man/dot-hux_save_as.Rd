@@ -51,3 +51,18 @@ be included into a latex document for example.
 }
 \concept{output}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+hux = iris \%>\% huxtable::as_hux() \%>\%
+  huxtable::theme_mondrian(font="Roboto")
+out = .hux_save_as(hux, tempfile())
+# browseURL(out$html)
+
+out2 = .hux_save_as(hux, tempfile(), formats=c("pdf","png"))
+as.character(out2)
+# The resulting pdf has fonts embedded & is multipage.
+
+}\if{html}{\out{</div>}}
+}
+

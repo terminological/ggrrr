@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">ggrrr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
     <li><a class="dropdown-item" href="../../articles/web/font-functions.html">Font functions</a></li>
     <li><a class="dropdown-item" href="../../articles/web/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../../articles/web/other-table-formats.html">Other table formats</a></li>
-    <li><a class="dropdown-item" href="../../articles/struct-lists.html">Structured lists</a></li>
+    <li><a class="dropdown-item" href="../../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../../articles/web/table-functions.html">Table functions</a></li>
   </ul>
 </li>
@@ -100,7 +100,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://terminological.github.io/ggrrr/index.html">ggrrr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../../reference/outputter.html">outputter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,datedFile <span class="op">=</span> <span class="cn">FALSE</span>,datedSubdirectory <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## directing output to: /tmp/RtmpHbIVz3</span></span></code></pre>
+<pre><code><span><span class="co">## directing output to: /tmp/Rtmpqdl1dI</span></span></code></pre>
 <div class="section level2">
 <h2 id="opinionated-defaults-for-figures">Opinionated defaults for figures<a class="anchor" aria-label="anchor" href="#opinionated-defaults-for-figures"></a>
 </h2>
@@ -161,8 +161,8 @@ saves an .Rdata of the ggplot object allowing later adjustment.</p>
 <span><span class="va">tmp</span> <span class="op">=</span> <span class="va">p2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/gg_save_as.html">gg_save_as</a></span><span class="op">(</span><span class="fu">out</span><span class="op">(</span><span class="st">"figure1"</span><span class="op">)</span>,size <span class="op">=</span> <span class="va">std_size</span><span class="op">$</span><span class="va">two_third</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "a ggplot with 3 outputs:"         "svg: /tmp/RtmpHbIVz3/figure1.svg"</span></span>
-<span><span class="co">#&gt; [3] "pdf: /tmp/RtmpHbIVz3/figure1.pdf" "png: /tmp/RtmpHbIVz3/figure1.png"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "a ggplot with 3 outputs:"         "svg: /tmp/Rtmpqdl1dI/figure1.svg"</span></span>
+<span><span class="co">#&gt; [3] "pdf: /tmp/Rtmpqdl1dI/figure1.pdf" "png: /tmp/Rtmpqdl1dI/figure1.png"</span></span></code></pre></div>
 <p>In general journals don’t like this mixture of figures and tables
 however simple tables are also good to add as annotations to a plot. For
 this annotating an unwrapped grob is needed e.g.:</p>

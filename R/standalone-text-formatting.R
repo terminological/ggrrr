@@ -30,7 +30,7 @@
 #' @return the formatted string
 #' @keywords internal
 #'
-#' @examples
+#'
 #' @unit
 #' # generate an IQR from data
 #' iris %>%
@@ -68,7 +68,7 @@
 #' @return a vector of character values
 #' @keywords internal
 #'
-#' @examples
+#'
 #' @unit
 #' .if_na( c(1,2,NA,4,5)/3, digits=2 )
 .if_na = function(x, na.replace = "\u2015", ...) {
@@ -91,7 +91,7 @@
 #' @return a vector of character values
 #' @keywords internal
 #'
-#' @examples
+#'
 #' @unit
 #' .if_present( c(1,2,NA,4,5)/3, digits=2 )
 .if_present = function(x, ...) {
@@ -113,7 +113,7 @@
 #' @return the formatted string with decimal points as specified
 #' @keywords internal
 #'
-#' @examples
+#'
 #' @unit
 #' .sprintf_dp("%1.2f",1:3/3, sep="\u00B7")
 #' .sprintf_dp("%1.2f-%1.2f", 1:3/3, 1:3, sep="\u00B7")
@@ -149,7 +149,7 @@
 #'   legacy pdf device
 #' @keywords internal
 #'
-#' @examples
+#'
 #' @unit
 #' .pdf_safe("test")
 #' .pdf_safe("\u00B1\u221E")

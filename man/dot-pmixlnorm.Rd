@@ -25,3 +25,10 @@ The cumulative density function of a mixture of log normal distributions
 }
 \concept{distributions}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+.pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
+}\if{html}{\out{</div>}}
+}
+

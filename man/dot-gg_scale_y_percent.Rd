@@ -17,12 +17,16 @@ a ggplot scale
 \description{
 A percentage y scale
 }
-\examples{
+\concept{ggplot}
+\keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
 
 tibble::tibble(pvalue = c(0.001, 0.05, 0.1), fold_change = 1:3) \%>\%
  ggplot2::ggplot(ggplot2::aes(fold_change , pvalue)) +
  ggplot2::geom_point() +
  scale_y_percent()
+}\if{html}{\out{</div>}}
 }
-\concept{ggplot}
-\keyword{internal}
+

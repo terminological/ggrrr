@@ -28,3 +28,11 @@ The main aim is to get something that works with google docs when you copy and p
 }
 \concept{huxtable}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+hux = iris \%>\% .hux_default_layout()
+testthat::expect_equal(rlang::hash(hux), "8dd7e558ac7d0e8d27b2f815f6065fe1")
+}\if{html}{\out{</div>}}
+}
+

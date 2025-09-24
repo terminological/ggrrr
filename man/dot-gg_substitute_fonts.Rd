@@ -18,3 +18,14 @@ Pick a locally installed font family that matches requested
 }
 \concept{ggplot}
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+testthat::expect_no_error({
+  suppressWarnings(
+   .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+  )
+})
+}\if{html}{\out{</div>}}
+}
+

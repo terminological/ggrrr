@@ -26,9 +26,11 @@
 #' @keywords internal
 #' @concept huxtable
 #'
-#' @examples
 #' @unit
-#' .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+#' tmp = suppressWarnings(
+#'   .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
+#' )
+#' testthat::expect_equal(tmp[[1]],"Roboto")
 .hux_substitute_fonts = function(family) {
   weight = path = NULL
 
@@ -94,9 +96,9 @@
 #' @keywords internal
 #' @concept huxtable
 #'
-#' @examples
 #' @unit
 #' hux = iris %>% .hux_default_layout()
+#' testthat::expect_equal(rlang::hash(hux), "8dd7e558ac7d0e8d27b2f815f6065fe1")
 .hux_default_layout = function(
   hux,
   defaultFontSize = 8,
@@ -429,7 +431,7 @@
     displayRedundantColumnNames = TRUE
   }
 
-  name = .y = .x = value = rows = .order = NULL # remove global binding note
+  n = name = .y = .x = value = rows = .order = NULL # remove global binding note
   rowGroupVars = .as_symbol_list(rowGroupVars)
   colGroupVars = .as_symbol_list(colGroupVars)
 

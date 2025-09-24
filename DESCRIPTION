@@ -1,6 +1,6 @@
 Package: ggrrr
 Title: Addressing Annoyances and Irritations
-Version: 0.0.0.9027
+Version: 0.0.0.9028
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -56,15 +56,18 @@ Imports:
     interfacer,
     PDQutils,
     fastmap,
-    httr
+    httr,
+    pkgtools,
+    whisker,
+    withr
 Suggests: 
     tidyverse,
     rmarkdown,
     gt,
     rJava,
     testthat (>= 3.0.0),
-    Cairo.
-    pkgtools
+    Cairo
+Remotes: terminological/pkgtools
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3.9007
 URL: https://terminological.github.io/ggrrr/index.html, https://github.com/terminological/ggrrr, https://terminological.github.io/ggrrr/
@@ -72,3 +75,5 @@ BugReports: https://github.com/terminological/ggrrr/issues
 Config/testthat/edition: 3
 SystemRequirements: Google Chrome or other Chromium-based browser.
     chromium: chromium (rpm) or chromium-browser (deb)
+Depends: 
+    R (>= 3.5)

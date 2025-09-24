@@ -16,3 +16,27 @@ the name as a string, as the function was defined
 Get the defined name of a function
 }
 \keyword{internal}
+
+\section{Unit tests}{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+
+f = tolower
+
+testthat::expect_equal(
+  .get_fn_name(f),
+  .get_fn_name(tolower)
+)
+
+testthat::expect_equal(
+  .get_fn_name(.get_fn_name),
+  ".get_fn_name"
+)
+
+testthat::expect_equal(
+  .get_fn_name(function(x) x),
+  "<unknown>"
+)
+
+}\if{html}{\out{</div>}}
+}
+
