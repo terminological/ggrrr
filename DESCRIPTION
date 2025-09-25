@@ -76,5 +76,5 @@ Config/testthat/edition: 3
 SystemRequirements: Google Chrome or other Chromium-based browser.
     chromium: chromium (rpm) or chromium-browser (deb)
 Depends: 
-    R (>= 3.5)
+    R (>= 4.4)
 Roxygen: list(markdown = TRUE)
