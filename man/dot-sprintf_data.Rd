@@ -2,7 +2,7 @@
 % Please edit documentation in R/standalone-text-formatting.R
 \name{.sprintf_data}
 \alias{.sprintf_data}
-\title{`sprintf` with a list(ish) input}
+\title{\code{sprintf} with a list(ish) input}
 \usage{
 .sprintf_data(fmt, params, ..., na.replace = "―")
 }
@@ -24,7 +24,7 @@ the formatted string
 \description{
 A variant of sprintf that work well with inputs that are in the format of a list
 or a dataframe. Examples of which are the quantile functions. This falls
-in between `sprintf` and `glue::glue_data` in complexity.
+in between \code{sprintf} and \code{glue::glue_data} in complexity.
 }
 \keyword{internal}
 

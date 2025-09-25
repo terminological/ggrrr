@@ -13,30 +13,31 @@ test_that(".recycle unit test", {
   # or navigate to topic with <F2>
   F2 = .recycle
   
-  
-  testfn = function(a, b, c) {
-    n = .recycle(a,b,c)
+  testfn <- function(a, b, c) {
+    n <- .recycle(a, b, c)
     return(list(
-      a=a, b=b, c=c, n=n
+      a = a,
+      b = b,
+      c = c,
+      n = n
     ))
   }
   
-  tmp = testfn(a=c(1,2,3), b="needs recycling", c=NULL)
+  tmp <- testfn(a = c(1, 2, 3), b = "needs recycling", c = NULL)
   
   testthat::expect_equal(tmp$n, 3)
   testthat::expect_null(tmp$c)
   testthat::expect_equal(length(tmp$a), length(tmp$b))
   
   # no parameter
-  testthat::expect_error(testfn(a=c(1,2,3), c=NULL))
+  testthat::expect_error(testfn(a = c(1, 2, 3), c = NULL))
   
   
-  tmp = testfn(a=character(), b=integer(), c=NULL)
-  testthat::expect_equal(tmp$n,0)
+  tmp <- testfn(a = character(), b = integer(), c = NULL)
+  testthat::expect_equal(tmp$n, 0)
   
   # inconsistent to have a zero length and a non zero length
-  testthat::expect_error(testfn(a=c("a","b"), b=integer(), c=NULL))
-  
+  testthat::expect_error(testfn(a = c("a", "b"), b = integer(), c = NULL))
 })
 
 # unit test end: .recycle ----

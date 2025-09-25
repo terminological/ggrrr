@@ -6,6 +6,7 @@
 #'
 #' @return the font family name if it can be located or an empty list otherwise
 #' @export
+#' @concept fonts
 #' @examples
 #' fonts_available(c("Arial","sdfdsfsd"))
 fonts_available = function(family) {
@@ -35,6 +36,7 @@ fonts_available = function(family) {
 #' @param .legacy should we try and register fonts
 #'
 #' @return the font family name if it can be located or an alternative if not.
+#' @concept fonts
 #' @export
 #' @examples
 #' check_font(c("Roboto","Arial","Kings","EB Garamond"))
@@ -165,6 +167,7 @@ check_font = function(family, .legacy = FALSE) {
 #'
 #' @return nothing
 #' @export
+#' @concept fonts
 reset_fonts = function(
   confirm = utils::askYesNo(msg = "Are you sure?", default = FALSE),
   web = FALSE,
@@ -214,6 +217,7 @@ N.b. This will NOT remove any custom fonts installed on your system by `ggrrr`."
 #' `systemfonts`. This does a full rebuild and will be slow (depending a bit )
 #'
 #' @return nothing
+#' @concept fonts
 #' @export
 rebuild_fonts = function() {
   systemfonts::system_fonts()

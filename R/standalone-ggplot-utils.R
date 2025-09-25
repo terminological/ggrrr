@@ -301,11 +301,7 @@
 #' @concept ggplot
 #'
 #' @unit
-#' testthat::expect_no_error({
-#'   suppressWarnings(
-#'    .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
-#'   )
-#' })
+#' .gg_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
 .gg_substitute_fonts = function(family) {
   weight = path = NULL
 

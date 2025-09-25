@@ -12,11 +12,11 @@
 \item{nframe}{where to start the search}
 }
 \value{
-a `.class` object
+a \code{.class} object
 }
 \description{
 Finds the first instance of a function in the call stack that
-was called with a object of `.class`. This can be used to find
+was called with a object of \code{.class}. This can be used to find
 dataframe parameters in tidy calls
 }
 \keyword{internal}

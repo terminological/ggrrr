@@ -16,11 +16,11 @@ the font family name if it can be located or an alternative if not.
 }
 \description{
 This checks to see if a font exists. If missing it will try and install from
-`google fonts` or `brick.io`. If nothing can be done it will suggest alternatives
-from `fonts_available()`. In all cases this will make the font available to
-`systemfonts` (for `ragg` and `svg` devices), and `extrafonts` (for `pdf` etc).
+\verb{google fonts} or \code{brick.io}. If nothing can be done it will suggest alternatives
+from \code{fonts_available()}. In all cases this will make the font available to
+\code{systemfonts} (for \code{ragg} and \code{svg} devices), and \code{extrafonts} (for \code{pdf} etc).
 Webfonts are automatically downloaded into the users font directory and from
-there will be picked up by `cairo` devices in theory, and system pdf/svg
+there will be picked up by \code{cairo} devices in theory, and system pdf/svg
 viewers. In practice this is a bit hit and miss.
 }
 \examples{
@@ -101,3 +101,4 @@ if (FALSE) {
 
 }
 }
+\concept{fonts}

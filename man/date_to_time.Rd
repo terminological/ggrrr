@@ -22,6 +22,7 @@ a sequence of numeric time points as the number of periods since day zero
 }
 \description{
 Using a day_zero and a unit specification or a full sequence of dates (see 'full_seq_dates()')
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # DEPRECATED

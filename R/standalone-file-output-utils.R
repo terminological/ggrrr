@@ -131,9 +131,7 @@ std_size = list(
 #' @keywords internal
 #' @concept output
 #' @unit
-#' testthat::expect_no_error(
-#'   suppressWarnings(.this_script())
-#' )
+#' .this_script()
 .this_script = function() {
   if (.is_knitting()) {
     return(knitr::current_input(dir = TRUE))
@@ -183,9 +181,7 @@ std_size = list(
 #' @concept output
 #'
 #' @unit
-#' testthat::expect_no_error(
-#'  suppressWarnings(.locate_project())
-#' )
+#' .locate_project()
 .locate_project = function(inputFile = .this_script()) {
   . = NULL
   absPath = inputFile %>% fs::path_expand()
@@ -266,9 +262,7 @@ std_size = list(
 #' @concept output
 #'
 #' @unit
-#' testthat::expect_no_error(
-#'  suppressWarnings(.here("vignettes"))
-#' )
+#' .here("vignettes")
 .here = function(..., projRoot = .locate_project()) {
   return(fs::path(projRoot, ...))
 }

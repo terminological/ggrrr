@@ -23,3 +23,4 @@ nothing
 \description{
 This wipes a lot of cached font data.
 }
+\concept{fonts}

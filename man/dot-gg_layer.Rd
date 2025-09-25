@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{geom}{The `ggplot2` layer e.g. `ggplot2::GeomPoint`}
+\item{geom}{The \code{ggplot2} layer e.g. \code{ggplot2::GeomPoint}}
 
 \item{data}{the data you are going to plot - optional and will be inherited}
 
@@ -22,11 +22,11 @@
 or augmented (see example)}
 
 \item{...}{inherit from the higher level function to enable user customisation
-these are checked for their relevance to the `geom` before being passed on}
+these are checked for their relevance to the \code{geom} before being passed on}
 
 \item{.default}{a list containing default aesthetics e.g.
-`list(colour='blue')` that can be overridden by the user if they supply a
-`...` or `mapping` aesthetic that overrides.}
+\code{list(colour='blue')} that can be overridden by the user if they supply a
+\code{...} or \code{mapping} aesthetic that overrides.}
 
 \item{.switch_fill}{do you want to use the colour aesthetic for fill for this
 layer. Most commonly I want to do this with ribbons.}
@@ -41,7 +41,7 @@ sources. I often want to reuse this and apply similar options to several
 layers at once, without causing a whole lot of grief. This function allows
 you to pass on data, augment a aesthetic mapping, and pass on other styling
 to a set of layers filtering them so they are relevant to the geom. I almost
-never want `inherit.aes` to be true.
+never want \code{inherit.aes} to be true.
 }
 \keyword{internal}
 

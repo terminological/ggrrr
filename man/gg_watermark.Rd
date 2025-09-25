@@ -12,7 +12,9 @@ gg_watermark(
 \arguments{
 \item{lab}{the watermark label (DRAFT)}
 
-\item{disable}{- global option to disable all watermarks options("ggrrr.disable.watermark"=TRUE)}
+\item{disable}{\itemize{
+\item global option to disable all watermarks options("ggrrr.disable.watermark"=TRUE)
+}}
 }
 \value{
 a watermark layer

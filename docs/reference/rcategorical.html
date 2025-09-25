@@ -21,7 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/web/cache-functions.html">Caching functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/figure-functions.html">Figure functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
-    <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
     <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
@@ -66,13 +66,13 @@ normalised to sum to 1</p></dd>
 
 <dt id="arg-factor">factor<a class="anchor" aria-label="anchor" href="#arg-factor"></a></dt>
 <dd><p>if not FALSE then factor levels will either be taken from the
-names of `prob` first, or if this is a character vector from this.</p></dd>
+names of <code>prob</code> first, or if this is a character vector from this.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a vector of random class labels of length `n`. Labels come from names
-  of `prob` or from a character vector in `factor`.</p>
+    <p>a vector of random class labels of length <code>n</code>. Labels come from names
+of <code>prob</code> or from a character vector in <code>factor</code>.</p>
     </div>
 
     <div class="section level2">
@@ -82,12 +82,12 @@ names of `prob` first, or if this is a character vector from this.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">rcategorical</span><span class="op">(</span><span class="fl">1000</span>,<span class="va">prob</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   one seven   two </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    83   726   191 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    78   728   194 </span>
 <span class="r-in"><span><span class="fu">rcategorical</span><span class="op">(</span><span class="fl">10</span>,<span class="va">prob</span>,factor<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] seven two   seven seven seven seven two   two   one   two  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] seven seven seven seven one   two   seven seven seven seven</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: one two seven</span>
 <span class="r-in"><span><span class="fu">rcategorical</span><span class="op">(</span><span class="fl">10</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">26</span><span class="op">)</span>,factor<span class="op">=</span><span class="va">letters</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] m k k t b v z z g t</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] l s z c k w n k a t</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

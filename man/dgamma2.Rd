@@ -43,6 +43,6 @@ Density, distribution function, quantile function and random
 dgamma2(seq(0,4,0.25), 2, 1)
 }
 \seealso{
-[stats::dgamma()]
+\code{\link[stats:GammaDist]{stats::dgamma()}}
 }
 \concept{distributions}

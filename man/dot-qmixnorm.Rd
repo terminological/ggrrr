@@ -25,12 +25,12 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
+\item{method}{one of \code{exact} (solve with uniroot), \code{samples} (random resampling), \code{moments} (Cornish Fisher approximation)}
 
-\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+\item{...}{passed on to internal function, \code{samples=TRUE} to force random sampling}
 }
 \value{
-the value of the `p`th quantile
+the value of the \code{p}th quantile
 }
 \description{
 A quantile function for a mixture of normal distributions

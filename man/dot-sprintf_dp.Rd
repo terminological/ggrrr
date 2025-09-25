@@ -23,10 +23,10 @@
 the formatted string with decimal points as specified
 }
 \description{
-`sprintf` will respect decimal point conventions only if you switch locale.
-This is unwieldy and not in line with `format`. This wrapper around `sprintf`
-replaces decimal points with a `sep` character of your choice, sensible choices
-for which are `,` or `UTF8+00B7`. It will not try and replace things that are
+\code{sprintf} will respect decimal point conventions only if you switch locale.
+This is unwieldy and not in line with \code{format}. This wrapper around \code{sprintf}
+replaces decimal points with a \code{sep} character of your choice, sensible choices
+for which are \verb{,} or \verb{UTF8+00B7}. It will not try and replace things that are
 not syntactially numbers.
 }
 \keyword{internal}

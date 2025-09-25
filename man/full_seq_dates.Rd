@@ -20,6 +20,7 @@ a vector of dates for complete between the minimum and maximum of dates, on the 
 }
 \description{
 Convert a vector of observation dates to a ordered sequence of every day in the time series
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")

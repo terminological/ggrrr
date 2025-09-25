@@ -13,7 +13,9 @@ gg_simple_table(df, pts = 8, font = "sans", unwrapped = FALSE)
 
 \item{font}{the font family}
 
-\item{unwrapped}{- set this to TRUE if you want to add to a patchwork and use patchwork::wrap_plots(p,list(table))}
+\item{unwrapped}{\itemize{
+\item set this to TRUE if you want to add to a patchwork and use patchwork::wrap_plots(p,list(table))
+}}
 }
 \value{
 A gtable object (i.e. a grob) optionally wrapped as a patchwork plot.

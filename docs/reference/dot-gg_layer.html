@@ -5,13 +5,13 @@ sources. I often want to reuse this and apply similar options to several
 layers at once, without causing a whole lot of grief. This function allows
 you to pass on data, augment a aesthetic mapping, and pass on other styling
 to a set of layers filtering them so they are relevant to the geom. I almost
-never want `inherit.aes` to be true."><meta property="og:description" content="I often want to make a function that does both data manipulation or
+never want inherit.aes to be true."><meta property="og:description" content="I often want to make a function that does both data manipulation or
 summarisation and plotting of the summary, or combines data from multiple
 sources. I often want to reuse this and apply similar options to several
 layers at once, without causing a whole lot of grief. This function allows
 you to pass on data, augment a aesthetic mapping, and pass on other styling
 to a set of layers filtering them so they are relevant to the geom. I almost
-never want `inherit.aes` to be true."><meta property="og:image" content="https://terminological.github.io/ggrrr/logo.svg"></head><body>
+never want inherit.aes to be true."><meta property="og:image" content="https://terminological.github.io/ggrrr/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +33,7 @@ never want `inherit.aes` to be true."><meta property="og:image" content="https:/
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/web/cache-functions.html">Caching functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/figure-functions.html">Figure functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
-    <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
     <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
@@ -61,7 +61,7 @@ sources. I often want to reuse this and apply similar options to several
 layers at once, without causing a whole lot of grief. This function allows
 you to pass on data, augment a aesthetic mapping, and pass on other styling
 to a set of layers filtering them so they are relevant to the geom. I almost
-never want `inherit.aes` to be true.</p>
+never want <code>inherit.aes</code> to be true.</p>
     </div>
 
     <div class="section level2">
@@ -81,7 +81,7 @@ never want `inherit.aes` to be true.</p>
 
 
 <dl><dt id="arg-geom">geom<a class="anchor" aria-label="anchor" href="#arg-geom"></a></dt>
-<dd><p>The `ggplot2` layer e.g. `ggplot2::GeomPoint`</p></dd>
+<dd><p>The <code>ggplot2</code> layer e.g. <code><a href="https://ggplot2.tidyverse.org/reference/Geom.html" class="external-link">ggplot2::GeomPoint</a></code></p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
@@ -95,13 +95,13 @@ or augmented (see example)</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>inherit from the higher level function to enable user customisation
-these are checked for their relevance to the `geom` before being passed on</p></dd>
+these are checked for their relevance to the <code>geom</code> before being passed on</p></dd>
 
 
 <dt id="arg--default">.default<a class="anchor" aria-label="anchor" href="#arg--default"></a></dt>
 <dd><p>a list containing default aesthetics e.g.
-`list(colour='blue')` that can be overridden by the user if they supply a
-`...` or `mapping` aesthetic that overrides.</p></dd>
+<code>list(colour='blue')</code> that can be overridden by the user if they supply a
+<code>...</code> or <code>mapping</code> aesthetic that overrides.</p></dd>
 
 
 <dt id="arg--switch-fill">.switch_fill<a class="anchor" aria-label="anchor" href="#arg--switch-fill"></a></dt>

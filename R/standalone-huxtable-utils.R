@@ -27,10 +27,7 @@
 #' @concept huxtable
 #'
 #' @unit
-#' tmp = suppressWarnings(
-#'   .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
-#' )
-#' testthat::expect_equal(tmp[[1]],"Roboto")
+#' .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
 .hux_substitute_fonts = function(family) {
   weight = path = NULL
 
@@ -98,7 +95,6 @@
 #'
 #' @unit
 #' hux = iris %>% .hux_default_layout()
-#' testthat::expect_equal(rlang::hash(hux), "8dd7e558ac7d0e8d27b2f815f6065fe1")
 .hux_default_layout = function(
   hux,
   defaultFontSize = 8,

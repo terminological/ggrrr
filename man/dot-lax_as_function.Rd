@@ -13,7 +13,7 @@
 the function or primitive
 }
 \description{
-like `rlang::as_function` but only interprets functions or formulae
+like \code{rlang::as_function} but only interprets functions or formulae
 and ignores primitives and characters.
 }
 \keyword{internal}

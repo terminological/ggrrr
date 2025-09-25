@@ -20,32 +20,32 @@ is.struct_list(x, .class = NULL)
 }
 \arguments{
 \item{...}{a set of named values to use in the structure. or an unnamed list
-of `struct`s of the same type}
+of \code{struct}s of the same type}
 
 \item{.class}{the class of the nested list}
 
 \item{.attr}{attributes to assign to the structure}
 }
 \value{
-Usually a length one `struct_list` with a single `struct` item with class `.class`
-  and attributes `.attr`. If a list of `struct`s is provided then it will be
-  longer than 1.
+Usually a length one \code{struct_list} with a single \code{struct} item with class \code{.class}
+and attributes \code{.attr}. If a list of \code{struct}s is provided then it will be
+longer than 1.
 }
 \description{
 Create a structure.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{as.list(struct)}: Make `struct` into plain list
+\item \code{as.list(struct)}: Make \code{struct} into plain list
 
 }}
 \section{Functions}{
 \itemize{
-\item \code{is.struct()}: Check is a `struct`
+\item \code{is.struct()}: Check is a \code{struct}
 
-\item \code{as.struct()}: Cast to a `struct`
+\item \code{as.struct()}: Cast to a \code{struct}
 
-\item \code{is.struct_list()}: is a list of `structs`?
+\item \code{is.struct_list()}: is a list of \code{structs}?
 
 }}
 \examples{

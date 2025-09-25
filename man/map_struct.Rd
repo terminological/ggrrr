@@ -7,16 +7,16 @@
 map_struct(.x, .f, ..., .progress = FALSE)
 }
 \arguments{
-\item{.x}{a `struct_list`}
+\item{.x}{a \code{struct_list}}
 
 \item{.f}{a function to apply to each structure}
 
-\item{...}{additional parameters to  `.f` but anonymous function preferred}
+\item{...}{additional parameters to  \code{.f} but anonymous function preferred}
 
 \item{.progress}{display a progress bar (logical or string name)}
 }
 \value{
-a `struct_list`
+a \code{struct_list}
 }
 \description{
 The map functions transform their input by applying a function to
@@ -35,6 +35,6 @@ the input \code{.x}.
 }
 }
 \seealso{
-[purrr::map()]
+\code{\link[purrr:map]{purrr::map()}}
 }
 \concept{structures}

@@ -6,10 +6,10 @@
 \title{The glyphmap dataset}
 \format{
 A dataframe containing the following columns:
-
-* agl (character) - the agl: adobe glyph label
-
-* unicode (character) - the unicode code
+\itemize{
+\item agl (character) - the agl: adobe glyph label
+\item unicode (character) - the unicode code
+}
 
 4281 rows and 2 columns
 }
@@ -20,6 +20,7 @@ data(glyphmap)
 The adobe glyph name to UTF cross map.
 }
 \details{
-from `https://raw.githubusercontent.com/adobe-type-tools/agl-aglfn/refs/heads/master/glyphlist.txt`
+from \verb{https://raw.githubusercontent.com/adobe-type-tools/agl-aglfn/refs/heads/master/glyphlist.txt}
 }
+\concept{fonts}
 \keyword{datasets}

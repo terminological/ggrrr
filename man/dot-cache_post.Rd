@@ -10,7 +10,7 @@
   as = c("text", "raw", "parsed", "httr"),
   ...,
   .nocache = getOption("cache.disable", default = FALSE),
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .cache = .cache_loc(),
   .stale = Inf
 )
 }
@@ -51,11 +51,11 @@ details.}
 }}
 
 \item{.nocache}{an option to defeat the cacheing which can be set globally as
-`options("cache.disable"=TRUE)`}
+\code{options("cache.disable"=TRUE)}}
 
 \item{.cache}{the location of the cache as a directory. May get its value
-from `getOption("cache.path")` or the default value which is
-`rappdirs::user_cache_dir(<package_name>)`}
+from \code{getOption("cache.path")} or the default value which is
+\verb{rappdirs::user_cache_dir(<package_name>)}}
 
 \item{.stale}{the length of time in days before considering cached data as
 stale.}

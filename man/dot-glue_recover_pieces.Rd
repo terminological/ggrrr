@@ -13,10 +13,10 @@
 }
 \value{
 a dataframe with a column per piece which could have been used in
-  `glue::glue_data(.x,glue_spec)` apart from leading white space.
+\code{glue::glue_data(.x,glue_spec)} apart from leading white space.
 }
 \description{
-This function allow for the reverse of the `glue::glue_data()` operation
+This function allow for the reverse of the \code{glue::glue_data()} operation
 and regenerates the data as a dataframe. It won't work for very complex glue
 specifications and will only return strings.
 }

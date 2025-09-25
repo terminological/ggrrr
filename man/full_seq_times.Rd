@@ -27,7 +27,7 @@ full_seq_times(
 a complete set of timepoints on the same scale as the original but with potentially different frequency. This will probably involve non integer times
 }
 \description{
-Generate a full regular timepoint sequence
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # DEPRECATED

@@ -5,11 +5,11 @@ articles:
   web/cache-functions: web/cache-functions.html
   web/figure-functions: web/figure-functions.html
   web/font-functions: web/font-functions.html
-  web/getting-started: web/getting-started.html
+  getting-started: getting-started.html
   web/other-table-formats: web/other-table-formats.html
   web/struct-lists: web/struct-lists.html
   web/table-functions: web/table-functions.html
-last_built: 2025-09-24T22:49Z
+last_built: 2025-09-25T14:21Z
 urls:
   reference: https://terminological.github.io/ggrrr/reference
   article: https://terminological.github.io/ggrrr/articles

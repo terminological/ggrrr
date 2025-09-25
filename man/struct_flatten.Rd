@@ -2,18 +2,18 @@
 % Please edit documentation in R/standalone-struct-list.R
 \name{struct_flatten}
 \alias{struct_flatten}
-\title{Ensure `struct_list` is a flat list of `structs`}
+\title{Ensure \code{struct_list} is a flat list of \code{structs}}
 \usage{
 struct_flatten(x)
 }
 \arguments{
-\item{x}{a potentially nested list of `struct_lists`.}
+\item{x}{a potentially nested list of \code{struct_lists}.}
 }
 \value{
-a flat `struct_list` of `structs`
+a flat \code{struct_list} of \code{structs}
 }
 \description{
-Unlike `purrr::list_flatten` this is recursive for one reason
-which is that a `struct_list` must only contain `structs`.
+Unlike \code{purrr::list_flatten} this is recursive for one reason
+which is that a \code{struct_list} must only contain \code{structs}.
 }
 \concept{structures}

@@ -13,16 +13,13 @@ test_that(".lax_as_function unit test", {
   # or navigate to topic with <F2>
   F2 = .lax_as_function
   
-  
-  
-  f1 = .lax_as_function(tolower)
-  f2 = .lax_as_function(~ tolower(.x))
-  f3 = .lax_as_function("hello world")
+  f1 <- .lax_as_function(tolower)
+  f2 <- .lax_as_function(~ tolower(.x))
+  f3 <- .lax_as_function("hello world")
   
   testthat::expect_equal(f1, tolower)
   testthat::expect_equal(f2("HELLO WORLD"), f1("HELLO WORLD"))
   testthat::expect_equal(f3, f1("HELLO WORLD"))
-  
 })
 
 # unit test end: .lax_as_function ----
@@ -36,9 +33,7 @@ test_that(".get_fn_name unit test", {
   # or navigate to topic with <F2>
   F2 = .get_fn_name
   
-  
-  
-  f = tolower
+  f <- tolower
   
   testthat::expect_equal(
     .get_fn_name(f),
@@ -54,7 +49,6 @@ test_that(".get_fn_name unit test", {
     .get_fn_name(function(x) x),
     "<unknown>"
   )
-  
 })
 
 # unit test end: .get_fn_name ----
@@ -68,19 +62,20 @@ test_that(".search_call_stack unit test", {
   # or navigate to topic with <F2>
   F2 = .search_call_stack
   
-  
-  
-  h = function() {
-   df = .search_call_stack(.class = "data.frame")
-   return(nrow(df))
+  h <- function() {
+    df <- .search_call_stack(.class = "data.frame")
+    return(nrow(df))
   }
   
-  g = function() {h()}
+  g <- function() {
+    h()
+  }
   
-  f = function(x) {g()}
+  f <- function(x) {
+    g()
+  }
   
-  testthat::expect_equal( f(datasets::iris), nrow(datasets::iris))
-  
+  testthat::expect_equal(f(datasets::iris), nrow(datasets::iris))
 })
 
 # unit test end: .search_call_stack ----
@@ -94,9 +89,7 @@ test_that(".find_namespace unit test", {
   # or navigate to topic with <F2>
   F2 = .find_namespace
   
-  
-  
-  env = .find_namespace(rlang::abort)
+  env <- .find_namespace(rlang::abort)
   testthat::expect_equal(unname(getNamespaceName(env)), "rlang")
   
   # TODO: this test fails when running in testthat environment but not otherwise
@@ -104,7 +97,6 @@ test_that(".find_namespace unit test", {
   # assign("f", function() {"test"}, envir = env)
   # env2 = .find_namespace(env$f)
   # testthat::expect_null(.find_namespace(env$f))
-  
 })
 
 # unit test end: .find_namespace ----

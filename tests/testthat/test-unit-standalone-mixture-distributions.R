@@ -13,10 +13,20 @@ test_that(".pmixnorm unit test", {
   # or navigate to topic with <F2>
   F2 = .pmixnorm
   
-  testthat::expect_no_error({
-    
-    .pmixnorm(q=c(2,20), means=c(10,13,14), sds=c(1,1,2), weights=c(2,2,3))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .pmixnorm(
+        q = c(2, 20),
+        means = c(10, 13, 14),
+        sds = c(1, 1, 2),
+        weights = c(2, 2, 3)
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pmixnorm ----
@@ -30,10 +40,15 @@ test_that(".qmixnorm unit test", {
   # or navigate to topic with <F2>
   F2 = .qmixnorm
   
-  testthat::expect_no_error({
-    
-    .qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .qmixnorm(p = c(0.025, 0.5, 0.975), means = c(10, 13, 14), sds = c(1, 1, 2))
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .qmixnorm ----
@@ -47,10 +62,20 @@ test_that(".pmixlnorm unit test", {
   # or navigate to topic with <F2>
   F2 = .pmixlnorm
   
-  testthat::expect_no_error({
-    
-    .pmixlnorm(q=c(2,20), meanlogs=c(1.0,1.3,1.4), sdlogs=c(1,1,2), weights=c(2,2,3))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .pmixlnorm(
+        q = c(2, 20),
+        meanlogs = c(1.0, 1.3, 1.4),
+        sdlogs = c(1, 1, 2),
+        weights = c(2, 2, 3)
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pmixlnorm ----
@@ -64,13 +89,31 @@ test_that(".qmixlnorm unit test", {
   # or navigate to topic with <F2>
   F2 = .qmixlnorm
   
-  testthat::expect_no_error({
-    
-    .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2))
-    .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="samples")
-    .qmixlnorm(p=c(0.025,0.5,0.975), meanlogs=c(1,1.3,1.4), sdlogs=c(0.1,0.1,0.2), method="moments")
-    
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .qmixlnorm(
+        p = c(0.025, 0.5, 0.975),
+        meanlogs = c(1, 1.3, 1.4),
+        sdlogs = c(0.1, 0.1, 0.2)
+      )
+      .qmixlnorm(
+        p = c(0.025, 0.5, 0.975),
+        meanlogs = c(1, 1.3, 1.4),
+        sdlogs = c(0.1, 0.1, 0.2),
+        method = "samples"
+      )
+      .qmixlnorm(
+        p = c(0.025, 0.5, 0.975),
+        meanlogs = c(1, 1.3, 1.4),
+        sdlogs = c(0.1, 0.1, 0.2),
+        method = "moments"
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .qmixlnorm ----
@@ -84,10 +127,20 @@ test_that(".pmixgamma unit test", {
   # or navigate to topic with <F2>
   F2 = .pmixgamma
   
-  testthat::expect_no_error({
-    
-    .pmixgamma(q=c(2,20), shapes=c(10,13,14), rates=c(1,1,1), weights=c(2,2,3))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .pmixgamma(
+        q = c(2, 20),
+        shapes = c(10, 13, 14),
+        rates = c(1, 1, 1),
+        weights = c(2, 2, 3)
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pmixgamma ----
@@ -101,11 +154,26 @@ test_that(".qmixgamma unit test", {
   # or navigate to topic with <F2>
   F2 = .qmixgamma
   
-  testthat::expect_no_error({
-    
-    .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="moments")
-    .qmixgamma(p=c(0.025,0.5,0.975), shapes=c(10,13,14), rates=c(1,1,2), method="exact")
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .qmixgamma(
+        p = c(0.025, 0.5, 0.975),
+        shapes = c(10, 13, 14),
+        rates = c(1, 1, 2),
+        method = "moments"
+      )
+      .qmixgamma(
+        p = c(0.025, 0.5, 0.975),
+        shapes = c(10, 13, 14),
+        rates = c(1, 1, 2),
+        method = "exact"
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .qmixgamma ----
@@ -119,10 +187,20 @@ test_that(".pmixbeta unit test", {
   # or navigate to topic with <F2>
   F2 = .pmixbeta
   
-  testthat::expect_no_error({
-    
-    .pmixbeta(q=c(2,20), alphas=c(10,13,14), betas=c(1,1,1), weights=c(2,2,3))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .pmixbeta(
+        q = c(2, 20),
+        alphas = c(10, 13, 14),
+        betas = c(1, 1, 1),
+        weights = c(2, 2, 3)
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pmixbeta ----
@@ -136,11 +214,21 @@ test_that(".qmixbeta unit test", {
   # or navigate to topic with <F2>
   F2 = .qmixbeta
   
-  testthat::expect_no_error({
-    
-    .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2))
-    .qmixbeta(p=c(0.025,0.5,0.975), alphas=c(10,13,14), betas=c(1,1,2), method="moments")
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .qmixbeta(p = c(0.025, 0.5, 0.975), alphas = c(10, 13, 14), betas = c(1, 1, 2))
+      .qmixbeta(
+        p = c(0.025, 0.5, 0.975),
+        alphas = c(10, 13, 14),
+        betas = c(1, 1, 2),
+        method = "moments"
+      )
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .qmixbeta ----
@@ -154,22 +242,25 @@ test_that(".pmix unit test", {
   # or navigate to topic with <F2>
   F2 = .pmix
   
-  testthat::expect_no_error({
-    
-    
-    # a single mixture with vectorised input:
-    .pmix("norm", seq(-5,5,1), param1=c(-1,0,1), param2=c(1,1,1))
-    
-    # `.pmix` does not support a list of lists as an input
-    # i.e. it is vectorised over the input x, but each mixture distribution
-    # is specified individually with a vector `param1` and `param2`, and it is
-    # not vectorised on `param1` and `param2`. # This is a bit different to pnorm
-    # for example # where multiple `mean`/`sd` values are supported and vectorised as well
-    # as the x input.
-    
-    .pmix("norm", c(3,5,10), param1=c(6,7,8,9), param2=3)
-    
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      # a single mixture with vectorised input:
+      .pmix("norm", seq(-5, 5, 1), param1 = c(-1, 0, 1), param2 = c(1, 1, 1))
+  
+      # `.pmix` does not support a list of lists as an input
+      # i.e. it is vectorised over the input x, but each mixture distribution
+      # is specified individually with a vector `param1` and `param2`, and it is
+      # not vectorised on `param1` and `param2`. # This is a bit different to pnorm
+      # for example # where multiple `mean`/`sd` values are supported and vectorised as well
+      # as the x input.
+  
+      .pmix("norm", c(3, 5, 10), param1 = c(6, 7, 8, 9), param2 = 3)
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pmix ----

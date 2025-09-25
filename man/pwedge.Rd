@@ -21,7 +21,7 @@ The wedge distribution has a domain of 0 to 1 and has a linear probability
 density function over that domain.
 }
 \details{
-The `rwedge` can be combined with quantile functions to
+The \code{rwedge} can be combined with quantile functions to
 skew standard distributions, or introduce correlation or down weight
 certain parts of the distribution.
 }

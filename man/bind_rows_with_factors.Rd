@@ -23,3 +23,4 @@ bind_rows_with_factors(iris,
  dplyr::pull(Species) \%>\%
  levels()
 }
+\concept{tidydata}

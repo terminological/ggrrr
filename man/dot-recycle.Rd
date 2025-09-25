@@ -17,8 +17,8 @@
 the length of the longest variable
 }
 \description{
-`.recycle` is called within a function and ensures the parameters in the
-calling function are all the same length by repeating them using `rep`. This
+\code{.recycle} is called within a function and ensures the parameters in the
+calling function are all the same length by repeating them using \code{rep}. This
 function alters the environment from which it is called. It is stricter than
 R recycling in that it will not repeat vectors other than length one to match
 the longer ones, and it throws more informative errors.

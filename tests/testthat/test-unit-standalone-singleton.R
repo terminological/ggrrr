@@ -13,11 +13,10 @@ test_that(".singleton unit test", {
   # or navigate to topic with <F2>
   F2 = .singleton
   
-  
-  fixed_rnorm = .singleton(rnorm(10))
-  a = fixed_rnorm()
-  b = fixed_rnorm()
-  testthat::expect_equal(a,b)
+  fixed_rnorm <- .singleton(rnorm(10))
+  a <- fixed_rnorm()
+  b <- fixed_rnorm()
+  testthat::expect_equal(a, b)
 })
 
 # unit test end: .singleton ----

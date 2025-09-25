@@ -13,19 +13,16 @@ test_that(".cached unit test", {
   # or navigate to topic with <F2>
   F2 = .cached
   
-  
-  
   # we use `rnorm` here to prove that the cache is working but in reality
   # you would normally only use something deterministic in `.expr`:
-  x = 100
-  tmp = .cached(stats::rnorm(x), x)
-  tmp2 = .cached(stats::rnorm(x), x)
+  x <- 100
+  tmp <- .cached(stats::rnorm(x), x)
+  tmp2 <- .cached(stats::rnorm(x), x)
   testthat::expect_equal(tmp, tmp2)
   
-  x = 200
-  tmp3 = .cached(stats::rnorm(x), x)
+  x <- 200
+  tmp3 <- .cached(stats::rnorm(x), x)
   testthat::expect_equal(x, length(tmp3))
-  
 })
 
 # unit test end: .cached ----

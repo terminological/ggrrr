@@ -21,7 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/web/cache-functions.html">Caching functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/figure-functions.html">Figure functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
-    <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
     <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
@@ -100,6 +100,18 @@
         <dd>Convert a rendered_table object to a character</dd>
       </dl><dl><dt>
 
+          <code><a href="code_snip.html">code_snip()</a></code>
+
+        </dt>
+        <dd>Display a code snippet</dd>
+      </dl><dl><dt>
+
+          <code><a href="code_snip_by_line.html">code_snip_by_line()</a></code>
+
+        </dt>
+        <dd>Display a code snippet</dd>
+      </dl><dl><dt>
+
           <code><a href="data_supplement.html">data_supplement()</a></code>
 
         </dt>
@@ -115,7 +127,7 @@
           <code><a href="here.html">here()</a></code>
 
         </dt>
-        <dd>Drop in replacement for `here` (`here` pkg)</dd>
+        <dd>Drop in replacement for <code>here</code> (<code>here</code> pkg)</dd>
       </dl><dl><dt>
 
           <code><a href="html_pdf_converter.html">html_pdf_converter()</a></code>
@@ -142,6 +154,12 @@
         <dd>Knit a rendered_table object</dd>
       </dl><dl><dt>
 
+          <code><a href="knit_versioned.html">knit_versioned()</a></code>
+
+        </dt>
+        <dd>Knit to a versioned file in a sub-directory of the project</dd>
+      </dl><dl><dt>
+
           <code><a href="outputter.html">outputter()</a></code>
 
         </dt>
@@ -164,6 +182,59 @@
 
         </dt>
         <dd>Standard image and paper sizes</dd>
+      </dl></div><div class="section level2">
+      <h2 id="tidy-data-pipeline-utilities">Tidy data pipeline utilities<a class="anchor" aria-label="anchor" href="#tidy-data-pipeline-utilities"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="bind_rows_with_factors.html">bind_rows_with_factors()</a></code>
+
+        </dt>
+        <dd>Bind rows for colums with factors</dd>
+      </dl><dl><dt>
+
+          <code><a href="cash-.checked_list.html">`$`(<i>&lt;checked_list&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Checked list accessor</dd>
+      </dl><dl><dt>
+
+          <code><a href="cut_integer.html">cut_integer()</a></code>
+
+        </dt>
+        <dd>Cut and label an integer valued quantity</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_value_sets.html">get_value_sets()</a></code>
+
+        </dt>
+        <dd>Get a value set list of a dataframe</dd>
+      </dl><dl><dt>
+
+          <code><a href="intersecting_group_by.html">intersecting_group_by()</a></code>
+
+        </dt>
+        <dd>Create a dataframe with groups mathing a range of predicates</dd>
+      </dl><dl><dt>
+
+          <code><a href="rowwise_mutate.html">rowwise_mutate()</a></code>
+
+        </dt>
+        <dd>Create new data in a strictly row-wise fashion without vectorisation</dd>
+      </dl><dl><dt>
+
+          <code><a href="summarise_with_totals.html">summarise_with_totals()</a></code>
+
+        </dt>
+        <dd>Summarise a subgroup and create a summary row</dd>
       </dl></div><div class="section level2">
       <h2 id="ggplot">Ggplot<a class="anchor" aria-label="anchor" href="#ggplot"></a></h2>
 
@@ -356,6 +427,12 @@
 
       <dl><dt>
 
+          <code><a href="as.long_format_table.html">as.long_format_table()</a></code>
+
+        </dt>
+        <dd>Convert a table to long format</dd>
+      </dl><dl><dt>
+
           <code><a href="fit_col_widths.html">fit_col_widths()</a></code>
 
         </dt>
@@ -466,7 +543,7 @@
           <code><a href="struct_flatten.html">struct_flatten()</a></code>
 
         </dt>
-        <dd>Ensure `struct_list` is a flat list of `structs`</dd>
+        <dd>Ensure <code>struct_list</code> is a flat list of <code>structs</code></dd>
       </dl><dl><dt>
 
           <code><a href="subset-struct-list.html">c(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">rep(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">`$`(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">`[`(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">`[&lt;-`(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">`[[`(<i>&lt;struct_list&gt;</i>)</a></code> <code><a href="subset-struct-list.html">`[[&lt;-`(<i>&lt;struct_list&gt;</i>)</a></code>
@@ -474,7 +551,7 @@
         </dt>
         <dd>Manipulate structured lists</dd>
       </dl></div><div class="section level2">
-      <h2 id="others">Others<a class="anchor" aria-label="anchor" href="#others"></a></h2>
+      <h2 id="statistical-distributions">Statistical distributions<a class="anchor" aria-label="anchor" href="#statistical-distributions"></a></h2>
 
 
 
@@ -485,78 +562,6 @@
 
 
       <dl><dt>
-
-          <code><a href="as.long_format_table.html">as.long_format_table()</a></code>
-
-        </dt>
-        <dd>Convert a table to long format</dd>
-      </dl><dl><dt>
-
-          <code><a href="as_vars.html">as_vars()</a></code>
-
-        </dt>
-        <dd>Reuse tidy-select syntax outside of a tidy-select function</dd>
-      </dl><dl><dt>
-
-          <code><a href="bind_rows_with_factors.html">bind_rows_with_factors()</a></code>
-
-        </dt>
-        <dd>Bind rows for colums with factors</dd>
-      </dl><dl><dt>
-
-          <code><a href="cash-.checked_list.html">`$`(<i>&lt;checked_list&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Checked list accessor</dd>
-      </dl><dl><dt>
-
-          <code><a href="check_font.html">check_font()</a></code>
-
-        </dt>
-        <dd>Ensures a font is available.</dd>
-      </dl><dl><dt>
-
-          <code><a href="code_snip.html">code_snip()</a></code>
-
-        </dt>
-        <dd>Display a code snippet</dd>
-      </dl><dl><dt>
-
-          <code><a href="code_snip_by_line.html">code_snip_by_line()</a></code>
-
-        </dt>
-        <dd>Display a code snippet</dd>
-      </dl><dl><dt>
-
-          <code><a href="cran.html">cran()</a></code>
-
-        </dt>
-        <dd>Make sure packages available on CRAN are installed</dd>
-      </dl><dl><dt>
-
-          <code><a href="cut_date.html">cut_date()</a></code>
-
-        </dt>
-        <dd>Places a set of dates withing a regular time series</dd>
-      </dl><dl><dt>
-
-          <code><a href="cut_integer.html">cut_integer()</a></code>
-
-        </dt>
-        <dd>Cut and label an integer valued quantity</dd>
-      </dl><dl><dt>
-
-          <code><a href="cut_time.html">cut_time()</a></code>
-
-        </dt>
-        <dd>Places a set of dates withing a regular time series</dd>
-      </dl><dl><dt>
-
-          <code><a href="date_to_time.html">date_to_time()</a></code>
-
-        </dt>
-        <dd>Convert a set of dates to numeric timepoints</dd>
-      </dl><dl><dt>
 
           <code><a href="dbeta2.html">dbeta2()</a></code>
 
@@ -588,66 +593,6 @@
         <dd>Wedge distribution</dd>
       </dl><dl><dt>
 
-          <code><a href="fonts_available.html">fonts_available()</a></code>
-
-        </dt>
-        <dd>Which fonts are available on this system without hitting webfonts.</dd>
-      </dl><dl><dt>
-
-          <code><a href="full_seq_dates.html">full_seq_dates()</a></code>
-
-        </dt>
-        <dd>Expand a data vector to the full range</dd>
-      </dl><dl><dt>
-
-          <code><a href="full_seq_times.html">full_seq_times()</a></code>
-
-        </dt>
-        <dd>Generate a full regular timepoint sequence</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_value_sets.html">get_value_sets()</a></code>
-
-        </dt>
-        <dd>Get a value set list of a dataframe</dd>
-      </dl><dl><dt>
-
-          <code><a href="gg_find_webfonts.html">gg_find_webfonts()</a></code>
-
-        </dt>
-        <dd>Find webfonts for a ggplot</dd>
-      </dl><dl><dt>
-
-          <code><a href="glyphmap.html">glyphmap</a></code>
-
-        </dt>
-        <dd>The glyphmap dataset</dd>
-      </dl><dl><dt>
-
-          <code><a href="intersecting_group_by.html">intersecting_group_by()</a></code>
-
-        </dt>
-        <dd>Create a dataframe with groups mathing a range of predicates</dd>
-      </dl><dl><dt>
-
-          <code><a href="knit_versioned.html">knit_versioned()</a></code>
-
-        </dt>
-        <dd>Knit to a versioned file in a sub-directory of the project</dd>
-      </dl><dl><dt>
-
-          <code><a href="non_cran.html">non_cran()</a></code>
-
-        </dt>
-        <dd>Make sure github packages are installed.</dd>
-      </dl><dl><dt>
-
-          <code><a href="optional_fn.html">optional_fn()</a></code>
-
-        </dt>
-        <dd>Get an optional function without triggering a CRAN warning</dd>
-      </dl><dl><dt>
-
           <code><a href="pbeta2.html">pbeta2()</a></code>
 
         </dt>
@@ -664,12 +609,6 @@
 
         </dt>
         <dd>The Log Normal Distribution</dd>
-      </dl><dl><dt>
-
-          <code><a href="pmixnorm.html">pmixnorm()</a></code>
-
-        </dt>
-        <dd>Mixture of normal distribution PDFs</dd>
       </dl><dl><dt>
 
           <code><a href="pnbinom2.html">pnbinom2()</a></code>
@@ -702,12 +641,6 @@
         <dd>The Log Normal Distribution</dd>
       </dl><dl><dt>
 
-          <code><a href="qmixnorm.html">qmixnorm()</a></code>
-
-        </dt>
-        <dd>Mixture of normal distribution quantiles</dd>
-      </dl><dl><dt>
-
           <code><a href="qnbinom2.html">qnbinom2()</a></code>
 
         </dt>
@@ -738,24 +671,6 @@
         <dd>Sampling from the multinomial equivalent of the Bernoulli distribution</dd>
       </dl><dl><dt>
 
-          <code><a href="rebuild_fonts.html">rebuild_fonts()</a></code>
-
-        </dt>
-        <dd>Rebuild font caches</dd>
-      </dl><dl><dt>
-
-          <code><a href="reparam-dist.html">reparam-dist</a></code>
-
-        </dt>
-        <dd>Re-parametrised distributions</dd>
-      </dl><dl><dt>
-
-          <code><a href="reset_fonts.html">reset_fonts()</a></code>
-
-        </dt>
-        <dd>Reset any custom fonts</dd>
-      </dl><dl><dt>
-
           <code><a href="rgamma2.html">rgamma2()</a></code>
 
         </dt>
@@ -774,16 +689,140 @@
         <dd>The Negative Binomial Distribution</dd>
       </dl><dl><dt>
 
-          <code><a href="rowwise_mutate.html">rowwise_mutate()</a></code>
-
-        </dt>
-        <dd>Create new data in a strictly row-wise fashion without vectorisation</dd>
-      </dl><dl><dt>
-
           <code><a href="rwedge.html">rwedge()</a></code>
 
         </dt>
         <dd>Wedge distribution</dd>
+      </dl><dl><dt>
+
+          <code><a href="wedge.html">wedge</a></code>
+
+        </dt>
+        <dd>Wedge distribution</dd>
+      </dl></div><div class="section level2">
+      <h2 id="font-handling-functions">Font handling functions<a class="anchor" aria-label="anchor" href="#font-handling-functions"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="check_font.html">check_font()</a></code>
+
+        </dt>
+        <dd>Ensures a font is available.</dd>
+      </dl><dl><dt>
+
+          <code><a href="fonts_available.html">fonts_available()</a></code>
+
+        </dt>
+        <dd>Which fonts are available on this system without hitting webfonts.</dd>
+      </dl><dl><dt>
+
+          <code><a href="gg_find_webfonts.html">gg_find_webfonts()</a></code>
+
+        </dt>
+        <dd>Find webfonts for a ggplot</dd>
+      </dl><dl><dt>
+
+          <code><a href="glyphmap.html">glyphmap</a></code>
+
+        </dt>
+        <dd>The glyphmap dataset</dd>
+      </dl><dl><dt>
+
+          <code><a href="rebuild_fonts.html">rebuild_fonts()</a></code>
+
+        </dt>
+        <dd>Rebuild font caches</dd>
+      </dl><dl><dt>
+
+          <code><a href="reset_fonts.html">reset_fonts()</a></code>
+
+        </dt>
+        <dd>Reset any custom fonts</dd>
+      </dl></div><div class="section level2">
+      <h2 id="others">Others<a class="anchor" aria-label="anchor" href="#others"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="as_vars.html">as_vars()</a></code>
+
+        </dt>
+        <dd>Reuse tidy-select syntax outside of a tidy-select function</dd>
+      </dl><dl><dt>
+
+          <code><a href="cran.html">cran()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Make sure packages available on CRAN are installed</dd>
+      </dl><dl><dt>
+
+          <code><a href="cut_date.html">cut_date()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Places a set of dates withing a regular time series</dd>
+      </dl><dl><dt>
+
+          <code><a href="cut_time.html">cut_time()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Places a set of dates within a regular time series</dd>
+      </dl><dl><dt>
+
+          <code><a href="date_to_time.html">date_to_time()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Convert a set of dates to numeric timepoints</dd>
+      </dl><dl><dt>
+
+          <code><a href="full_seq_dates.html">full_seq_dates()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Expand a data vector to the full range</dd>
+      </dl><dl><dt>
+
+          <code><a href="full_seq_times.html">full_seq_times()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Generate a full regular timepoint sequence</dd>
+      </dl><dl><dt>
+
+          <code><a href="non_cran.html">non_cran()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Make sure github packages are installed.</dd>
+      </dl><dl><dt>
+
+          <code><a href="optional_fn.html">optional_fn()</a></code>
+
+        </dt>
+        <dd>Get an optional function without triggering a CRAN warning</dd>
+      </dl><dl><dt>
+
+          <code><a href="pmixnorm.html">pmixnorm()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Mixture of normal distribution PDFs</dd>
+      </dl><dl><dt>
+
+          <code><a href="qmixnorm.html">qmixnorm()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Mixture of normal distribution quantiles</dd>
       </dl><dl><dt>
 
           <code><a href="sprintf_list.html">sprintf_list()</a></code>
@@ -792,28 +831,16 @@
         <dd>Sprintf with a list input</dd>
       </dl><dl><dt>
 
-          <code><a href="summarise_with_totals.html">summarise_with_totals()</a></code>
-
-        </dt>
-        <dd>Summarise a subgroup and create a summary row</dd>
-      </dl><dl><dt>
-
           <code><a href="time_to_date.html">time_to_date()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Convert a set of timepoints to dates</dd>
       </dl><dl><dt>
 
           <code><a href="unstable.html">unstable()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Get unstable version of package</dd>
-      </dl><dl><dt>
-
-          <code><a href="wedge.html">wedge</a></code>
-
-        </dt>
-        <dd>Wedge distribution</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

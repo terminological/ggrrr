@@ -13,7 +13,7 @@ cran(cran_deps)
 nothing
 }
 \description{
-Make sure packages available on CRAN are installed
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # cran("tidyverse")

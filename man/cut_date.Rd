@@ -16,13 +16,14 @@ if missing this will be derived from the data itself.}
 
 \item{factor}{return the result as an ordered factor with the date ranges as a label. if false this returns a date vector where the date is}
 
-\item{...}{if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. ('fmt="\%d/\%m/\%Y", period="1 week")}
+\item{...}{if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. (\verb{fmt="\%d/\%m/\%Y", period="1 week"})}
 }
 \value{
 a set of dates, representing the start (or end) of the period the date falls into, where the period is defined by 'full_seq' - which is usually defined by 'full_seq_dates()'
 }
 \description{
 where the periodicity of the time series is expressed as numbers of days, weeks, months quarters, or years.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # dates = as.Date(c("2020-01-01","2020-02-01","2020-01-15","2020-02-03",NA))

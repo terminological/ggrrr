@@ -13,16 +13,16 @@
 }
 \value{
 the same string or a non UTF alternative if currently using the
-  legacy pdf device
+legacy pdf device
 }
 \description{
-The plain `grDevices::pdf()` device is the default when running examples via CRAN R CMD
+The plain \code{grDevices::pdf()} device is the default when running examples via CRAN R CMD
 check. It throws warnings and sometimes errors that other devices do not when
-encountering UTF-8 characters in plot objects (due to a warning from `grid`).
+encountering UTF-8 characters in plot objects (due to a warning from \code{grid}).
 The resulting behaviour is R version dependent. It is basically impossible to
 get round these in your function examples and you either decide not to run
 them or only run them with non UTF-8 content. This will make that decision at
-runtime and provide a transliterated alternative for the `pdf` device in the
+runtime and provide a transliterated alternative for the \code{pdf} device in the
 context of a function example in a CRAN check.
 }
 \keyword{internal}

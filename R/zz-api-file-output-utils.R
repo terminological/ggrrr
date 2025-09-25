@@ -30,7 +30,7 @@ gg_save_as = function(...) {
 #' them. This function is the default for `gg_save_as`
 #'
 #' @param plot a ggplot
-#'
+#' @concept fonts
 #' @return a list of css webfont specifications
 #' @export
 gg_find_webfonts = function(plot) {

@@ -11,7 +11,7 @@
 }
 \value{
 the unmemoised function if it was found. If the function was not
-  found then the input is returned with a message.
+found then the input is returned with a message.
 }
 \description{
 Unmemoise a function and drop its cache.

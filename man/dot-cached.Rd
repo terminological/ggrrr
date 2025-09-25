@@ -18,15 +18,15 @@
 return value this should not create side effects or change global
 variables.}
 
-\item{...}{inputs that the code in `.expr` depends on and changes in which
+\item{...}{inputs that the code in \code{.expr} depends on and changes in which
 require the code re-running.}
 
 \item{.nocache}{an option to defeat the cacheing which can be set globally as
-`options("cache.disable"=TRUE)`}
+\code{options("cache.disable"=TRUE)}}
 
 \item{.cache}{the location of the cache as a directory. May get its value
-from `getOption("cache.path")` or the default value which is
-`rappdirs::user_cache_dir(<package_name>)`}
+from \code{getOption("cache.path")} or the default value which is
+\verb{rappdirs::user_cache_dir(<package_name>)}}
 
 \item{.prefix}{(optional) a name of the operation so that you can namespace
 the cached files and do selective clean up operations on them with
@@ -36,14 +36,14 @@ the cached files and do selective clean up operations on them with
 stale.}
 }
 \value{
-the output of `.expr` which will usually be a value
+the output of \code{.expr} which will usually be a value
 }
 \description{
-executes `.expr` and saves the output as an RDS file indexed by hash of code in
-`.expr` and the hash of specified input variables (in `...`,  which should
-contain any inputs that influence `.expr`). The expression is evaluated in the
+executes \code{.expr} and saves the output as an RDS file indexed by hash of code in
+\code{.expr} and the hash of specified input variables (in \code{...},  which should
+contain any inputs that influence \code{.expr}). The expression is evaluated in the
 current environment and it is up to the user to ensure all significant
-environmental factors are accounted for in `...`
+environmental factors are accounted for in \code{...}
 }
 \concept{cache}
 \keyword{internal}

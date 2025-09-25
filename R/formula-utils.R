@@ -1,30 +1,11 @@
-# package depends
-# c("tidyselect","rlang") %>% lapply(usethis::use_package)
+# TODO: convert to standalone and document
 
-# look for a dataframe as the first argument of a function in the call stack
-# z = function(a) {.search_call_stack()}
-# y = function(a) {a}
-# x = function(df, a_default="a") {return(y(y(y(z()))))}
-# x(iris)
-.search_call_stack = function(nframe = sys.nframe()-1) {
-  frame = sys.frame(nframe)
-  first_arg_name = names(formals(sys.function(nframe)))[[1]]
-  try({
-    data = suppressWarnings(get(first_arg_name, envir=frame))
-    if(is.data.frame(data)) return(data)
-  },silent = TRUE)
-  nframe = nframe-1
-  if (nframe < 1) stop("no data frame found")
-  .search_call_stack(nframe)
-}
-
-
-
-
-.as_vars = function(tidyselect, data=NULL) {
+.as_vars = function(tidyselect, data = NULL) {
   expr = rlang::enquo(tidyselect)
-  if(is.null(data)) data = .search_call_stack()
-  res = tidyselect::eval_select(expr,data)
+  if (is.null(data)) {
+    data = .search_call_stack()
+  }
+  res = tidyselect::eval_select(expr, data)
   lapply(names(res), as.symbol)
 }
 
@@ -39,7 +20,6 @@
 as_vars = .as_vars
 
 
-
 # .parse_formulae(iris, ~ Species + Petal.Width + Missing, a ~ b+Sepal.Width)
 # .parse_formulae(iris, Species ~ Petal.Width + Missing, a ~ b+Sepal.Width, side="lhs")
 # .parse_formulae(iris, list(Species ~ Petal.Width + Missing, a ~ b+Sepal.Width), side="rhs")
@@ -49,21 +29,30 @@ as_vars = .as_vars
 # .parse_formulae(iris, list(form,form2))
 # .parse_formulae(iris, Species ~ .) # everything except species
 # .parse_formulae(iris, dplyr::vars(Sepal.Width,b,Sepal.Length)) %>% purrr::discard(~ is.null(.x) | length(.x) == 0) %>% lapply(`[[`,1)
-.parse_formulae = function(df, ..., side="rhs") {
+.parse_formulae = function(df, ..., side = "rhs") {
   list_form = unlist(rlang::list2(...)) #unlist required to support list input
   lapply(list_form, function(form) {
-
     if (side == "lhs") {
       vars = rlang::f_lhs(form) %>% all.vars()
     } else if (side == "rhs") {
       vars = rlang::f_rhs(form) %>% all.vars()
-      if (all(vars == c("."))) vars = setdiff(colnames(df),all.vars(rlang::f_lhs(form)))
+      if (all(vars == c("."))) {
+        vars = setdiff(colnames(df), all.vars(rlang::f_lhs(form)))
+      }
     } else {
       vars = form %>% all.vars()
     }
 
     wronguns = setdiff(vars, colnames(df))
-    if (length(wronguns) > 0) warning("Removing variables in formula but not in dataframe: `", wronguns %>% paste0(collapse = " + "), "`; formula was: `", rlang::as_label(form), "`")
+    if (length(wronguns) > 0) {
+      warning(
+        "Removing variables in formula but not in dataframe: `",
+        wronguns %>% paste0(collapse = " + "),
+        "`; formula was: `",
+        rlang::as_label(form),
+        "`"
+      )
+    }
     vars = intersect(vars, colnames(df))
     vars = vars %>% sapply(as.symbol, USE.NAMES = FALSE)
     return(vars)
@@ -93,7 +82,7 @@ as_vars = .as_vars
 # .parse_vars(iris, list(form,form2))
 # .parse_vars(iris, "Petal.Width", "b", "Sepal.Width")
 # .parse_vars(iris, Species ~ Petal.Width + Missing)
-.parse_vars = function(df, ..., .side="rhs") {
+.parse_vars = function(df, ..., .side = "rhs") {
   if (.is_character_list(...)) {
     return(.parse_character(df, ...))
   }
@@ -102,14 +91,20 @@ as_vars = .as_vars
   }
   if (.is_formula_interface(...)) {
     list_vars = .parse_formulae(df, ..., side = .side)
-    if (length(list_vars) == 0) stop("No columns given: please supply a formula or a tidyselect expression e.g. `tidyselect::everything()`")
+    if (length(list_vars) == 0) {
+      stop(
+        "No columns given: please supply a formula or a tidyselect expression e.g. `tidyselect::everything()`"
+      )
+    }
     if (length(list_vars) > 1) {
-      warning("This function only supports single formulae or multiple formulae with single item on RHS in input. We are only using the first one.")
+      warning(
+        "This function only supports single formulae or multiple formulae with single item on RHS in input. We are only using the first one."
+      )
       return(list_vars[[1]])
     }
     return(list_vars[[1]])
   } else {
-    return(.parse_tidyselect(df,...))
+    return(.parse_tidyselect(df, ...))
   }
 }
 
@@ -131,19 +126,30 @@ as_vars = .as_vars
 .parse_unique = function(df, ..., .side = "rhs") {
   predictorVars = list()
   if (.is_character_list(...)) {
-    if (.side != "rhs") predictorVars = df %>% dplyr::groups()
-    if (.side != "lhs") predictorVars = c(predictorVars,.parse_character(df,...))
-  } else if(.is_vars_interface(...)) {
-    if (.side != "rhs") predictorVars = df %>% dplyr::groups()
+    if (.side != "rhs") {
+      predictorVars = df %>% dplyr::groups()
+    }
+    if (.side != "lhs") {
+      predictorVars = c(predictorVars, .parse_character(df, ...))
+    }
+  } else if (.is_vars_interface(...)) {
+    if (.side != "rhs") {
+      predictorVars = df %>% dplyr::groups()
+    }
     tmp = c(...) %>% sapply(rlang::as_label) %>% lapply(as.symbol)
-    if (.side != "lhs") predictorVars = c(predictorVars,tmp)
-  } else if(.is_formula_interface(...)) {
+    if (.side != "lhs") predictorVars = c(predictorVars, tmp)
+  } else if (.is_formula_interface(...)) {
     predictorVars = .parse_formulae(df, ..., side = .side) %>%
       purrr::discard(~ is.null(.x) | length(.x) == 0) %>%
-      unlist() %>% unique()
+      unlist() %>%
+      unique()
   } else {
-    if (.side != "rhs") predictorVars = df %>% dplyr::groups()
-    if (.side != "lhs") predictorVars = c(predictorVars,.parse_tidyselect(df, ...))
+    if (.side != "rhs") {
+      predictorVars = df %>% dplyr::groups()
+    }
+    if (.side != "lhs") {
+      predictorVars = c(predictorVars, .parse_tidyselect(df, ...))
+    }
   }
   return(unique(predictorVars))
 }
@@ -154,8 +160,15 @@ as_vars = .as_vars
 # .parse_character(iris, list("Species", "Sepal.Width", "b"))
 .parse_character = function(df, ...) {
   wrong = setdiff(unlist(c(...)), colnames(df)) %>% unique()
-  out = intersect(unlist(c(...)), colnames(df)) %>% unique() %>% sapply(as.symbol,USE.NAMES = FALSE)
-  if (length(wrong>0)) warning("ignoring columns given that are not in dataframe: ",paste0(wrong,collapse=", "))
+  out = intersect(unlist(c(...)), colnames(df)) %>%
+    unique() %>%
+    sapply(as.symbol, USE.NAMES = FALSE)
+  if (length(wrong > 0)) {
+    warning(
+      "ignoring columns given that are not in dataframe: ",
+      paste0(wrong, collapse = ", ")
+    )
+  }
   return(out)
 }
 
@@ -177,13 +190,20 @@ as_vars = .as_vars
 # .is_formula_interface()
 .is_formula_interface = function(...) {
   out = tryCatch(
-    suppressWarnings(sapply(c(...),.maybe_formula)),
+    suppressWarnings(sapply(c(...), .maybe_formula)),
     error = function(e) {
-        # could have been a tidyselect.
-        FALSE
-    })
-  if (all(out)) return(TRUE)
-  if (length(out) > 1 & out[1]==TRUE) stop("The first argument is a formula, but the rest could not be evaluated as such. Sometimes this happens if your formula accidentally contains a comma.")
+      # could have been a tidyselect.
+      FALSE
+    }
+  )
+  if (all(out)) {
+    return(TRUE)
+  }
+  if (length(out) > 1 & out[1] == TRUE) {
+    stop(
+      "The first argument is a formula, but the rest could not be evaluated as such. Sometimes this happens if your formula accidentally contains a comma."
+    )
+  }
   return(FALSE)
   # out = tryCatch({
   #   tmp = suppressWarnings(sapply(c(...),rlang::is_bare_formula))
@@ -198,15 +218,18 @@ as_vars = .as_vars
 # .is_vars_interface(list(~ Species + Petal.Width + Missing, "not a formula"))
 # .is_vars_interface(dplyr::vars(Species, Petal.Width))
 .is_vars_interface = function(...) {
-  out = tryCatch({
-    suppressWarnings(
-      rlang::is_quosures(c(...)) ||
-        all(sapply(c(...),rlang::is_symbol))
-    )
-  }, error = function(e) {
-    # could have been a tidyselect.
-    FALSE
-  })
+  out = tryCatch(
+    {
+      suppressWarnings(
+        rlang::is_quosures(c(...)) ||
+          all(sapply(c(...), rlang::is_symbol))
+      )
+    },
+    error = function(e) {
+      # could have been a tidyselect.
+      FALSE
+    }
+  )
   return(out)
 }
 
@@ -219,13 +242,16 @@ as_vars = .as_vars
 # .is_character_list(tidyselect::everything())
 # .is_character_list(colnames(iris))
 .is_character_list = function(...) {
-  out = tryCatch({
-    tmp = suppressWarnings(sapply(c(...),is.character))
-    return(all(tmp))
-  }, error = function(e) {
-    # could have been a tidyselect.
-    FALSE
-  })
+  out = tryCatch(
+    {
+      tmp = suppressWarnings(sapply(c(...), is.character))
+      return(all(tmp))
+    },
+    error = function(e) {
+      # could have been a tidyselect.
+      FALSE
+    }
+  )
   return(out)
 }
 
@@ -235,13 +261,35 @@ as_vars = .as_vars
 # .pair_apply(diamonds, chi = ~ stats::chisq.test(.x,.y)$p.value, method = ~ "chisq", .cols = tidyselect::where(is.factor))
 # .pair_apply(diamonds, error = ~ stop("error in cols"), .cols_x = tidyselect::where(is.factor),.cols_y = tidyselect::where(is.numeric))
 # iris %>% dplyr::group_by(Species) %>% .pair_apply(cor = cor, method = ~ "chisq", .cols = tidyselect::where(is.numeric))
-.pair_apply = function(df, ..., .cols = tidyselect::everything(), .cols_x = NULL, .cols_y = NULL, .diagonal=FALSE) {
+.pair_apply = function(
+  df,
+  ...,
+  .cols = tidyselect::everything(),
+  .cols_x = NULL,
+  .cols_y = NULL,
+  .diagonal = FALSE
+) {
   .cols = rlang::enexpr(.cols)
   .cols_x = rlang::enexpr(.cols_x)
   .cols_y = rlang::enexpr(.cols_y)
-  if (dplyr::is.grouped_df(df)) return(df %>% dplyr::group_modify(function(d,g,...) .pair_apply(d, ...), ..., .cols=!!.cols, .cols_x=!!.cols_x, .cols_y=!!.cols_y))
-  if (is.null(.cols_x)) .cols_x = .cols
-  if (is.null(.cols_y)) .cols_y = .cols
+  if (dplyr::is.grouped_df(df)) {
+    return(
+      df %>%
+        dplyr::group_modify(
+          function(d, g, ...) .pair_apply(d, ...),
+          ...,
+          .cols = !!.cols,
+          .cols_x = !!.cols_x,
+          .cols_y = !!.cols_y
+        )
+    )
+  }
+  if (is.null(.cols_x)) {
+    .cols_x = .cols
+  }
+  if (is.null(.cols_y)) {
+    .cols_y = .cols
+  }
   dfx = df %>% dplyr::select(!!.cols_x)
   dfy = df %>% dplyr::select(!!.cols_y)
   dots = rlang::list2(...)
@@ -249,18 +297,18 @@ as_vars = .as_vars
   err2 = character()
   out2 = dplyr::bind_rows(
     lapply(colnames(dfx), function(xcol) {
-      x = dplyr::pull(dfx,xcol)
+      x = dplyr::pull(dfx, xcol)
       dplyr::bind_rows(
         lapply(colnames(dfy), function(ycol) {
           if (.diagonal || xcol != ycol) {
-            y = dplyr::pull(dfy,ycol)
+            y = dplyr::pull(dfy, ycol)
             out = tibble::tibble(var1 = xcol, var2 = ycol)
             for (name in names(dots)) {
               fn = purrr::as_mapper(dots[[name]])
               res = try(fn(x, y), silent = TRUE)
               if (inherits(res, "try-error")) {
-                reason = attr(res,"condition")$message
-                err2 <<- c(err2,reason)
+                reason = attr(res, "condition")$message
+                err2 <<- c(err2, reason)
                 res = NA
               }
               if (is.atomic(res)) {
@@ -277,6 +325,8 @@ as_vars = .as_vars
       )
     })
   )
-  if (length(err2) > 0) warning(unique(err2))
+  if (length(err2) > 0) {
+    warning(unique(err2))
+  }
   return(out2)
 }

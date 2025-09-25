@@ -265,7 +265,7 @@
   as = c("text", "raw", "parsed", "httr"),
   ...,
   .nocache = getOption("cache.disable", default = FALSE),
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .cache = .cache_loc(),
   .stale = Inf
 ) {
   status = NULL

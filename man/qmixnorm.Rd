@@ -25,15 +25,15 @@ qmixnorm(
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
+\item{method}{one of \code{exact} (solve with uniroot), \code{samples} (random resampling), \code{moments} (Cornish Fisher approximation)}
 
-\item{...}{passed on to internal function, `samples=TRUE` to force random sampling}
+\item{...}{passed on to internal function, \code{samples=TRUE} to force random sampling}
 }
 \value{
-the value of the `p`th quantile
+the value of the \code{p}th quantile
 }
 \description{
-`r lifecycle::badge("deprecated")`
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 qmixnorm(p=c(0.025,0.5,0.975), means=c(10,13,14), sds=c(1,1,2))

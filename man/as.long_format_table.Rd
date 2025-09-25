@@ -21,26 +21,29 @@ Only a limited subset of formatting features is implemented at present as suppor
 is a simple dataframe with the following columns:
 }
 \details{
-- Character: label - non blank text (a single space is OK but not an empty string)
-- Integer: row - must be an integer, 1-based from top left
-- Integer: col - must be an integer, 1-based from top left
-- Integer: rowSpan - must be an integer, minimum value 1
-- Integer: colSpan - must be an integer, minimum value 1
-- Character: fontName - font name as seen in font drop down of google docs e.g "Roboto","Arial","Times New Roman", unrecognised values will be displayed as Arial
-- Character: fontFace - one of "bold", "bold.italic", "italic", "plain"
-- Numeric: fontSize - in points
-- Character: fillColour - as a hex string e.g. "#aaaaaa". N.b. British English spelling (sorry)
-- Numeric: leftBorderWeight - border weight in points - minimum size that appears in google docs is 0.5
-- Numeric: rightBorderWeight
-- Numeric: topBorderWeight
-- Numeric: bottomBorderWeight
-- Character: alignment - one of "START","CENTER","END"
-- Character: valignment - one of "TOP","MIDDLE","BOTTOM"
+\itemize{
+\item Character: label - non blank text (a single space is OK but not an empty string)
+\item Integer: row - must be an integer, 1-based from top left
+\item Integer: col - must be an integer, 1-based from top left
+\item Integer: rowSpan - must be an integer, minimum value 1
+\item Integer: colSpan - must be an integer, minimum value 1
+\item Character: fontName - font name as seen in font drop down of google docs e.g "Roboto","Arial","Times New Roman", unrecognised values will be displayed as Arial
+\item Character: fontFace - one of "bold", "bold.italic", "italic", "plain"
+\item Numeric: fontSize - in points
+\item Character: fillColour - as a hex string e.g. "#aaaaaa". N.b. British English spelling (sorry)
+\item Numeric: leftBorderWeight - border weight in points - minimum size that appears in google docs is 0.5
+\item Numeric: rightBorderWeight
+\item Numeric: topBorderWeight
+\item Numeric: bottomBorderWeight
+\item Character: alignment - one of "START","CENTER","END"
+\item Character: valignment - one of "TOP","MIDDLE","BOTTOM"
+}
 
-It also has an attribute `colWidths` which is a vector the same length as the width of the
+It also has an attribute \code{colWidths} which is a vector the same length as the width of the
 table containing the relative widths of the columns. The overall table width is
 decided on rendering.
 
 So not supported at the moment are border line types, border colours, control of padding, row height control,
 alignment on a decimal point, complex content / markup in cells.
 }
+\concept{huxtable}

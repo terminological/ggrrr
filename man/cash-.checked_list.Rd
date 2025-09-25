@@ -19,3 +19,4 @@ A checked list is a sub class of list access operator that throws an error if
 you attempt to access a value that does not exist (rather than returning
 NULL) the point of this is to throw errors early if the data changes.
 }
+\concept{tidydata}

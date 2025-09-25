@@ -208,7 +208,7 @@ nothing
 This is a set of styles with a focus on making plots compact, and minimally
 fussy, and ensuring fonts are consistent between axes and labels. It sets
 default sizes for line widths and point sizes. It also
-switched the default png renderer in knitr to `ragg::ragg_png` to allow for
+switched the default png renderer in knitr to \code{ragg::ragg_png} to allow for
 modern font support.
 }
 \concept{ggplot}

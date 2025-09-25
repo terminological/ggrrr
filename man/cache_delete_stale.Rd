@@ -12,8 +12,8 @@ cache_delete_stale(
 }
 \arguments{
 \item{.cache}{the location of the cache as a directory. May get its value
-from `getOption("cache.path")` or the default value which is
-`rappdirs::user_cache_dir(<package_name>)`}
+from \code{getOption("cache.path")} or the default value which is
+\verb{rappdirs::user_cache_dir(<package_name>)}}
 
 \item{.prefix}{(optional) a name of the operation so that you can namespace
 the cached files and do selective clean up operations on them with

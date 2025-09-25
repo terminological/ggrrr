@@ -14,8 +14,8 @@ pbeta2(q, prob, kappa, lower.tail = TRUE, log.p = FALSE)
 \item{kappa}{a coefficient of variation. where 0 is no variability and 1 is
 maximally variability (vectorised)}
 
-\item{lower.tail}{logical; if TRUE (default), probabilities are `P[X<=x]`
-otherwise `P[X>x]`.}
+\item{lower.tail}{logical; if TRUE (default), probabilities are \code{P[X<=x]}
+otherwise \code{P[X>x]}.}
 
 \item{log.p}{logical; if TRUE, probabilities p are given as log(p).}
 }
@@ -43,6 +43,6 @@ Density, distribution function, quantile function and random
 pbeta2(c(0.25,0.5,0.75), 0.5, 0.25)
 }
 \seealso{
-[stats::pbeta()]
+\code{\link[stats:Beta]{stats::pbeta()}}
 }
 \concept{distributions}

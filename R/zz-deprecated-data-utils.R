@@ -3,6 +3,7 @@
 #' Expand a data vector to the full range
 #'
 #' Convert a vector of observation dates to a ordered sequence of every day in the time series
+#' `r lifecycle::badge('deprecated')`
 #'
 #' @param dates a vector of dates, possibly including NA values
 #' @param period the gap between observations as a number or, a negative number means the resulting sequence defines a end of time periods, a positive defines the beginning. may be an integer number of days, or a text string like '2 weeks', '-1 month', etc.
@@ -11,6 +12,8 @@
 #'
 #' @return a vector of dates for complete between the minimum and maximum of dates, on the day of week of the anchoring date
 #' @export
+#'
+#'
 #'
 #' @examples
 #' # full_seq_dates(c("2020-01-01","2020-02-01","2020-01-15","2020-02-01",NA), "2 days")
@@ -158,6 +161,7 @@ full_seq_dates = function(
 #' Places a set of dates withing a regular time series
 #'
 #' where the periodicity of the time series is expressed as numbers of days, weeks, months quarters, or years.
+#' `r lifecycle::badge('deprecated')`
 #'
 #' @param dates a set of dates
 #' @param full_seq a full sequence of allowable dates as created by 'full_seq_dates()'.
@@ -165,10 +169,12 @@ full_seq_dates = function(
 #' that will be used as an input for 'full_seq_dates()',
 #' if missing this will be derived from the data itself.
 #' @param factor return the result as an ordered factor with the date ranges as a label. if false this returns a date vector where the date is
-#' @param ... if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. ('fmt="\%d/\%m/\%Y", period="1 week")
+#' @param ... if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. (`fmt="%d/%m/%Y", period="1 week"`)
 #'
 #' @return a set of dates, representing the start (or end) of the period the date falls into, where the period is defined by 'full_seq' - which is usually defined by 'full_seq_dates()'
 #' @export
+#'
+#'
 #'
 #' @examples
 #' # dates = as.Date(c("2020-01-01","2020-02-01","2020-01-15","2020-02-03",NA))
@@ -207,6 +213,7 @@ cut_date = function(dates, full_seq = dates, factor = FALSE, ...) {
 #' Convert a set of dates to numeric timepoints
 #'
 #' Using a day_zero and a unit specification or a full sequence of dates (see 'full_seq_dates()')
+#' `r lifecycle::badge('deprecated')`
 #'
 #' @param dates a vector of dates to convert
 #' @param unit a specification of the unit of the resulting time series. Will be determined from periodicity of dates if not specified
@@ -214,6 +221,8 @@ cut_date = function(dates, full_seq = dates, factor = FALSE, ...) {
 #'
 #' @return a sequence of numeric time points as the number of periods since day zero
 #' @export
+#'
+#'
 #'
 #' @examples
 #' # DEPRECATED
@@ -241,12 +250,16 @@ date_to_time = function(
 
 #' Convert a set of timepoints to dates
 #'
+#' `r lifecycle::badge('deprecated')`
+#'
 #' @param timepoints a set of numeric time points
 #' @param unit the period / unit of the time points, which will be extracted from timepoints if possible
 #' @param day_zero the zero day of the time series, will be extracted from timepoints if possible
 #'
 #' @return a vector of dates
 #' @export
+#'
+#'
 #'
 #' @examples
 #' # DEPRECATED
@@ -273,6 +286,8 @@ time_to_date = function(
 
 
 #' Generate a full regular timepoint sequence
+#'
+#' `r lifecycle::badge('deprecated')`
 #'
 #' @param timepoints a set of timepoints relating to data
 #' @param period the desired interval between time points, e.g. "1 day". negative periods define the intervals as closed on the left
@@ -343,9 +358,11 @@ full_seq_times = function(
   # }
 }
 
-#' Places a set of dates withing a regular time series
+#' Places a set of dates within a regular time series
 #'
 #' where the periodicity of the time series is expressed as numbers of days, weeks, months quarters, or years.
+#' `r lifecycle::badge('deprecated')`
+#'
 #'
 #' @param timepoints a set of times (defined by count of periods from a zero day - see 'date_to_time()')
 #' @param full_seq a full sequence of allowable dates as created by 'full_seq_dates()'.
@@ -355,10 +372,12 @@ full_seq_times = function(
 #' @param unit the unit of the timepoints in terms of "1 week"
 #' @param day_zero the origin of the timepoints
 #' @param factor return the result as an ordered factor with the date ranges as a label. if false this returns a date vector where the date is
-#' @param ... if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. ('fmt="\%d/\%m/\%Y", period="1 week")
+#' @param ... if full_seq is not give, or a plain vector of dates, other options for 'full_seq_dates()' can be set here. E.g. (`fmt="%d/%m/%Y", period="1 week`)
 #'
 #' @return a set of dates, representing the start (or end) of the period the date falls into, where the period is defined by 'full_seq' - which is usually defined by 'full_seq_dates()'
 #' @export
+#'
+#'
 #'
 #' @examples
 #' #dates = as.Date(c("2020-01-01","2020-02-01","2020-01-15","2020-02-03",NA))
@@ -367,7 +386,7 @@ full_seq_times = function(
 #' #cut_date(dates,fs,TRUE)
 #'
 #' # A weekly set of dates:
-#'# dates2 = Sys.Date() + floor(stats::runif(50,max=10))*7
+#' # dates2 = Sys.Date() + floor(stats::runif(50,max=10))*7
 #' #times2 = date_to_time(dates2)
 #'
 #' # in this specific situation the final date is not truncated because the

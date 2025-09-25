@@ -12,7 +12,7 @@ rbern(n, prob)
 \item{prob}{the mean probability (vectorised)}
 }
 \value{
-a vector of logical values of size `n`
+a vector of logical values of size \code{n}
 }
 \description{
 A random Bernoulli sample as a logical value

@@ -15,5 +15,6 @@ a list of css webfont specifications
 \description{
 Resolves any missing fonts in a ggplot and tries to resolve them
 against webfont providers (Brick and Google Fonts) locally caching
-them. This function is the default for `gg_save_as`
+them. This function is the default for \code{gg_save_as}
 }
+\concept{fonts}

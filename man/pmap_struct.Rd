@@ -7,16 +7,16 @@
 pmap_struct(.l, .f, ..., .progress = FALSE)
 }
 \arguments{
-\item{.l}{A `struct_list`.}
+\item{.l}{A \code{struct_list}.}
 
-\item{.f}{a function to apply to each `.l` item}
+\item{.f}{a function to apply to each \code{.l} item}
 
-\item{...}{additional parameters to  `.f` but anonymous function preferred}
+\item{...}{additional parameters to  \code{.f} but anonymous function preferred}
 
 \item{.progress}{display a progress bar (logical or string name)}
 }
 \value{
-a `struct_list`
+a \code{struct_list}
 }
 \description{
 These functions are variants of \code{\link[purrr:map]{map()}} that iterate over multiple arguments

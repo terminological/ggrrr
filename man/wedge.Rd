@@ -16,8 +16,8 @@
 
 \item{log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
-\item{lower.tail}{logical; if TRUE (default), probabilities are `P[X<=x]`
-otherwise `P[X>x]`.}
+\item{lower.tail}{logical; if TRUE (default), probabilities are \code{P[X<=x]}
+otherwise \code{P[X>x]}.}
 
 \item{a}{a gradient from -2 (left skewed) to 2 (right skewed)}
 }
@@ -29,7 +29,7 @@ The wedge distribution has a domain of 0 to 1 and has a linear probability
 density function over that domain.
 }
 \details{
-The `rwedge` can be combined with quantile functions to
+The \code{rwedge} can be combined with quantile functions to
 skew standard distributions, or introduce correlation or down weight
 certain parts of the distribution.
 }

@@ -2,19 +2,19 @@
 % Please edit documentation in R/zz-api-file-output-utils.R
 \name{here}
 \alias{here}
-\title{Drop in replacement for `here` (`here` pkg)}
+\title{Drop in replacement for \code{here} (\code{here} pkg)}
 \usage{
 here(..., projRoot = .locate_project())
 }
 \arguments{
 \item{...}{the relative path within the project}
 
-\item{projRoot}{the project root - defaults to `.locate_project()`}
+\item{projRoot}{the project root - defaults to \code{.locate_project()}}
 }
 \value{
 a path
 }
 \description{
-Drop in replacement for `here` (`here` pkg)
+Drop in replacement for \code{here} (\code{here} pkg)
 }
 \concept{output}

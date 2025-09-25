@@ -17,6 +17,7 @@ nothing
 \description{
 reboot a library reloading from a local development copy if it exists locally alternatively get
 the most up to date github package.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # ggrrr::unstable()

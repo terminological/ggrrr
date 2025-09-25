@@ -13,11 +13,10 @@ test_that(".update_fenced_block unit test", {
   # or navigate to topic with <F2>
   F2 = .update_fenced_block
   
-  
   # double braces in mustache files, single braces in glue specs.
-  template = "# {{name}} {{status}}"
+  template <- "# {{name}} {{status}}"
   
-  input = c(
+  input <- c(
     "before",
     "#TEST test start ----",
     "# test original",
@@ -26,8 +25,11 @@ test_that(".update_fenced_block unit test", {
     "end"
   )
   
-  input = .update_fenced_block(
-    input, template, name = "test", status = "update",
+  input <- .update_fenced_block(
+    input,
+    template,
+    name = "test",
+    status = "update",
     .start_glue = "#TEST {name} start ----",
     .end_glue = "#TEST {name} end ----",
     .insert_before = "#TEST insert before ----",
@@ -35,8 +37,11 @@ test_that(".update_fenced_block unit test", {
   
   testthat::expect_equal(input[3], "# test update")
   
-  input = .update_fenced_block(
-    input, template, name = "test2", status = "update",
+  input <- .update_fenced_block(
+    input,
+    template,
+    name = "test2",
+    status = "update",
     .start_glue = "#TEST {name} start ----",
     .end_glue = "#TEST {name} end ----",
     .insert_before = "#TEST insert before ----",
@@ -45,13 +50,13 @@ test_that(".update_fenced_block unit test", {
   testthat::expect_equal(input[6], "# test2 update")
   
   .update_fenced_block(
-    input, template, name = "test", status = "update",
+    input,
+    template,
+    name = "test",
+    status = "update",
     .start_glue = 2,
     .end_glue = "#TEST {name} end ----",
   )
-  
-  
-  
 })
 
 # unit test end: .update_fenced_block ----
@@ -65,33 +70,39 @@ test_that(".delete_fenced_block unit test", {
   # or navigate to topic with <F2>
   F2 = .delete_fenced_block
   
-  
-  
-  tmp = .delete_fenced_block(letters,.start_glue = letters[4], .end_glue = letters[10])
+  tmp <- .delete_fenced_block(
+    letters,
+    .start_glue = letters[4],
+    .end_glue = letters[10]
+  )
   testthat::expect_true(!any(letters[4:10] %in% tmp))
   
   # multiple copies of fenced block are removed
   # fenced block to end of file is removed
   testthat::expect_equal(
-    .delete_fenced_block(rep(letters,3),.start_glue = "b", .end_glue = "z"),
-    rep("a",3)
+    .delete_fenced_block(
+      rep(letters, 3),
+      .start_glue = "b",
+      .end_glue = "z"
+    ),
+    rep("a", 3)
   )
   
   # fenced block at beginning is removed:
   testthat::expect_equal(
-    .delete_fenced_block(letters,.start_glue = "a", .end_glue = "y"),
+    .delete_fenced_block(letters, .start_glue = "a", .end_glue = "y"),
     "z"
   )
   
   # fenced block
   testthat::expect_equal(
-    .delete_fenced_block(letters,.start_glue = "a", .end_glue = "z"),
+    .delete_fenced_block(letters, .start_glue = "a", .end_glue = "z"),
     character()
   )
   
   testthat::expect_equal(
-    .delete_fenced_block(letters,.start_glue = 2, .end_glue = -2),
-    c("a","z")
+    .delete_fenced_block(letters, .start_glue = 2, .end_glue = -2),
+    c("a", "z")
   )
 })
 
@@ -106,14 +117,12 @@ test_that(".glue_recover_pieces unit test", {
   # or navigate to topic with <F2>
   F2 = .glue_recover_pieces
   
-  
-  glue_spec = "# {name}, {value1} and {value2} ----"
-  output = rep("  # one, two and three ----",5)
-  tmp = .glue_recover_pieces(glue_spec,output)
+  glue_spec <- "# {name}, {value1} and {value2} ----"
+  output <- rep("  # one, two and three ----", 5)
+  tmp <- .glue_recover_pieces(glue_spec, output)
   
   testthat::expect_equal(nrow(tmp), 5)
-  testthat::expect_equal(trimws(output), glue::glue_data(tmp,glue_spec))
-  
+  testthat::expect_equal(trimws(output), glue::glue_data(tmp, glue_spec))
 })
 
 # unit test end: .glue_recover_pieces ----
@@ -127,11 +136,10 @@ test_that(".glue_detect_output unit test", {
   # or navigate to topic with <F2>
   F2 = .glue_detect_output
   
-  
-  content = c("sdlfksl","  # X, Y and Z ----","sdfskjfsdlk asdlkfjsdlkj")
+  content <- c("sdlfksl", "  # X, Y and Z ----", "sdfskjfsdlk asdlkfjsdlkj")
   testthat::expect_equal(
     .glue_detect_output("# {name}, {value1} and {value2} ----", content),
-    c(FALSE,TRUE,FALSE)
+    c(FALSE, TRUE, FALSE)
   )
 })
 

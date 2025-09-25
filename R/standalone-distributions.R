@@ -213,6 +213,7 @@ rcategorical = function(n, prob, factor = FALSE) {
 #' @param mean the mean value on the true scale (vectorised)
 #' @param sd the standard deviation on the true scale (vectorised)
 #'
+#' @keywords internal
 #' @concept distributions
 #'
 #' @name reparam-dist

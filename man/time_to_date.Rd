@@ -21,7 +21,7 @@ time_to_date(
 a vector of dates
 }
 \description{
-Convert a set of timepoints to dates
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # DEPRECATED

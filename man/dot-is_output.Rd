@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{outputFormats}{the name of a rmarkdown output type. This is the
-value given in the `output:` part of the yaml metadata.}
+value given in the \verb{output:} part of the yaml metadata.}
 }
 \value{
 true or false

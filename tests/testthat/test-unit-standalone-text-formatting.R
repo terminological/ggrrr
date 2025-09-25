@@ -13,28 +13,40 @@ test_that(".sprintf_data unit test", {
   # or navigate to topic with <F2>
   F2 = .sprintf_data
   
-  testthat::expect_no_error({
-    
-    # generate an IQR from data
-    iris %>%
-      dplyr::group_by(Species) %>%
-      dplyr::summarise(
-        q.Sepal.Width = .sprintf_data(
-          "%1.2f [%1.2f\u2013%1.2f]",
-          stats::quantile(Sepal.Width, probs = c(0.5,0.25,0.75))
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      # generate an IQR from data
+      iris %>%
+        dplyr::group_by(Species) %>%
+        dplyr::summarise(
+          q.Sepal.Width = .sprintf_data(
+            "%1.2f [%1.2f\u2013%1.2f]",
+            stats::quantile(Sepal.Width, probs = c(0.5, 0.25, 0.75))
+          )
         )
+  
+      # dataframe, lists or vectors should work. dataframe columns are interpreted
+      # in the order they are given.
+  
+      .sprintf_data(
+        "%1.2f - %1.2f",
+        tibble::tibble(low = c(1, 2, NA, 4, 5), high = c(5, 4, 3, 2, NA))
       )
-    
-    # dataframe, lists or vectors should work. dataframe columns are interpreted
-    # in the order they are given.
-    
-    .sprintf_data("%1.2f - %1.2f", tibble::tibble(low = c(1,2,NA,4,5), high = c(5,4,3,2,NA)))
-    .sprintf_data("%1.2f - %1.2f", tibble::tibble(low = c(1,2,NA,4,5), high = c(5,4,3,2,NA)), sep=",")
-    .sprintf_data("%1.2f - %1.2f", list(low = 1, high = 5))
-    .sprintf_data("%1.2f - %1.2f", c(1,5))
-    # this is an error because this is the sprintf syntax of enumerated items
-    try(.sprintf_data("%1.2f - %1.2f", 1, 5))
-  })
+      .sprintf_data(
+        "%1.2f - %1.2f",
+        tibble::tibble(low = c(1, 2, NA, 4, 5), high = c(5, 4, 3, 2, NA)),
+        sep = ","
+      )
+      .sprintf_data("%1.2f - %1.2f", list(low = 1, high = 5))
+      .sprintf_data("%1.2f - %1.2f", c(1, 5))
+      # this is an error because this is the sprintf syntax of enumerated items
+      try(.sprintf_data("%1.2f - %1.2f", 1, 5))
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .sprintf_data ----
@@ -48,10 +60,15 @@ test_that(".if_na unit test", {
   # or navigate to topic with <F2>
   F2 = .if_na
   
-  testthat::expect_no_error({
-    
-    .if_na( c(1,2,NA,4,5)/3, digits=2 )
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .if_na(c(1, 2, NA, 4, 5) / 3, digits = 2)
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .if_na ----
@@ -65,10 +82,15 @@ test_that(".if_present unit test", {
   # or navigate to topic with <F2>
   F2 = .if_present
   
-  testthat::expect_no_error({
-    
-    .if_present( c(1,2,NA,4,5)/3, digits=2 )
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .if_present(c(1, 2, NA, 4, 5) / 3, digits = 2)
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .if_present ----
@@ -82,12 +104,17 @@ test_that(".sprintf_dp unit test", {
   # or navigate to topic with <F2>
   F2 = .sprintf_dp
   
-  testthat::expect_no_error({
-    
-    .sprintf_dp("%1.2f",1:3/3, sep="\u00B7")
-    .sprintf_dp("%1.2f-%1.2f", 1:3/3, 1:3, sep="\u00B7")
-    .sprintf_dp("%s %1.2f-%1.2f", "A.1.2", 1:3/3, 1:3, sep="\u00B7")
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .sprintf_dp("%1.2f", 1:3 / 3, sep = "\u00B7")
+      .sprintf_dp("%1.2f-%1.2f", 1:3 / 3, 1:3, sep = "\u00B7")
+      .sprintf_dp("%s %1.2f-%1.2f", "A.1.2", 1:3 / 3, 1:3, sep = "\u00B7")
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .sprintf_dp ----
@@ -101,12 +128,18 @@ test_that(".pdf_safe unit test", {
   # or navigate to topic with <F2>
   F2 = .pdf_safe
   
-  testthat::expect_no_error({
-    
-    .pdf_safe("test")
-    .pdf_safe("\u00B1\u221E")
-    ggplot2::ggplot()+ggplot2::xlab(.pdf_safe("\u00B1\u221E"))
-  })
+  testthat::expect_no_error(withCallingHandlers(
+    {
+      .pdf_safe("test")
+      .pdf_safe("\u00B1\u221E")
+      ggplot2::ggplot() +
+        ggplot2::xlab(.pdf_safe("\u00B1\u221E"))
+    },
+    warning = function(e) {
+      message("Warning issued: ", e$message)
+      invokeRestart("muffleWarning")
+    }
+  ))
 })
 
 # unit test end: .pdf_safe ----

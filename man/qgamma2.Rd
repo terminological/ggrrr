@@ -20,8 +20,8 @@ qgamma2(
 
 \item{sd}{the standard deviation on the true scale (vectorised)}
 
-\item{lower.tail}{logical; if TRUE (default), probabilities are `P[X<=x]`
-otherwise `P[X>x]`.}
+\item{lower.tail}{logical; if TRUE (default), probabilities are \code{P[X<=x]}
+otherwise \code{P[X>x]}.}
 
 \item{log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
@@ -53,6 +53,6 @@ Density, distribution function, quantile function and random
 qgamma2(c(0.25,0.5,0.75), 2, 1)
 }
 \seealso{
-[stats::qgamma()]
+\code{\link[stats:GammaDist]{stats::qgamma()}}
 }
 \concept{distributions}

@@ -25,12 +25,12 @@
 
 \item{na.rm}{remove distributions with NA values for mean or sd}
 
-\item{method}{one of `exact` (solve with uniroot), `samples` (random resampling), `moments` (Cornish Fisher approximation)}
+\item{method}{one of \code{exact} (solve with uniroot), \code{samples} (random resampling), \code{moments} (Cornish Fisher approximation)}
 
-\item{...}{passed on to internal function, `seed=XXX` to fix random seed}
+\item{...}{passed on to internal function, \code{seed=XXX} to fix random seed}
 }
 \value{
-the value of the `p`th quantile
+the value of the \code{p}th quantile
 }
 \description{
 A quantile function for a mixture of gamma distributions

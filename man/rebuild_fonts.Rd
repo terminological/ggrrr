@@ -10,6 +10,7 @@ rebuild_fonts()
 nothing
 }
 \description{
-This repopulates `systemfonts` from the webfont cache and then `extrafont` from
-`systemfonts`. This does a full rebuild and will be slow (depending a bit )
+This repopulates \code{systemfonts} from the webfont cache and then \code{extrafont} from
+\code{systemfonts}. This does a full rebuild and will be slow (depending a bit )
 }
+\concept{fonts}

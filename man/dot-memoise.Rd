@@ -15,9 +15,11 @@ a function that takes the
 }
 \description{
 Options to control:
-- options(".memoise.disabled"): no new functions are memoised. existing
-  memoised functions will recalculate the values
-- options(".memoise.recalculate"):
+\itemize{
+\item options(".memoise.disabled"): no new functions are memoised. existing
+memoised functions will recalculate the values
+\item options(".memoise.recalculate"):
+}
 }
 \keyword{internal}
 

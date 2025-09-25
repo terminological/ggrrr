@@ -8,16 +8,53 @@ Data presentation and visualisation hacks.
 
 see the [package documentation](https://terminological.github.io/ggrrr/docs/)
 
-`ggrrr` fixes a few annoying problems in generating publication ready figures and tables.
+`ggrrr` is a repository of utility functions. It is not primarily designed to be
+installed, but rather as a source of standalone library files - ideally in 
+conjunction with `pkgtools` which provides some infrastructure to render unit
+tests, and interact with local standalone files. 
 
-It pays particular attention to output file size and image resolution, with
-opinionated formatting of defaults, with consistent output and sizing between
-screen, html, pdf and png outputs.
+```R
+# Optional:
+# Enable repository from terminological
+options(repos = c(
+  terminological = 'https://terminological.r-universe.dev',
+  CRAN = 'https://cloud.r-project.org'))
+install.packages("pkgtools")
 
-It also addresses an eclectic mix of other issues that arose during my time developing with R.
+# Use the `ggrrr` repository as a source of standalones
+pkgtools::use_standalone("terminological/ggrrr")
+
+# Alternatively:
+usethis::use_standalone("terminological/ggrrr") 
+# will work in a package project.
+```
+
+Most of the functions are available in standalone format for inclusion into your
+own package or analysis project. There are some functions that are only
+available in `ggrrr` as a package - particularly font installation functions. For 
+these you will have to install `ggrrr`:
+
+```R
+# Enable repository from terminological
+options(repos = c(
+  terminological = 'https://terminological.r-universe.dev',
+  CRAN = 'https://cloud.r-project.org'))
+install.packages("ggrrr")
+
+# Or the unstable github version
+devtools::install_github("terminological/ggrrr")
+```
+`ggrrr` is not on CRAN. It is not likely to ever be and the use of standalones
+is the primary channel for distribution.
+
+`ggrrr` has a focus on output from `ggplot` and `huxtable` with file size, image
+resolution, opinionated formatting of defaults, and consistent output and sizing
+between screen, html, pdf and png outputs.
+
+It also addresses an eclectic mix of other issues that arose during my time
+developing with R.
 
 * Font handling - a million and one ways of doing it in R. Now a million and two.
-* loading dependencies when you are actively developing libraries in parallel.
 * writing files to date-versioned output directories, and constructing data supplements.
 * caching intermediate analysis stages.
 * outputting the right thing at the right time depending on whether you are
@@ -32,45 +69,11 @@ cutting integer values into labelled categories.
 
 ## Pre installation:
 
-`ggrrr` uses cairo graphics if available. This need to be installed which should
-happen automatically. However on macOS cairo has a transitive dependency on
-`XQuartz` which is annoyingly not automatic. Therefore on macOS `XQuartz` needs
-to be installed manually from https://www.xquartz.org/. or alternatively do a
-`brew install --cask xquartz`, before the automatically installed cairo can
-work.
-
+`ggrrr` will fallback to use of a headless chrome instance in some situations,
+particularly for rendering very complicated ggplots and huxtables to pdf.
 `ggrrr` is configured to use `html2pdfr` for html to pdf conversion if
 available. This uses `rJava`, which in turn requires a `Java` installation. In
 theory it is optional and will not be installed automatically, or everything
 will be installed automagically. In practice getting a working `html2pdfr` is
 probably done separately by following the `html2pdfr` [installation
-instructions](https://github.com/terminological/html2pdfr). If this is too much
-trouble then an installation of `webshot` via CRAN should be easier (N.b. not
-`webshot2`).
-
-`ggrrr` is not on CRAN you can install the most up to date release with:
-
-```R
-# Enable repository from terminological
-options(repos = c(
-  terminological = 'https://terminological.r-universe.dev',
-  CRAN = 'https://cloud.r-project.org'))
-# Download and install ggrrr in R
-install.packages('ggrrr')
-```
-
-Unstable versions are available on the main branch in github:
-
-```R
-# The unstable head verions
-devtools::install_github("terminological/ggrrr")
-
-# As ggrrr is quite fluid, getting a specific version is recommended for any 
-# particular analysis
-devtools::install_github("terminological/ggrrr@0.0.0.9009")
-
-```
-
-It is pretty unstable and under continuous parallel development which may break
-things without warning. It is sensible to use a specific tag or released
-version, unless you are me.
+instructions](https://github.com/terminological/html2pdfr).

@@ -13,7 +13,7 @@
 }
 \value{
 a logical vector with true if the character could have been created
-  by the glue spec.
+by the glue spec.
 }
 \description{
 This allows you to filter for lines that match those that could have been

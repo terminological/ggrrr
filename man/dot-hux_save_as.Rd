@@ -23,7 +23,7 @@
 
 \item{filename}{the filename, which may omit the extension}
 
-\item{size}{a `std_size` list entry}
+\item{size}{a \code{std_size} list entry}
 
 \item{maxWidth}{or the maximum width in inches}
 

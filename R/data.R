@@ -17,5 +17,6 @@
 #'
 #' @docType data
 #' @keywords datasets
+#' @concept fonts
 #' @name glyphmap
 NULL

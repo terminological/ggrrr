@@ -23,7 +23,7 @@ makes sure it is reused."><meta property="og:image" content="https://terminologi
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/web/cache-functions.html">Caching functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/figure-functions.html">Figure functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
-    <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
     <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
@@ -57,7 +57,7 @@ makes sure it is reused.</p>
 <span>  as <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="st">"raw"</span>, <span class="st">"parsed"</span>, <span class="st">"httr"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .nocache <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"cache.disable"</span>, default <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  .cache <span class="op">=</span> <span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/packageName.html" class="external-link">packageName</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  .cache <span class="op">=</span> <span class="fu">.cache_loc</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  .stale <span class="op">=</span> <span class="cn">Inf</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,13 +117,13 @@ details.</p></dd>
 
 <dt id="arg--nocache">.nocache<a class="anchor" aria-label="anchor" href="#arg--nocache"></a></dt>
 <dd><p>an option to defeat the cacheing which can be set globally as
-`options("cache.disable"=TRUE)`</p></dd>
+<code>options("cache.disable"=TRUE)</code></p></dd>
 
 
 <dt id="arg--cache">.cache<a class="anchor" aria-label="anchor" href="#arg--cache"></a></dt>
 <dd><p>the location of the cache as a directory. May get its value
-from `getOption("cache.path")` or the default value which is
-`rappdirs::user_cache_dir(&lt;package_name&gt;)`</p></dd>
+from <code>getOption("cache.path")</code> or the default value which is
+<code>rappdirs::user_cache_dir(&lt;package_name&gt;)</code></p></dd>
 
 
 <dt id="arg--stale">.stale<a class="anchor" aria-label="anchor" href="#arg--stale"></a></dt>

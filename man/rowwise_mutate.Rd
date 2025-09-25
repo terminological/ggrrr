@@ -11,7 +11,7 @@ rowwise_mutate(.data, ..., .onerror = function(e, ...) NA)
 
 \item{...}{a named list of expressions similar to mutate but where the expressions
 to be evaluated are evaluated in only in the context of the current row - and
-are not vectorised. This does not support [dplyr::accross] syntax.}
+are not vectorised. This does not support \link[dplyr:across]{dplyr::across} syntax.}
 
 \item{.onerror}{a function that is called for}
 }
@@ -22,7 +22,7 @@ a dataframe the same length as input with additional or altered columns
 Applies an expression to each row and assignes it to a new column.
 Per-row failures are handled with default values (NAs) or can be intercepted
 by the user with a tryCatch(...) expression. There are many other ways to
-do a similar thing in `dplyr` and `purrr` but they are all more complicated than
+do a similar thing in \code{dplyr} and \code{purrr} but they are all more complicated than
 I expect them to be.
 }
 \examples{
@@ -41,26 +41,28 @@ iris \%>\% dplyr::rowwise() \%>\% dplyr::mutate(
   tmp = tibble::tibble(a=1, b=2)) \%>\%
 dplyr::glimpse()
 
-# As expressions are not vectorised we can use normal if ... else ... statements
-# and errors can be handled and default values provided.
-suppressWarnings(
-iris \%>\% rowwise_mutate(
-  tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
-  .onerror = function(e) -Petal.Width
-) \%>\%
-dplyr::glimpse()
-)
+withCallingHandlers({
 
-# The default values
-# are evaluated in the same context as the original expression, but only are
-# defaults for all the columns so makes most sense when a default value is given
+ # As expressions are not vectorised we can use normal if ... else ... statements
+ # and errors can be handled and default values provided.
+ iris \%>\% rowwise_mutate(
+    tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
+    .onerror = function(e) -Petal.Width
+  ) \%>\%
+  dplyr::glimpse()
 
-suppressWarnings(
-iris \%>\% rowwise_mutate(
-  tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
-  tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
-  .onerror = function(e) Inf
-) \%>\%
-dplyr::glimpse()
-)
+  # The default values
+  # are evaluated in the same context as the original expression, but only are
+  # defaults for all the columns so makes most sense when a default value is given
+
+  iris \%>\% rowwise_mutate(
+    tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
+    tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
+    .onerror = function(e) Inf
+  ) \%>\%
+  dplyr::glimpse()
+
+
+}, warning = function(e) {message(e); invokeRestart("muffleWarning")})
 }
+\concept{tidydata}

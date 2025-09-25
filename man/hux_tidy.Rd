@@ -31,24 +31,24 @@ combination then this character will be used as a placeholder}
 \item{na}{If there are NA contents then this character will be used.}
 
 \item{displayRedundantColumnNames}{if there is one column per column group
-the name of that column may be irrelevant (e.g. if there is a `col_name`,
-`value` fully tidy format) and `col_name` is in the `colGroupVars` list
-then the name of the column `value` is redundant and not displayed by
+the name of that column may be irrelevant (e.g. if there is a \code{col_name},
+\code{value} fully tidy format) and \code{col_name} is in the \code{colGroupVars} list
+then the name of the column \code{value} is redundant and not displayed by
 default. However sometimes you want to display this if you have named it as
 something specific e.g. including the units. If there is more than one
-column per `colGroup` the column titles are needed and kept.}
+column per \code{colGroup} the column titles are needed and kept.}
 
-\item{...}{passed to `hux_default_layout()`}
+\item{...}{passed to \code{hux_default_layout()}}
 }
 \value{
 a huxtable table
 }
 \description{
 The assumption here is that the input data is a long format tidy dataframe
-with both rows and columns specified by values of the `rowGroupVars` and
-`colGroupVars` columns. The long format (sparse) table is translated into a
-nested tree of rows (using `rowGroupVars`) and a nested tree of columns (from
-`colGroupVars`). Individual data items are placed in the cell intersecting
+with both rows and columns specified by values of the \code{rowGroupVars} and
+\code{colGroupVars} columns. The long format (sparse) table is translated into a
+nested tree of rows (using \code{rowGroupVars}) and a nested tree of columns (from
+\code{colGroupVars}). Individual data items are placed in the cell intersecting
 these two trees. If there are multiple matches an additional layer of grouping
 is added to the columns.
 }

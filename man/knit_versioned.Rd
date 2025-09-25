@@ -25,13 +25,16 @@ nothing. called for side effects
 }
 \description{
 used in a knitr preamble to direct the output to a subdirectory of the project
----
+}
+\details{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{---
 title: "Analysis 1"
 output: html_document
 knit: ggrrr::knit_versioned("output/analysis-1")
 ---
-}
-\details{
+}\if{html}{\out{</div>}}
+
 This can only work when deployed as a library and hence no standalone version
 of it exists, because the fully qualified packagename has to be used.
 }
+\concept{output}

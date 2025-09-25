@@ -26,13 +26,13 @@
 
 \item{.start_glue}{a glue specification for the marker of the start of the
 block to be replaced. May use any of the whisker variables e.g.
-`"# \{name\} start ----"`. This can also be given as a numeric index, were particularly
+\code{"# \\{name\\} start ----"}. This can also be given as a numeric index, were particularly
 0 is the beginning of the input and -1 is the end. If numeric it is start
 inclusive.}
 
 \item{.end_glue}{a glue specification for the marker of the end of the
 block to be replaced. May use any of the whisker variables e.g.
-`"# \{name\} end ----"` or numeric as above. If numeric it is end inclusive.}
+\code{"# \\{name\\} end ----"} or numeric as above. If numeric it is end inclusive.}
 
 \item{.insert_before}{a marker for where in the file to insert a block if no
 matching start and end markers are found.}
@@ -42,13 +42,13 @@ extracts a named list of data from it. The default returns an empty list.}
 }
 \value{
 A character vector of the updated content of the file. Does not
-  write the file
+write the file
 }
 \description{
 This function looks for a fenced section (typically of code) with markers defined by
-`.start_glue` and `.end_glue` and replaces them with the evaluated template
+\code{.start_glue} and \code{.end_glue} and replaces them with the evaluated template
 content. If no matching sections are found the new code is inserted before the
-matched `.insert_before` marker (or at the end if that is not found)
+matched \code{.insert_before} marker (or at the end if that is not found)
 }
 \keyword{internal}
 

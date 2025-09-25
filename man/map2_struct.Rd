@@ -7,18 +7,18 @@
 map2_struct(.x, .y, .f, ..., .progress = FALSE)
 }
 \arguments{
-\item{.x}{a `struct_list`}
+\item{.x}{a \code{struct_list}}
 
-\item{.y}{a list or vector the same length as `.x`}
+\item{.y}{a list or vector the same length as \code{.x}}
 
-\item{.f}{a function to apply to each `.x`, `.y` pair}
+\item{.f}{a function to apply to each \code{.x}, \code{.y} pair}
 
-\item{...}{additional parameters to  `.f` but anonymous function preferred}
+\item{...}{additional parameters to  \code{.f} but anonymous function preferred}
 
 \item{.progress}{display a progress bar (logical or string name)}
 }
 \value{
-a `struct_list`
+a \code{struct_list}
 }
 \description{
 These functions are variants of \code{\link[purrr:map]{map()}} that iterate over two arguments at

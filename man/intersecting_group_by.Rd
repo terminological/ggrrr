@@ -27,3 +27,4 @@ iris \%>\% dplyr::group_by(Species) \%>\% intersecting_group_by(
   Sepal.Width > mean(Sepal.Width) ~ "Wide"
 )
 }
+\concept{tidydata}

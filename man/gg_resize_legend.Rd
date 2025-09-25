@@ -7,11 +7,17 @@
 gg_resize_legend(pointSize = 0.75, textSize = 6, spaceLegend = 0.75)
 }
 \arguments{
-\item{pointSize}{- the ggplot size of lines or points}
+\item{pointSize}{\itemize{
+\item the ggplot size of lines or points
+}}
 
-\item{textSize}{- the size in pts of the text}
+\item{textSize}{\itemize{
+\item the size in pts of the text
+}}
 
-\item{spaceLegend}{- degree of spacing between items in the scale (defines overall size)}
+\item{spaceLegend}{\itemize{
+\item degree of spacing between items in the scale (defines overall size)
+}}
 }
 \value{
 a theme

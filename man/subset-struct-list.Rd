@@ -28,33 +28,33 @@
 \arguments{
 \item{...}{generic support}
 
-\item{x}{a `struct_list`}
+\item{x}{a \code{struct_list}}
 
 \item{y}{item to retrieve}
 
 \item{value}{the value}
 }
 \value{
-a `struct_list` with all the items
+a \code{struct_list} with all the items
 }
 \description{
 These functions allow generic list behaviour.
 }
 \section{Functions}{
 \itemize{
-\item \code{c(struct_list)}: Repeat a `struct_list`
+\item \code{c(struct_list)}: Repeat a \code{struct_list}
 
-\item \code{rep(struct_list)}: Repeat a `struct_list`
+\item \code{rep(struct_list)}: Repeat a \code{struct_list}
 
-\item \code{$}: Subset a `struct_list`
+\item \code{$}: Subset a \code{struct_list}
 
-\item \code{[}: Subset a `struct_list`
+\item \code{[}: Subset a \code{struct_list}
 
-\item \code{`[`(struct_list) <- value}: Assign a subset to a `struct_list`
+\item \code{`[`(struct_list) <- value}: Assign a subset to a \code{struct_list}
 
-\item \code{[[}: get a value from a `struct_list`
+\item \code{[[}: get a value from a \code{struct_list}
 
-\item \code{`[[`(struct_list) <- value}: set a single value in a `struct_list`
+\item \code{`[[`(struct_list) <- value}: set a single value in a \code{struct_list}
 
 }}
 \examples{

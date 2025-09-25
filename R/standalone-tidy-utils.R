@@ -26,6 +26,7 @@
 #' @param ... a list of dataframes
 #'
 #' @return the union of those dataframes. Factor levels are combined with a superset of all levels
+#' @concept tidydata
 #' @export
 #'
 #' @examples
@@ -88,6 +89,7 @@ bind_rows_with_factors <- function(...) {
 #' @param .total_first should the total be before or after the groups
 #'
 #' @return a summarised dataframe with the additional totals or group row
+#' @concept tidydata
 #' @export
 #'
 #' @examples
@@ -149,6 +151,7 @@ summarise_with_totals = function(
 #'
 #' @return a new dataframe containing the overlapping groups which may create duplicates of individual rows.
 #' @export
+#' @concept tidydata
 #'
 #' @examples
 #' library(tidyverse)
@@ -242,11 +245,12 @@ intersecting_group_by.trackr_df = function(
 #' @param .data a dataframe. grouping is ingnored
 #' @param ... a named list of expressions similar to mutate but where the expressions
 #'   to be evaluated are evaluated in only in the context of the current row - and
-#'   are not vectorised. This does not support [dplyr::accross] syntax.
+#'   are not vectorised. This does not support [dplyr::across] syntax.
 #' @param .onerror a function that is called for
 #'
 #' @return a dataframe the same length as input with additional or altered columns
 #' @export
+#' @concept tidydata
 #'
 #' @examples
 #' # calculations are scoped only to current row. Hence max(x) == x always:
@@ -264,28 +268,29 @@ intersecting_group_by.trackr_df = function(
 #'   tmp = tibble::tibble(a=1, b=2)) %>%
 #' dplyr::glimpse()
 #'
-#' # As expressions are not vectorised we can use normal if ... else ... statements
-#' # and errors can be handled and default values provided.
-#' suppressWarnings(
-#' iris %>% rowwise_mutate(
-#'   tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
-#'   .onerror = function(e) -Petal.Width
-#' ) %>%
-#' dplyr::glimpse()
-#' )
+#' withCallingHandlers({
 #'
-#' # The default values
-#' # are evaluated in the same context as the original expression, but only are
-#' # defaults for all the columns so makes most sense when a default value is given
+#'  # As expressions are not vectorised we can use normal if ... else ... statements
+#'  # and errors can be handled and default values provided.
+#'  iris %>% rowwise_mutate(
+#'     tmp = if (Petal.Width > 2.0) stop("error message: ",Petal.Width) else Petal.Width,
+#'     .onerror = function(e) -Petal.Width
+#'   ) %>%
+#'   dplyr::glimpse()
 #'
-#' suppressWarnings(
-#' iris %>% rowwise_mutate(
-#'   tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
-#'   tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
-#'   .onerror = function(e) Inf
-#' ) %>%
-#' dplyr::glimpse()
-#' )
+#'   # The default values
+#'   # are evaluated in the same context as the original expression, but only are
+#'   # defaults for all the columns so makes most sense when a default value is given
+#'
+#'   iris %>% rowwise_mutate(
+#'     tmp = if (Petal.Width > 2.0) stop("too wide petals: ",Petal.Width) else Petal.Width,
+#'     tmp2 = if (Sepal.Width > 4) stop("too wide sepals: ",Sepal.Width) else Sepal.Width,
+#'     .onerror = function(e) Inf
+#'   ) %>%
+#'   dplyr::glimpse()
+#'
+#'
+#' }, warning = function(e) {message(e); invokeRestart("muffleWarning")})
 rowwise_mutate = function(.data, ..., .onerror = function(e, ...) NA) {
   out = .data
   list = rlang::enexprs(...)
@@ -358,6 +363,7 @@ rowwise_mutate = function(.data, ..., .onerror = function(e, ...) NA) {
 #'
 #' @return an ordered factor of the integer
 #' @export
+#' @concept tidydata
 #'
 #' @examples
 #' cut_integer(stats::rbinom(20,20,0.5), c(5,10,15))
@@ -482,6 +488,7 @@ purely <- function(.f) {
 #'
 #' @return a list of lists with the column name and the factor levels as list, as a `checked list`.
 #' @export
+#' @concept tidydata
 get_value_sets = function(df) {
   v = lapply(colnames(df), function(x) {
     if (all(is.na(df[[x]]))) {
@@ -522,6 +529,7 @@ get_value_sets = function(df) {
 #'
 #' @return the value of the list item or an error if it does not exist
 #' @export
+#' @concept tidydata
 `$.checked_list` <- function(x, y) {
   if (is.character(y)) {
     ylab = y

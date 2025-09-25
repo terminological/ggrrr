@@ -11,7 +11,7 @@ hux_save_as(...)
   Named arguments passed on to \code{\link[=.hux_save_as]{.hux_save_as}}\describe{
     \item{\code{hux}}{the huxtable to save}
 \item{\code{filename}}{the filename, which may omit the extension}
-\item{\code{size}}{a `std_size` list entry}
+\item{\code{size}}{a \code{std_size} list entry}
 \item{\code{maxWidth}}{or the maximum width in inches}
 \item{\code{maxHeight}}{and either the maximum height in inches}
 \item{\code{aspectRatio}}{or the minimum allowed aspect ratio}

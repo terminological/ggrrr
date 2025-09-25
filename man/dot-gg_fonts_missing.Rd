@@ -10,7 +10,7 @@
 \item{family}{the font family}
 }
 \value{
-`TRUE` if missing fonts detected
+\code{TRUE} if missing fonts detected
 }
 \description{
 Check if any fonts listed are missing

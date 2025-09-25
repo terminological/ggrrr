@@ -6,12 +6,18 @@ reference:
   contents: has_concept("cache")
 - title: File output
   contents: has_concept("output")
+- title: Tidy data pipeline utilities
+  contents: has_concept("tidydata")
 - title: Ggplot
   contents: has_concept("ggplot")
 - title: Huxtable
   contents: has_concept("huxtable")
 - title: Structured lists
   contents: has_concept("structures")
+- title: Statistical distributions
+  contents: has_concept("distributions")
+- title: Font handling functions
+  contents: has_concept("fonts")
 - title: Others
-  contents: lacks_concepts(c("cache", "output", "ggplot","huxtable","structures"))
+  contents: lacks_concepts(c("cache", "output", "ggplot","huxtable","structures","distributions","fonts","tidydata"))
 

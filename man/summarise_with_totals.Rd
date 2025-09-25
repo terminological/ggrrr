@@ -41,3 +41,4 @@ diamonds \%>\%
     .total = "Overall"
  )
 }
+\concept{tidydata}

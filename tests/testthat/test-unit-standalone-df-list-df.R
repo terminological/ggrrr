@@ -13,26 +13,23 @@ test_that(".df_to_list_of_lists unit test", {
   # or navigate to topic with <F2>
   F2 = .df_to_list_of_lists
   
-  
-  
-  iris_list = .df_to_list_of_lists(datasets::iris)
+  iris_list <- .df_to_list_of_lists(datasets::iris)
   
   testthat::expect_equal(
     iris_list[[1]]$Species,
     iris$Species[[1]]
   )
   
-  mtcars_nest = datasets::mtcars %>%
+  mtcars_nest <- datasets::mtcars %>%
     dplyr::mutate(name = rownames(.)) %>%
-    tidyr::nest(details = -c(cyl,gear))
+    tidyr::nest(details = -c(cyl, gear))
   
-  mtcars_list = mtcars_nest %>% .df_to_list_of_lists()
+  mtcars_list <- mtcars_nest %>% .df_to_list_of_lists()
   
   testthat::expect_equal(
     mtcars_list[[1]]$details[[1]]$name,
     mtcars_nest$details[[1]]$name[[1]]
   )
-  
 })
 
 # unit test end: .df_to_list_of_lists ----
@@ -46,25 +43,23 @@ test_that(".list_of_lists_to_df unit test", {
   # or navigate to topic with <F2>
   F2 = .list_of_lists_to_df
   
-  
-  iris_list = .df_to_list_of_lists(iris)
-  iris2 = .list_of_lists_to_df(iris_list)
+  iris_list <- .df_to_list_of_lists(iris)
+  iris2 <- .list_of_lists_to_df(iris_list)
   
   testthat::expect_equal(datasets::iris, as.data.frame(iris2))
   
-  mtcars_nest = datasets::mtcars %>%
+  mtcars_nest <- datasets::mtcars %>%
     dplyr::mutate(name = rownames(.)) %>%
-    tidyr::nest(details = -c(cyl,gear))
+    tidyr::nest(details = -c(cyl, gear))
   
-  mtcars_list = mtcars_nest %>% .df_to_list_of_lists()
+  mtcars_list <- mtcars_nest %>% .df_to_list_of_lists()
   
-  mtcars_nest2 = mtcars_list %>% .list_of_lists_to_df()
+  mtcars_nest2 <- mtcars_list %>% .list_of_lists_to_df()
   
   testthat::expect_equal(
     mtcars_nest2$details[[2]],
     mtcars_nest$details[[2]]
   )
-  
 })
 
 # unit test end: .list_of_lists_to_df ----

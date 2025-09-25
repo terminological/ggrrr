@@ -15,7 +15,7 @@ the file path of the root of the project
 \description{
 gets a reverse directory listing and then finds the lowest directory
 that contains an indication of there being a project in the directory
-this should work where the `here` package does not
+this should work where the \code{here} package does not
 (particularly when knitting in CRAN checks for example, or running in a
 non package project)
 }
@@ -24,9 +24,7 @@ non package project)
 
 \section{Unit tests}{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{
-testthat::expect_no_error(
- suppressWarnings(.locate_project())
-)
+.locate_project()
 }\if{html}{\out{</div>}}
 }
 

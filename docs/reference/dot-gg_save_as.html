@@ -29,7 +29,7 @@ near identical."><meta property="og:image" content="https://terminological.githu
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/web/cache-functions.html">Caching functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/figure-functions.html">Figure functions</a></li>
     <li><a class="dropdown-item" href="../articles/web/font-functions.html">Font functions</a></li>
-    <li><a class="dropdown-item" href="../articles/web/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/web/other-table-formats.html">Other table formats</a></li>
     <li><a class="dropdown-item" href="../articles/web/struct-lists.html">Structured lists</a></li>
     <li><a class="dropdown-item" href="../articles/web/table-functions.html">Table functions</a></li>
@@ -86,7 +86,7 @@ near identical.</p>
 
 
 <dt id="arg-size">size<a class="anchor" aria-label="anchor" href="#arg-size"></a></dt>
-<dd><p>a standard size see `std_size`</p></dd>
+<dd><p>a standard size see <code>std_size</code></p></dd>
 
 
 <dt id="arg-maxwidth">maxWidth<a class="anchor" aria-label="anchor" href="#arg-maxwidth"></a></dt>
@@ -156,15 +156,15 @@ if the file is being parsed while it is still being written to.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>the output is an sensible default object that can be displayed given
-  the context it is called in, for example if knitting an RMarkdown document
-  a link to the png file for embedding, if latex a link to the pdf file.</p>
+the context it is called in, for example if knitting an RMarkdown document
+a link to the png file for embedding, if latex a link to the pdf file.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For maximum cross platform reproducibility we are using the combination of
-`systemfonts` for font management, `svglite` to render the canonical output
-`rsvg` to convert that to pdf, and `ragg` for bitmap formats.
-In some situations `rsvg` fails in which case we fall back to rendering in a
+<code>systemfonts</code> for font management, <code>svglite</code> to render the canonical output
+<code>rsvg</code> to convert that to pdf, and <code>ragg</code> for bitmap formats.
+In some situations <code>rsvg</code> fails in which case we fall back to rendering in a
 headless chrome instance. This rather complicated pipeline ensures modern
 webfont support, and editable SVG or PDF.</p>
     </div>

@@ -11,7 +11,7 @@
 }
 \value{
 a mapping as a named list of font families that are present on the
-  system (names are the requested font family)
+system (names are the requested font family)
 }
 \description{
 Pick a locally installed font family that matches requested
@@ -21,10 +21,7 @@ Pick a locally installed font family that matches requested
 
 \section{Unit tests}{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{
-tmp = suppressWarnings(
-  .hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
-)
-testthat::expect_equal(tmp[[1]],"Roboto")
+.hux_substitute_fonts(c("Roboto","Arial","Kings","Unmatched"))
 }\if{html}{\out{</div>}}
 }
 

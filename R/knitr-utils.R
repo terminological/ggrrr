@@ -1,11 +1,14 @@
 #' Knit to a versioned file in a sub-directory of the project
 #'
 #' used in a knitr preamble to direct the output to a subdirectory of the project
+#'
+#' ```
 #' ---
 #' title: "Analysis 1"
 #' output: html_document
 #' knit: ggrrr::knit_versioned("output/analysis-1")
 #' ---
+#' ````
 #'
 #' This can only work when deployed as a library and hence no standalone version
 #' of it exists, because the fully qualified packagename has to be used.
@@ -14,6 +17,7 @@
 #' @param ... ignored
 #' @param datedFile do you want the filename to have the date appended (defaults TRUE)?
 #' @param datedSubdirectory do you want the files to be placed in a dated subdirectory  (defaults FALSE)?
+#' @concept output
 #'
 #' @return nothing. called for side effects
 #' @export
@@ -73,6 +77,8 @@ options(tinytex.engine_args = '-shell-escape')
 #'
 #' Pulls out a code snippet based on a vector of start
 #' and end lines.
+#'
+#' @concept output
 #'
 #' @param type The code type (as understood by the minted latex plugin)
 #' @param filename The source code filename
@@ -143,6 +149,8 @@ code_snip_by_line = function(
 #'
 #' Pulls out a code snippet based on a start and end
 #' tags as comments within the code
+#'
+#' @concept output
 #'
 #' @param type the code type
 #' @param filename the source code file

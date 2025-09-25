@@ -37,3 +37,4 @@ specify just the change over points as integers and clearly label the resulting 
 cut_integer(stats::rbinom(20,20,0.5), c(5,10,15))
 cut_integer(floor(stats::runif(100,-10,10)), cut_points = c(2,3,4,6), lower_limit=0, upper_limit=10)
 }
+\concept{tidydata}

@@ -4,12 +4,13 @@
 #'
 #' reboot a library reloading from a local development copy if it exists locally alternatively get
 #' the most up to date github package.
+#' `r lifecycle::badge('deprecated')`
+#'
 #'
 #' @param pkg the package to load the unstable version of
 #' @param org the github organisation
 #' @return nothing
 #' @export
-#'
 #' @examples
 #' # ggrrr::unstable()
 unstable = function(pkg = "ggrrr", org = "terminological") {
@@ -38,10 +39,12 @@ unstable = function(pkg = "ggrrr", org = "terminological") {
 
 #' Make sure packages available on CRAN are installed
 #'
+#' `r lifecycle::badge('deprecated')`
 #' @param cran_deps a vector of package names
 #'
 #' @return nothing
 #' @export
+#'
 #'
 #' @examples
 #' # cran("tidyverse")
@@ -58,6 +61,7 @@ cran = function(cran_deps) {
 #' Make sure github packages are installed.
 #'
 #' Use a locally checked out version if available.
+#' `r lifecycle::badge('deprecated')`
 #'
 #' @param name the name of the package
 #' @param github something like "github-repo/project-name"

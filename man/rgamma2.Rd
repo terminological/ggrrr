@@ -41,6 +41,6 @@ Density, distribution function, quantile function and random
 rgamma2(10, 2, 1)
 }
 \seealso{
-[stats::rgamma()]
+\code{\link[stats:GammaDist]{stats::rgamma()}}
 }
 \concept{distributions}

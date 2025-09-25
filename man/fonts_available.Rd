@@ -18,3 +18,4 @@ Which fonts are available on this system without hitting webfonts.
 \examples{
 fonts_available(c("Arial","sdfdsfsd"))
 }
+\concept{fonts}

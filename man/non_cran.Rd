@@ -22,6 +22,7 @@ nothing
 }
 \description{
 Use a locally checked out version if available.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 # non_cran("patchwork", "thomasp85/patchwork")

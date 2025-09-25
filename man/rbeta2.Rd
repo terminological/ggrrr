@@ -38,6 +38,6 @@ Density, distribution function, quantile function and random
 rbeta2(3, c(0.1,0.5,0.9),0.1)
 }
 \seealso{
-[stats::rbeta()]
+\code{\link[stats:Beta]{stats::rbeta()}}
 }
 \concept{distributions}

@@ -21,13 +21,13 @@
 
 \item{.start_glue}{a glue specification for the marker of the start of the
 block to be replaced. May use any of the whisker variables e.g.
-`"# \{name\} start ----"`. This can also be given as a numeric index, were particularly
+\code{"# \\{name\\} start ----"}. This can also be given as a numeric index, were particularly
 0 is the beginning of the input and -1 is the end. If numeric it is start
 inclusive.}
 
 \item{.end_glue}{a glue specification for the marker of the end of the
 block to be replaced. May use any of the whisker variables e.g.
-`"# \{name\} end ----"` or numeric as above. If numeric it is end inclusive.}
+\code{"# \\{name\\} end ----"} or numeric as above. If numeric it is end inclusive.}
 }
 \value{
 a character vector with the deleted blocks

@@ -21,7 +21,7 @@
 
 \item{filename}{base of target filename (excluding extension).}
 
-\item{size}{a standard size see `std_size`}
+\item{size}{a standard size see \code{std_size}}
 
 \item{maxWidth}{maximum width in inches}
 
@@ -64,8 +64,8 @@ if the file is being parsed while it is still being written to.}
 }
 \value{
 the output is an sensible default object that can be displayed given
-  the context it is called in, for example if knitting an RMarkdown document
-  a link to the png file for embedding, if latex a link to the pdf file.
+the context it is called in, for example if knitting an RMarkdown document
+a link to the png file for embedding, if latex a link to the pdf file.
 }
 \description{
 Saves a ggplot object to disk at a set physical size. Allows specific maximum dimensions
@@ -76,9 +76,9 @@ near identical.
 }
 \details{
 For maximum cross platform reproducibility we are using the combination of
-`systemfonts` for font management, `svglite` to render the canonical output
-`rsvg` to convert that to pdf, and `ragg` for bitmap formats.
-In some situations `rsvg` fails in which case we fall back to rendering in a
+\code{systemfonts} for font management, \code{svglite} to render the canonical output
+\code{rsvg} to convert that to pdf, and \code{ragg} for bitmap formats.
+In some situations \code{rsvg} fails in which case we fall back to rendering in a
 headless chrome instance. This rather complicated pipeline ensures modern
 webfont support, and editable SVG or PDF.
 }

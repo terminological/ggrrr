@@ -16,7 +16,7 @@ it searches for \command{chromium-browser} and \command{google-chrome} from
 the system's \var{PATH} variable.
 }
 \details{
-This function is borrowed from `pagedown` here to avoid the dependency:
+This function is borrowed from \code{pagedown} here to avoid the dependency:
 https://github.com/rstudio/pagedown/blob/main/R/chrome.R which is MIT
 licensed. We note that there is no check made on MacOS that the path is
 correct, and since it may be installed elsewhere this is a potential point

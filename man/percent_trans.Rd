@@ -10,9 +10,9 @@ percent_trans()
 A scales object
 }
 \description{
-display a 0-1 scale as 0-100%
+display a 0-1 scale as 0-100\%
 }
 \details{
-`r lifecycle::badge(stage = "deprecated")`
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \concept{ggplot}

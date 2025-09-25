@@ -13,11 +13,11 @@ rcategorical(n, prob, factor = FALSE)
 normalised to sum to 1}
 
 \item{factor}{if not FALSE then factor levels will either be taken from the
-names of `prob` first, or if this is a character vector from this.}
+names of \code{prob} first, or if this is a character vector from this.}
 }
 \value{
-a vector of random class labels of length `n`. Labels come from names
-  of `prob` or from a character vector in `factor`.
+a vector of random class labels of length \code{n}. Labels come from names
+of \code{prob} or from a character vector in \code{factor}.
 }
 \description{
 Sampling from the multinomial equivalent of the Bernoulli distribution
