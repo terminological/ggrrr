@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-rappdirs.R
-# last-updated: '2025-09-26'
+# last-updated: 2025-09-26
 # license: https://unlicense.org
 # ---
 
@@ -145,7 +145,7 @@
   if (!identical(val, "")) {
     val
   } else {
-    switch(check_os(os), win = win, mac = mac, unix = unix)
+    switch(.rappdirs_check_os(os), win = win, mac = mac, unix = unix)
   }
 }
 
