@@ -419,7 +419,7 @@ window.onload = init;
     # args=c("--headless", "--disable-gpu", "--no-pdf-header-footer", sprintf("--print-to-pdf=%s",pdfFile), tmp_html),
     args = c(
       "--headless",
-      "--print-to-pdf-no-header",
+      "--disable-gpu",
       "--no-pdf-header-footer",
       sprintf("--print-to-pdf=%s", pdfFile),
       tmp_html
@@ -516,6 +516,7 @@ window.onload = init;
     args = c(
       "--headless",
       "--no-pdf-header-footer",
+      "--disable-gpu",
       sprintf("--print-to-pdf=%s", pdfFile),
       tmp_html
     ),
