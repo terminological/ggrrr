@@ -77,8 +77,8 @@
 #' @seealso [tempdir()] for a non-persistent temporary directory.
 #' @keywords internal
 #' @unit
-#' .user_cache_dir("rappdirs")
-.rappdirs_user_cache_dir <- function(
+#' rappdirs_cache_dir("rappdirs")
+rappdirs_user_cache_dir <- function(
   appname = NULL,
   appauthor = appname,
   version = NULL,
