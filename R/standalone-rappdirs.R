@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-rappdirs.R
-# last-updated: 2025-09-26
+# last-updated: 2025-09-30
 # license: https://unlicense.org
 # ---
 
@@ -47,8 +47,8 @@
 #' @section Opinion:
 #' On Windows the only suggestion in the MSDN docs is that local settings go
 #' in the `CSIDL_LOCAL_APPDATA` directory. This is identical to the
-#' non-roaming app data dir (i.e. [user_data_dir()]). But apps typically put
-#' cache data somewhere *under* this directory so `user_cache_dir()` appends
+#' non-roaming app data dir. But apps typically put
+#' cache data somewhere *under* this directory so `rappdirs_user_cache_dir()` appends
 #' `Cache` to the `CSIDL_LOCAL_APPDATA` value, unless `opinion = FALSE`.
 #'
 #' @param appname is the name of application. If NULL, just the system
