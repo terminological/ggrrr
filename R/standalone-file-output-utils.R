@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-file-output-utils.R
-# last-updated: '2024-06-12'
+# last-updated: 2025-10-04
 # license: https://unlicense.org
 # imports:
 # - base64enc
@@ -54,6 +54,49 @@ std_size = list(
 )
 
 # Project output directory tools ----
+
+#' Find a file in a data directory.
+#'
+#' This function generates a function that resolves a file path fragment to a
+#' specific file location in an input directory.
+#'
+#' @param directory the root of the input
+#'
+#' @return a function that takes a relative path and returns the absolute path
+#' of the input file. The function can take the same arguments as `fs::dir_ls`,
+#' and particularly useful is `glob` and `type`. The function
+#' @keywords internal
+#' @concept output
+#' @unit
+#' inp = .inputter(tempdir())
+#' for (i in 1:10) {
+#'   fs::file_touch(fs::path(tempdir(), sprintf("test_%d.txt",i)))
+#' }
+#'
+#' testthat::expect_true(fs::file_exists(inp("test_2.txt")))
+#' testthat::expect_error(inp("test_0.txt"))
+#'
+#' testthat::expect_equal(length(inp(glob="*.txt")),10)
+#'
+.inputter = function(
+  directory = .here("input")
+) {
+  directory = fs::path_expand(directory)
+  #TODO: dated subdirectories. most recent version.
+  message("finding input from: ", directory)
+  return(function(filename = "", ..., type = "file") {
+    if (filename == "") {
+      tmp = fs::dir_ls(directory, recurse = TRUE, type = type, ...)
+      # tmp = fs::path_rel(tmp, directory)
+      return(tmp)
+    }
+    path = fs::path(directory, filename)
+    if (!fs::file_exists(path)) {
+      stop("Could not locate file: ", path)
+    }
+    return(path)
+  })
+}
 
 #' Generate a versioned file name in a subdirectory.
 #'
