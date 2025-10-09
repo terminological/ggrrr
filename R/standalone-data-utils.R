@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-data-utils.R
-# last-updated: '2025-10-06'
+# last-updated: 2025-10-09
 # license: https://unlicense.org
 # imports:
 # - dplyr
@@ -21,6 +21,7 @@
 #' @param glue a glue spec that may be used to generate a label. It can use \{low\}, \{high\}, \{next_low\}, or \{label\} as values.
 #' @param lower_limit the minimum value we should include (this is inclusive for the bottom category) (default -Inf)
 #' @param upper_limit the maximum value we should include (this is also inclusive for the top category) (default Inf)
+#' @param ordered should the result be an ordered factor? default is TRUE
 #' @param ... not used
 #'
 #' @return an ordered factor of the integer
@@ -36,6 +37,7 @@ cut_integer = function(
   glue = "{label}",
   lower_limit = -Inf,
   upper_limit = Inf,
+  ordered = TRUE,
   ...
 ) {
   next_low = NULL # remove global binding note
@@ -86,7 +88,7 @@ cut_integer = function(
       include.lowest = TRUE,
       breaks = breaks,
       labels = labels$label2,
-      ordered_result = TRUE,
+      ordered_result = ordered,
       right = FALSE
     )
   )
