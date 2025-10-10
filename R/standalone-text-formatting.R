@@ -1,18 +1,19 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-text-formatting.R
-# last-updated: 2024-06-06
+# last-updated: '2025-10-10'
 # license: https://unlicense.org
 # imports:
-#    - base
-#    - dplyr
-#    - ggplot2
-#    - glue
-#    - grDevices
-#    - rlang
-#    - stats
-#    - stringr
-#    - tibble
+# - base
+# - dplyr
+# - ggplot2
+# - glue
+# - grDevices
+# - rlang
+# - stats
+# - stringr
+# - testthat
+# - tibble
 # ---
 # This set of functions involve formatting
 
@@ -160,4 +161,87 @@
     return(alt)
   }
   return(label)
+}
+
+
+#' Escape a string for use in a regular expression
+#'
+#' Adapted from rex:::escape.character
+#'
+#' @param x A string to use in regex
+#'
+#' @returns An regex that matches the literal string x
+#' @keywords internal
+.escape_regex = function(x) {
+  chars <- c(
+    "*",
+    ".",
+    "?",
+    "^",
+    "+",
+    "$",
+    "|",
+    "(",
+    ")",
+    "[",
+    "]",
+    "{",
+    "}",
+    "\\"
+  )
+  gsub(
+    paste0("([\\", paste0(collapse = "\\", chars), "])"),
+    "\\\\\\1",
+    x,
+    perl = TRUE
+  )
+}
+
+
+#' Sprintf a value for regex
+#'
+#' Usually this will be used with strings as
+#'
+#' @param fmt a sprintf format that contains templated regex
+#' @param ... sprintf inputs. Usually this will be string data
+#'
+#' @returns a regular expression (or set of) that match the fixed strings given
+#'   and any regex given in the fmt string.
+#' @keywords internal
+#'
+#' @unit
+#' literal_capture = "[[1]]"
+#' literal_extn = "..."
+#' regex = .sprintf_regex("(%s).*%s",literal_capture, literal_extn)
+#' # should match all of:
+#' testthat::expect_true(
+#'   all(grepl(regex,c("[[1]]asdas...","[[1]]...","[[1]]$...")))
+#' )
+.sprintf_regex = function(fmt, ...) {
+  dots = rlang::list2(...)
+  dots = lapply(dots, function(x) if (is.character(x)) .escape_regex(x) else x)
+  do.call(sprintf, c(fmt, dots))
+}
+
+
+#' A formatted confidence interval from data
+#'
+#' @param x a vector of data to summarise
+#' @inheritDotParams .sprintf_data
+#' @param fmt a sprintf format string expecting exactly 3 numbers
+#' @param ci the confidence interval width
+#'
+#' @returns a formatted CI string
+#' @keywords internal
+.sprintf_quant = function(
+  x,
+  ...,
+  fmt = "%1.2f  [%1.2f\u2013%1.2f]",
+  ci = 0.95
+) {
+  .sprintf_data(
+    fmt = fmt,
+    params = stats::quantile(x, probs = c(0.5, 0.5 - ci / 2, 0.5 + ci / 2)),
+    ...
+  )
 }

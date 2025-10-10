@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-directory-utils.R
-# last-updated: '2025-10-06'
+# last-updated: 2025-10-09
 # license: https://unlicense.org
 # imports:
 # - fs
@@ -41,6 +41,9 @@
   directory = .here("input")
 ) {
   directory = fs::path_expand(directory)
+  if (!fs::dir_exists(directory)) {
+    stop("The given input directory does not exist: ", directory)
+  }
   #TODO: dated subdirectories. most recent version.
   message("finding input from: ", directory)
   return(function(filename = "", ..., type = "file") {
@@ -139,8 +142,11 @@
 #'
 #' @unit
 #' .locate_project()
-.locate_project = function(inputFile = .this_script()) {
+.locate_project = function(inputFile = NULL) {
   . = NULL
+  if (is.null(inputFile)) {
+    inputFile = tryCatch(.this_script(), error = function(e) getwd())
+  }
   absPath = inputFile %>% fs::path_expand()
   parent = unique(ifelse(fs::is_dir(absPath), absPath, fs::path_dir(absPath)))
   current = parent

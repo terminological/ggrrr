@@ -901,16 +901,22 @@ knit_print.rendered_plot = function(x, options, ...) {
     fs::path_ext_set(filename, extn)
   }
 
-  matchedFiles = function(extns) {
-    extns = paste0(extns, collapse = "|")
-    fs::dir_ls(
-      fs::path_dir(filename),
-      regexp = paste0(.escape_regex(filename), "(_[0-9]+)?\\.(", extns, ")")
-    )
-  }
+  for (extn in supported) {
+    # filename = tempfile()
+    # dir = fs::path_dir(filename)
+    # extn = "json"
+    # for (i in 1:10) fs::file_touch(sprintf("%s_%s.json", filename, i))
 
-  # clean up any possible outputs from previous run
-  lapply(matchedFiles(supported), function(x) try(unlink(x)))
+    # fs::dir_ls does not do full glob expansion
+    matched = c(
+      Sys.glob(sprintf("%s.%s", filename, extn)),
+      Sys.glob(sprintf("%s_[0-9].%s", filename, extn)),
+      Sys.glob(sprintf("%s_[0-9][0-9].%s", filename, extn))
+    )
+
+    # clean up any possible outputs from previous run
+    lapply(matched, function(x) try(unlink(x)))
+  }
 
   fonts_used = hux %>% huxtable::font() %>% as.vector() %>% unique()
   non_local_fonts = fonts_used[
@@ -1141,33 +1147,4 @@ print.rendered_table = function(x, ...) {
   }
 
   print(x$hux)
-}
-
-
-# private utilities ----
-
-# from rex:::escape.character
-.escape_regex = function(x) {
-  chars <- c(
-    "*",
-    ".",
-    "?",
-    "^",
-    "+",
-    "$",
-    "|",
-    "(",
-    ")",
-    "[",
-    "]",
-    "{",
-    "}",
-    "\\"
-  )
-  gsub(
-    paste0("([\\", paste0(collapse = "\\", chars), "])"),
-    "\\\\\\1",
-    x,
-    perl = TRUE
-  )
 }
