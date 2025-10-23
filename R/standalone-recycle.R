@@ -34,7 +34,7 @@
 #'   ))
 #' }
 #'
-#' tmp = testfn(a=c(1,2,3), b="needs recycling", c=NULL)
+#' tmp = testfn(a=c(1,2,3), b="needs recycling", c=NULL, d="additional")
 #'
 #' testthat::expect_equal(tmp$n, 3)
 #' testthat::expect_null(tmp$c)
@@ -43,17 +43,40 @@
 #' # no parameter
 #' testthat::expect_error(testfn(a=c(1,2,3), c=NULL))
 #'
-#'
 #' tmp = testfn(a=character(), b=integer(), c=NULL)
-#' testthat::expect_equal(tmp$n,0)
+#'
+#' testthat::expect_equal(tmp$n, 0)
 #'
 #' # inconsistent to have a zero length and a non zero length
 #' testthat::expect_error(testfn(a=c("a","b"), b=integer(), c=NULL))
 #'
+#' # This is currently unsupported
+#' #testfn = function(a, b, c, ...) {
+#' # n = .recycle(a,b,c, ...)
+#' # return(list(
+#' #   a=a, b=b, c=c, n=n, ...
+#' # ))
+#' #}
+#' #
+#' #tmp = testfn(a=c(1,2,3), b="needs recycling", c=NULL, d="additional")
+#'
 .recycle = function(..., .min = 1, .env = rlang::caller_env()) {
-  names = sapply(rlang::ensyms(...), rlang::as_label)
-  dots = rlang::enexprs(...)
+  names = names(rlang::ensyms(..., .named = TRUE))
+  dots = rlang::enexprs(..., .named = TRUE)
   env = .env
+
+  # TODO: it would be nice to be able to recycle `...` parameters so that
+  # we can ensure that parameters passed on are assured to be the correct length
+  # however this requires manipulating `...` and inserting it back into the
+  # caller environment.
+  # for (nm in names) {
+  #   # If a parameter is passed to .recycle in `...` it will have a value here
+  #   # but this wont actually exist in the target environment. We have to
+  #   # create it so we can recycle it. This will force evaluation I expect
+  #   if (!is.symbol(dots[[nm]]) && !exists(nm, envir = env, inherits = FALSE)) {
+  #     env[[nm]] = dots[[nm]]
+  #   }
+  # }
 
   missing = sapply(names, function(x) {
     !(exists(x, envir = env, inherits = FALSE)) || rlang::is_missing(env[[x]])
