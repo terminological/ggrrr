@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-rappdirs.R
-# last-updated: 2025-09-30
+# last-updated: 2026-01-14
 # license: https://unlicense.org
 # ---
 
@@ -54,19 +54,13 @@
 #' @param appname is the name of application. If NULL, just the system
 #'     directory is returned.
 #' @param appauthor (only required and used on Windows) is the name of the
-#'     appauthor or distributing body for this application. Typically
-#'     it is the owning company name. This falls back to appname.
+#'     app author or distributing body for this application. Typically
+#'     it is the owning company name. This falls back to app name.
 #' @param version is an optional version path element to append to the
 #'     path. You might want to use this if you want multiple versions
 #'     of your app to be able to run independently. If used, this
-#'     would typically be `"<major>.<minor>"`. Only applied when appname
+#'     would typically be `"<major>.<minor>"`. Only applied when app name
 #'     is not NULL.
-#' @param roaming (logical, default `FALSE`) can be set `TRUE` to
-#'     use the Windows roaming appdata directory. That means that for users on
-#'     a Windows network setup for roaming profiles, this user data will be
-#'     sync'd on login. See
-#'     <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-vista/cc766489(v=ws.10).
-#'     for a discussion of issues.
 #' @param os Operating system whose conventions are used to construct the
 #'     requested directory. Possible values are "win", "mac", "unix". If `NULL`
 #'     (the default) then the current OS will be used.
@@ -77,7 +71,7 @@
 #' @seealso [tempdir()] for a non-persistent temporary directory.
 #' @keywords internal
 #' @unit
-#' rappdirs_cache_dir("rappdirs")
+#' rappdirs_user_cache_dir("rappdirs")
 rappdirs_user_cache_dir <- function(
   appname = NULL,
   appauthor = appname,
@@ -171,7 +165,7 @@ rappdirs_user_cache_dir <- function(
     if (is.na(path)) {
       # environmental variable not defined in XP
       path <- file.path(
-        env_fallback("USERPROFILE"),
+        .rappdirs_env_fallback("USERPROFILE"),
         "Local Settings",
         "Application Data"
       )
@@ -180,7 +174,10 @@ rappdirs_user_cache_dir <- function(
   } else if (type == "common") {
     path <- Sys.getenv("PROGRAMDATA", unset = NA)
     if (is.na(path)) {
-      path <- file.path(env_fallback("ALLUSERPROFILE"), "Application Data")
+      path <- file.path(
+        .rappdirs_env_fallback("ALLUSERPROFILE"),
+        "Application Data"
+      )
     }
     path
   } else {
