@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-recycle.R
-# last-updated: '2025-07-10'
+# last-updated: 2025-10-23
 # license: https://unlicense.org
 # imports: rlang
 # ---
@@ -124,4 +124,44 @@
   }
 
   return(ml)
+}
+
+
+#' Strictly recycle the items in a list to the same length
+#'
+#' This removes NULL entries, and zero length lists
+#'
+#' @param lst a list input
+#'
+#' @returns the list with all items recycled to the same length
+#' @keywords internal
+#'
+#' @unit
+#' lst = list(a = 1,b=1:3, c= NULL, d=list(), e=character())
+#' testthat::expect_equal(
+#'   .make_square(lst),
+#'   list(a = c(1, 1, 1), b = 1:3)
+#' )
+.make_square = function(lst) {
+  if (is.data.frame(lst)) {
+    return(lst)
+  }
+  if (!is.list(lst)) {
+    stop("Input must be a list", .call = FALSE)
+  }
+  original = lst
+  lst = Filter(Negate(is.null), lst)
+  lst = Filter(function(x) length(x) > 0, lst)
+  lengths = sapply(lst, length)
+  if (length(lengths) == 0) {
+    return(original)
+  }
+  max_len = max(lengths)
+  if (!all(lengths %in% c(1, max_len))) {
+    stop("Inputs must be all either 1 or ", max_len, " long", call. = FALSE)
+  }
+  return(lapply(
+    lst,
+    function(x) if (length(x) == 1) rep(x, max_len) else x
+  ))
 }
