@@ -55,6 +55,11 @@ std_size = list(
   slide = list(width = 12, height = 6, rot = 0)
 )
 
+# Project output directory tools ----
+
+# .outputter, .here, .locate_project
+# are all in standalone-directory-utils.R
+
 #' Get the file path of the current script
 #'
 #' Gives you the file input path regardless of whether you are running the

@@ -1,7 +1,7 @@
 # ---
 # repo: terminological/ggrrr
 # file: standalone-df-list-df.R
-# last-updated: 2025-09-30
+# last-updated: 2026-01-14
 # license: https://unlicense.org
 # imports:
 # - dplyr
@@ -9,6 +9,8 @@
 # - testthat
 # - tidyr
 # ---
+
+## Transposition ----
 
 #' Convert a nested dataframe to a multilevel list
 #'
@@ -49,7 +51,7 @@
 
 #' Convert a multilevel list to a nested dataframe
 #'
-#' @param list a multilevel list
+#' @param lst a multilevel list
 #' @inheritDotParams .transpose
 #'
 #' @returns a dataframe with each sublist nested as a dataframe
@@ -104,7 +106,8 @@
 #' @param ... not used
 #' @keywords internal
 #' @concept transpose
-#'
+#' @returns either a dataframe or a list of class `row_list` representing the
+#'   dataframe as a list of named lists.
 #' @unit
 #'
 #' # create a test nested data frame:
@@ -232,7 +235,10 @@
 
 ..df2_is_simplifiable = function(x) {
   all(sapply(x, function(l) {
-    is.null(l) || length(l) == 0 || (is.atomic(l) && length(l) == 1)
+    is.null(l) ||
+      length(l) == 0 ||
+      (is.atomic(l) && length(l) <= 1) ||
+      (is.list(l) && length(l) == 1 && is.atomic(l[[1]]))
   }))
 }
 
@@ -277,8 +283,20 @@
   }
 }
 
+..df2_list_is_wrapped = function(x) {
+  nms = unique(names(x))
+  return(
+    all(sapply(x, is.list)) &&
+      all(sapply(x, length) == 1) &&
+      (is.null(nms) || length(nms) == 1) &&
+      !all(sapply(x, ..df2_is_transposable, target = "df"))
+  )
+}
+
 ..df2_is_wrapped = function(x) {
-  return(..df2_is_namedlist(x) && !is.data.frame(x) && length(x) == 1)
+  return(
+    is.list(x) && !is.data.frame(x) && length(x) == 1
+  )
 }
 
 # x= list(sub1 = 1,sub2 = 2,sub3 = 3)
@@ -294,10 +312,12 @@
   if (!is.list(x) || is.data.frame(x)) {
     return(x)
   }
-  while (
-    all(sapply(x, ..df2_is_wrapped)) && length(unique(sapply(x, names))) == 1
-  ) {
-    name = paste0(c(name, unique(sapply(x, names))), collapse = sep)
+  while (..df2_list_is_wrapped(x)) {
+    newlvl = unique(unlist(sapply(x, names)))
+    if (is.null(newlvl)) {
+      newlvl = ""
+    }
+    name = paste0(c(name, newlvl), collapse = sep)
     x = lapply(x, function(sub) sub[[1]])
   }
   return(list(data = x, new_name = name))
@@ -314,43 +334,36 @@
   for (piece in pieces) {
     x = lapply(x, function(sub) {
       tmp = list()
-      tmp[[piece]] = sub
+      if (piece == "") {
+        tmp[[1]] = sub
+      } else {
+        tmp[[piece]] = sub
+      }
       tmp
     })
   }
   return(list(data = x, new_name = new_name))
 }
 
+## Tree formatting ----
 
-#' Print method for `row_list` objects
+#' Tree printing method for list objects. This is an interactive function.
 #'
-#' @inheritParams format.row_list
-#' @inheritDotParams format.row_list -x
-#' @keywords internal
-#' @concept transpose
-print.row_list <- function(
-  x,
-  ...
-) {
-  cat(format.row_list(x, ...))
-  invisible(x)
-}
-
-
-#' Format method for `row_list` objects
-#'
-#' @param x A `row_list` object
+#' @param x A list
 #' @param max_levels The maximum number of levels to show
 #' @param ... Additional arguments:
-#' - `max_length` the number of items in a vector to show before truncating.
+#' - `max_width` the number of items horizontally to show before truncating.
+#' - `max_length` the number of items vertically to show before truncating.
 #' - others are passed to `format(...)`
-#' @keywords internal
+#' @param verbose print output to the console (the default)
 #' @concept transpose
-#'
-format.row_list <- function(
+#' @return The hierarchy as a string, called for side effects
+#' @keywords internal
+.tree = function(
   x,
   max_levels = 6,
-  ...
+  ...,
+  verbose = TRUE
 ) {
   tmp = ..df2_format_tree(x, level = max_levels, ...)
   tmp = c(
@@ -358,7 +371,10 @@ format.row_list <- function(
     unlist(tmp)
   )
   tmp = paste0(tmp, collapse = "\n")
-  return(tmp)
+  if (verbose) {
+    cat(tmp)
+  }
+  return(invisible(tmp))
 }
 
 # values = list("1","2",list("3.1","3.2"),"4")
@@ -368,6 +384,7 @@ format.row_list <- function(
   values,
   level = 6,
   direction = "up",
+  max_length = Inf,
   ...
 ) {
   values = purrr::map2(
@@ -378,20 +395,37 @@ format.row_list <- function(
     ...
   )
 
+  if (max_length < 2) {
+    max_length = 2
+  }
+
   if (length(values) == 0) {
     values = list("<empty>")
   }
+  if (length(values) > max_length) {
+    skipped = length(values) - max_length
+    values = c(
+      values[1:(max_length - 1)],
+      sprintf("... <%d items> ...", skipped),
+      values[length(values)]
+    )
+  }
+
   for (i in seq_along(values)) {
     if (length(values[[i]]) == 0) values[[i]] = "<empty>"
   }
 
   connectors = list(
-    first = if (direction == "up") c("├─", "│ ") else c("┬─", "│ "),
-    mid = c("├─", "│ "),
-    end = if (direction == "left" && length(values) < 2) {
-      c("──", "  ")
+    first = if (direction == "up") {
+      c("\u251C\u2500", "\u2502 ")
     } else {
-      c("└─", "  ")
+      c("\u252C\u2500", "\u2502 ")
+    },
+    mid = c("\u251C\u2500", "\u2502 "),
+    end = if (direction == "left" && length(values) < 2) {
+      c("\u2500\u2500", "  ")
+    } else {
+      c("\u2514\u2500", "  ")
     }
   )
 
@@ -432,56 +466,23 @@ format.row_list <- function(
   return(paste0(prefixes, unlist(values)))
 }
 
-# prefix all the values of a list preserving list structure
-# prefixes apply to head of the top level only, beyond top level
-# or values after the first one are determined by cont or if it is the last item
-# in the top level
-# ..df2_prefix_nested = function(values, prefixes, cont = NULL) {
-#   return(lapply(seq_along(values), function(i) {
-#     v = values[[i]]
-#     p = prefixes[[i]]
-#     if (is.null(cont)) {
-#       if (i == length(prefixes)) {
-#         cont = "  "
-#       } else {
-#         cont = "│ "
-#       }
-#     }
-#     if (is.list(v)) {
-#       v2 = ..df2_prefix_nested(v, rep(cont, length(v)), cont)
-#     } else {
-#       v2 = sprintf("%s%s", cont, v)
-#     }
-#     if (is.list(v[[1]])) {
-#       v2[[1]] = ..df2_prefix_nested(
-#         v[[1]],
-#         c(p, rep(cont, length(v[[1]]) - 1)),
-#         cont
-#       )
-#     } else {
-#       v2[[1]] = sprintf("%s%s", p, v[[1]])
-#     }
-#     v2
-#   }))
-# }
-
 ..df2_format_leaf = function(
   value,
   name,
   level,
   ...,
-  max_length = 4
+  max_width = 4
 ) {
-  if (max_length < 2) {
-    max_length = 2
+  if (max_width < 2) {
+    max_width = 2
   }
 
   is_named = !is.na(name)
   nm_prefix = if (is_named) sprintf("$%s:", name) else ""
 
   vec_shorten = function(x) {
-    if (length(x) > max_length) {
-      x = c(x[1:(max_length - 1)], "...", x[length(x)])
+    if (length(x) > max_width) {
+      x = c(x[1:(max_width - 1)], "...", x[length(x)])
     }
     paste0(x, collapse = ",")
   }
@@ -549,3 +550,8 @@ format.row_list <- function(
   }
   return(nm_fn(value))
 }
+
+## TODO: Generic
+# format_branch(branch, nodes_extractor, direction, max_len)
+# format_nodes(branch_detector, leaf_extractor): handles naming, delegates to format_branch or format_leaf.
+# format_leaf():

@@ -40,7 +40,7 @@
 #
 # nocov start
 
-map <- function(.x, .f, ..., .progress = FALSE) {
+map <- function(.x, .f, ...) {
   .f <- .wrap_with_progress(
     .f,
     ...,
@@ -49,6 +49,7 @@ map <- function(.x, .f, ..., .progress = FALSE) {
   )
   lapply(.x, .f, ...)
 }
+
 walk <- function(.x, .f, ...) {
   map(.x, .f, ...)
   invisible(.x)
@@ -66,7 +67,8 @@ map_dbl <- function(.x, .f, ...) {
 map_chr <- function(.x, .f, ...) {
   .rlang_purrr_map_mold(.x, .f, character(1), ...)
 }
-.rlang_purrr_map_mold <- function(.x, .f, .mold, ..., .progress = FALSE) {
+
+.rlang_purrr_map_mold <- function(.x, .f, .mold, ...) {
   .f <- .wrap_with_progress(
     .f,
     ...,
@@ -154,6 +156,7 @@ pmap <- function(.l, .f, ...) {
     )
   )
 }
+
 .rlang_purrr_args_recycle <- function(args) {
   lengths <- map_int(args, length)
   n <- max(lengths)
