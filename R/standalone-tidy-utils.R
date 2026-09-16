@@ -142,7 +142,7 @@ summarise_with_totals = function(
   return(out %>% dplyr::group_by(!!!grps_out))
 }
 
-#' Create a dataframe with groups mathing a range of predicates
+#' Create a dataframe with groups matching a range of predicates
 #'
 #' Create a new data frame including duplicate rows where the rows fulfil a potentially overlapping set of conditions
 #' specified as named predicates (as formulae)
