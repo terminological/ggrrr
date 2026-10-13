@@ -1018,9 +1018,23 @@ knit_print.rendered_plot = function(x, options, ...) {
   }
 
   if (any(c("pdf", "png", "html") %in% formats)) {
-    html = stringr::str_remove(
-      hux %>% huxtable::to_html(),
-      stringr::fixed("margin-bottom: 2em; margin-top: 2em;")
+    # Change in huxtable output in newer versions styling block was removed from
+    # to_html output. The actual css is in huxtable:::huxtable_html_css
+    hux_css = "<style>
+.huxtable { border-collapse: collapse; border: 0px; }
+.huxtable-cell {
+    vertical-align: top; text-align: left; white-space: normal;
+    border-style: solid; border-width: 0pt; padding: 6pt; font-weight: normal;
+}
+.huxtable-header {
+  font-weight: bold;
+}
+</style>"
+
+    html = sprintf(
+      "%s\n%s",
+      hux_css,
+      hux %>% huxtable::to_html()
     )
 
     if ("html" %in% formats) {
